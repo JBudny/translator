@@ -1,15 +1,47 @@
-import Logo from "./Logo";
+import { FC, useEffect, useState } from "react";
+import { TranslateButton } from "./components";
+import { PositionState, SelectedTextState } from "./App.types";
 
-function App() {
-  return (
-    <div className="w-full text-center">
-      <header className="bg-gray-800 min-h-screen flex flex-col items-center justify-center text-2xl text-white">
-        <Logo className="h-40 pointer-events-none animate-spin-slow" id="App-logo" title="React logo" />
-        <p>Hello, World!</p>
-        <p>I'm a Chrome Extension Content Script!</p>
-      </header>
+const App: FC = () => {
+  const [selectedText, setSelectedText] = useState<SelectedTextState>("");
+  const [position, setPosition] = useState<PositionState>({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseUp = ({ x, y }: MouseEvent) => {
+      const currentSelectedText = window.getSelection()?.toString().trim();
+
+      if (selectedText === currentSelectedText) {
+        setSelectedText("")
+
+        return;
+      };
+
+      setPosition({ x, y });
+      setSelectedText(currentSelectedText);
+    };
+
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [selectedText]);
+
+  const handleTranslationButtonClick = () => {
+    setSelectedText("");
+  };
+
+  return selectedText ? (
+    <div
+      style={{
+        position: 'absolute',
+        left: `calc(${position.x}px - 15px)`,
+        top: `calc(${position.y}px - 45px)`,
+      }}
+    >
+      <TranslateButton onClick={handleTranslationButtonClick} />
     </div>
-  );
-}
+  ) : null;
+};
 
 export default App;
