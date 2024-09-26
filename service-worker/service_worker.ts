@@ -31,7 +31,7 @@ const handleTranslate = async (
       sendResponse({
         success: false,
         error: {
-          message: "Unknown error",
+          message: "Unknown error.",
         }
       });
     }

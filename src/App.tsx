@@ -1,13 +1,84 @@
-import Logo from "./Logo";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { SettingsFormSchema, settingsFormSchema } from "./settingsFormSchema";
+import { ChangesStatusMessage } from "./App.types";
 
-function App() {
+const App = () => {
+  const { handleSubmit, formState, register, setValue } = useForm<SettingsFormSchema>({
+    resolver: yupResolver(settingsFormSchema),
+    defaultValues: { API_KEY: "", API_BASE_URL: "" },
+    mode: "all",
+  });
+  const [changesStatusMessage, setChangesStatusMessage] = useState<ChangesStatusMessage>(null);
+
+  useEffect(() => {
+    chrome.storage.local.get<SettingsFormSchema>()
+      .then(({ API_KEY, API_BASE_URL }) => {
+        setValue("API_KEY", API_KEY);
+        setValue("API_BASE_URL", API_BASE_URL);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!changesStatusMessage) return;
+    const timerId = setTimeout(() => setChangesStatusMessage(null), 1000);
+
+    return () => {
+      clearTimeout(timerId)
+    }
+  }, [changesStatusMessage]);
+
+  const { errors } = formState;
+
+  const onSubmit: SubmitHandler<SettingsFormSchema> = ({ API_KEY, API_BASE_URL }) => {
+    chrome.storage.local.set<SettingsFormSchema>({ API_KEY, API_BASE_URL })
+      .then(() => {
+        setValue("API_KEY", API_KEY);
+        setValue("API_BASE_URL", API_BASE_URL);
+        setChangesStatusMessage("Saved");
+      })
+      .catch(() => {
+        setValue("API_KEY", "");
+        setValue("API_BASE_URL", "");
+        setChangesStatusMessage("Failed to save");
+      });
+  };
+
   return (
-    <div className="w-[400px] h-[500px] text-center">
-      <header className="bg-gray-800 w-full h-full flex flex-col items-center justify-center text-2xl text-white">
-        <Logo className="h-[40vmin] pointer-events-none animate-spin-slow" id="App-logo" title="React logo" />
-        <p>Hello, World!</p>
-        <p>I'm a Chrome Extension Popup!</p>
-      </header>
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <label
+          htmlFor="API_KEY"
+        >
+          API key
+        </label>
+        <input type="text" id="api-key" placeholder=""
+          {...register("API_KEY")}
+        >
+        </input >
+        {errors.API_KEY && (
+          <p style={{ color: 'red' }}>
+            {errors.API_KEY.message}
+          </p>
+        )}
+        <label
+          htmlFor="API_BASE_URL"
+        >
+          API Base URL
+        </label>
+        <input type="text" id="api-base-url" placeholder=""
+          {...register("API_BASE_URL")}
+        >
+        </input >
+        {errors.API_BASE_URL && (
+          <p style={{ color: 'red' }}>
+            {errors.API_BASE_URL.message}
+          </p>
+        )}
+        <button type="submit" disabled={!formState.isValid}>save</button>
+      </form>
+      {changesStatusMessage ? <p>{changesStatusMessage}</p> : null}
     </div>
   );
 }
