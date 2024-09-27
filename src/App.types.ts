@@ -1,1 +1,1 @@
-export type ChangesStatusMessage = "Saved" | "Failed to save" | null
+export type ChangesStatusMessage = "Saved" | "Failed to save" | null;

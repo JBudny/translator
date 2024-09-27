@@ -1,9 +1,13 @@
 import { FC, useEffect, useState } from "react";
 import { TranslateButton } from "./components";
 import { PositionState, SelectedTextState } from "./App.types";
-import { TranslateResponse } from "../../api";
-import { MessageErrorResponse, MessageResponse, TranslateActionPayload } from "../../service-worker/service_worker.types";
-import { sendMessage } from "../../service-worker/service_worker.utils";
+import { API_ENDPOINTS, TranslateResponse } from "../../api";
+import {
+  MessageErrorResponse,
+  MessageResponse,
+  TranslateActionPayload,
+  sendMessage,
+} from "../../service-worker";
 
 const App: FC = () => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -27,7 +31,7 @@ const App: FC = () => {
 
   const handleTranslationButtonClick = async () => {
     if (!selectedText) return;
-    sendMessage<TranslateActionPayload, MessageResponse<TranslateResponse>>({ type: "TRANSLATE", payload: { q: selectedText, source: "en", target: "pl" } })
+    sendMessage<TranslateActionPayload, MessageResponse<TranslateResponse>>({ type: API_ENDPOINTS.TRANSLATE, payload: { q: selectedText, source: "en", target: "pl" } })
       .then((response) => {
         if (!response.success)
           setError(response.error);

@@ -1,5 +1,8 @@
-export type TranslateActionType = "TRANSLATE";
-export type DetectActionType = "DETECT";
+import { API_ENDPOINTS } from "../api";
+
+export type DetectActionType = API_ENDPOINTS.DETECT;
+export type LanguagesActionType = API_ENDPOINTS.LANGUAGES;
+export type TranslateActionType = API_ENDPOINTS.TRANSLATE;
 
 export interface TranslateActionPayload {
   q: string;
@@ -11,19 +14,26 @@ export interface DetectActionPayload {
   q: string;
 };
 
-export type ActionTypes = TranslateActionType | DetectActionType;
+export type ActionTypes = DetectActionType | LanguagesActionType | TranslateActionType;
 
-export interface Action<T> {
+export interface Action {
   type: ActionTypes;
+};
+
+export interface PayloadAction<T> extends Action {
   payload: T;
 };
 
-export type TranslateAction = Action<TranslateActionPayload>;
-export type DetectAction = Action<DetectActionPayload>;
-export type Actions = TranslateAction | DetectAction;
+export type DetectAction = PayloadAction<DetectActionPayload>;
+export type LanguagesAction = Action;
+export type TranslateAction = PayloadAction<TranslateActionPayload>;
+export type Actions = DetectAction | LanguagesAction | TranslateAction;
 
 export const isTranslateAction = (action: Actions): action is TranslateAction =>
-  action.type === 'TRANSLATE';
+  action.type === API_ENDPOINTS.TRANSLATE;
+
+export const isLanguagesAction = (action: Actions): action is LanguagesAction =>
+  action.type === API_ENDPOINTS.LANGUAGES;
 
 export interface MessageErrorResponse {
   success: false;

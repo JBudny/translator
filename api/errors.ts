@@ -1,8 +1,3 @@
-export interface TranslateResponse {
-  alternatives?: string[];
-  translatedText: string;
-};
-
 export class ApiError extends Error {
   private readonly _cause: { code: number };
 
@@ -15,4 +10,4 @@ export class ApiError extends Error {
   get cause() {
     return this._cause;
   }
-}
+};
