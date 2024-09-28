@@ -4,7 +4,6 @@ import { PositionState, SelectedTextState } from "./App.types";
 import { API_ENDPOINTS, TranslateResponse } from "../../api";
 import {
   MessageErrorResponse,
-  MessageResponse,
   TranslateActionPayload,
   sendMessage,
 } from "../../service-worker";
@@ -31,7 +30,7 @@ const App: FC = () => {
 
   const handleTranslationButtonClick = async () => {
     if (!selectedText) return;
-    sendMessage<TranslateActionPayload, MessageResponse<TranslateResponse>>({ type: API_ENDPOINTS.TRANSLATE, payload: { q: selectedText, source: "en", target: "pl" } })
+    sendMessage<TranslateActionPayload, TranslateResponse>({ type: API_ENDPOINTS.TRANSLATE, payload: { q: selectedText, source: "en", target: "pl" } })
       .then((response) => {
         if (!response.success)
           setError(response.error);

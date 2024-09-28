@@ -1,3 +1,5 @@
+import { NormalizedSchema } from "normalizr";
+
 export interface Language {
   "code": string;
   "name": string;
@@ -5,3 +7,9 @@ export interface Language {
 };
 
 export type LanguagesResponse = Language[];
+
+export type NormalizedLanguages = NormalizedSchema<{
+  languages: {
+    [key: string]: Language;
+  };
+}, string[]>;

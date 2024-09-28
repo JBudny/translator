@@ -1,2 +1,6 @@
 export { languages } from './languages';
-export { type Language, type LanguagesResponse } from './languages.types';
+export {
+  type Language,
+  type LanguagesResponse,
+  type NormalizedLanguages
+} from './languages.types';

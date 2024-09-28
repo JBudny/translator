@@ -1,9 +1,10 @@
-import { Action, PayloadAction } from "./service_worker.types";
+import { Action, MessageResponse, PayloadAction } from "./service_worker.types";
 
-export const sendMessage = <T, ResponseType>(action: PayloadAction<T> | Action): Promise<ResponseType> => {
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage(
-      action, (response) => resolve(response)
-    );
-  });
-};
+export const sendMessage = <PayloadType, ResponseType>(action:
+  PayloadAction<PayloadType> | Action) =>
+  new Promise<MessageResponse<ResponseType>>((resolve) =>
+    chrome.runtime.sendMessage<PayloadAction<PayloadType> | Action,
+      MessageResponse<ResponseType>>(action, (response) =>
+        resolve(response)
+      )
+  );

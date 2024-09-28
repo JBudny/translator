@@ -3,6 +3,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { SettingsFormSchema, settingsFormSchema } from "./settingsFormSchema";
 import { ChangesStatusMessage } from "./App.types";
+import { sendMessage } from "../service-worker";
+import { API_ENDPOINTS, NormalizedLanguages } from "../api";
+import { LanguagesForm } from "./LanguagesForm";
 
 const App = () => {
   const { handleSubmit, formState, register, setValue } = useForm<SettingsFormSchema>({
@@ -10,9 +13,21 @@ const App = () => {
     defaultValues: { API_KEY: "", API_BASE_URL: "" },
     mode: "all",
   });
-  const [changesStatusMessage, setChangesStatusMessage] = useState<ChangesStatusMessage>(null);
+
+  const [changesStatusMessage, setChangesStatusMessage] = useState<ChangesStatusMessage | null>();
+  const [languageOptions, setLanguageOptions] = useState<NormalizedLanguages>();
 
   useEffect(() => {
+    sendMessage<{}, NormalizedLanguages>({ type: API_ENDPOINTS.LANGUAGES })
+      .then((response) => {
+        if (response.success) {
+          const { data } = response;
+
+          setLanguageOptions(data);
+        } else {
+          // handle error
+        };
+      })
     chrome.storage.local.get<SettingsFormSchema>()
       .then(({ API_KEY, API_BASE_URL }) => {
         setValue("API_KEY", API_KEY);
@@ -78,8 +93,9 @@ const App = () => {
         )}
         <button type="submit" disabled={!formState.isValid}>save</button>
       </form>
+      <LanguagesForm languageOptions={languageOptions} />
       {changesStatusMessage ? <p>{changesStatusMessage}</p> : null}
-    </div>
+    </div >
   );
 }
 
