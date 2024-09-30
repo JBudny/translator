@@ -1,4 +1,4 @@
-import { SettingsFormSchema } from "../src/settingsFormSchema";
+import { ExtensionStorage } from "../src/extensionStorage.types";
 import { API_ENDPOINTS } from "./constants";
 import { ApiError } from "./errors";
 
@@ -6,20 +6,20 @@ let currentApiKey: string | undefined = '';
 let currentBaseUrl: string | undefined = '';
 
 chrome.storage.onChanged.addListener((changes) => {
-  if ('API_KEY' in changes) {
-    currentApiKey = changes.API_KEY.newValue;
+  if ('apiKey' in changes) {
+    currentApiKey = changes.apiKey.newValue;
   }
-  if ('API_BASE_URL' in changes) {
-    currentBaseUrl = changes.API_BASE_URL.newValue;
+  if ('apiBaseURL' in changes) {
+    currentBaseUrl = changes.apiBaseURL.newValue;
   }
 });
 
-chrome.storage.local.get<SettingsFormSchema>()
-  .then(({ API_KEY, API_BASE_URL }) => {
-    if (API_KEY)
-      currentApiKey = API_KEY;
-    if (API_BASE_URL)
-      currentBaseUrl = API_BASE_URL;
+chrome.storage.local.get<ExtensionStorage>()
+  .then(({ apiKey, apiBaseURL }) => {
+    if (apiKey)
+      currentApiKey = apiKey;
+    if (apiBaseURL)
+      currentBaseUrl = apiBaseURL;
   });
 
 export const api = async <T>(endpoint: API_ENDPOINTS, init: RequestInit): Promise<T> => {

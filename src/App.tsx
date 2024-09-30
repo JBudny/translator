@@ -1,102 +1,58 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import { SettingsFormSchema, settingsFormSchema } from "./settingsFormSchema";
-import { ChangesStatusMessage } from "./App.types";
-import { sendMessage } from "../service-worker";
-import { API_ENDPOINTS, NormalizedLanguages } from "../api";
-import { LanguagesForm } from "./LanguagesForm";
+import { FC, PropsWithChildren } from "react";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./AuthProvider";
+import { APIBaseURLForm, APIKeyForm, LanguagesForm } from "./Forms";
 
-const App = () => {
-  const { handleSubmit, formState, register, setValue } = useForm<SettingsFormSchema>({
-    resolver: yupResolver(settingsFormSchema),
-    defaultValues: { API_KEY: "", API_BASE_URL: "" },
-    mode: "all",
-  });
+const RequireAPIBaseURL: FC<PropsWithChildren> = ({ children }) => {
+  let auth = useAuth();
 
-  const [changesStatusMessage, setChangesStatusMessage] = useState<ChangesStatusMessage | null>();
-  const [languageOptions, setLanguageOptions] = useState<NormalizedLanguages>();
+  if (!auth) return <Navigate to="/" replace />;
 
-  useEffect(() => {
-    sendMessage<{}, NormalizedLanguages>({ type: API_ENDPOINTS.LANGUAGES })
-      .then((response) => {
-        if (response.success) {
-          const { data } = response;
+  const { state: { apiBaseURL } } = auth;
 
-          setLanguageOptions(data);
-        } else {
-          // handle error
-        };
-      })
-    chrome.storage.local.get<SettingsFormSchema>()
-      .then(({ API_KEY, API_BASE_URL }) => {
-        setValue("API_KEY", API_KEY);
-        setValue("API_BASE_URL", API_BASE_URL);
-      });
-  }, []);
+  if (!apiBaseURL) return <Navigate to="/" replace />;
 
-  useEffect(() => {
-    if (!changesStatusMessage) return;
-    const timerId = setTimeout(() => setChangesStatusMessage(null), 1000);
+  return <>{children}</>;
+};
 
-    return () => {
-      clearTimeout(timerId)
-    }
-  }, [changesStatusMessage]);
+const RequireAPIKey: FC<PropsWithChildren> = ({ children }) => {
+  let auth = useAuth();
 
-  const { errors } = formState;
+  if (!auth) return <Navigate to="/" replace />;
 
-  const onSubmit: SubmitHandler<SettingsFormSchema> = ({ API_KEY, API_BASE_URL }) => {
-    chrome.storage.local.set<SettingsFormSchema>({ API_KEY, API_BASE_URL })
-      .then(() => {
-        setValue("API_KEY", API_KEY);
-        setValue("API_BASE_URL", API_BASE_URL);
-        setChangesStatusMessage("Saved");
-      })
-      .catch(() => {
-        setValue("API_KEY", "");
-        setValue("API_BASE_URL", "");
-        setChangesStatusMessage("Failed to save");
-      });
-  };
+  const { state: { apiKey } } = auth;
 
+  if (!apiKey) return <Navigate to="/apikey" replace />;
+
+  return <>{children}</>;
+
+};
+
+const App: FC = () => {
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label
-          htmlFor="API_KEY"
-        >
-          API key
-        </label>
-        <input type="text" id="api-key" placeholder=""
-          {...register("API_KEY")}
-        >
-        </input >
-        {errors.API_KEY && (
-          <p style={{ color: 'red' }}>
-            {errors.API_KEY.message}
-          </p>
-        )}
-        <label
-          htmlFor="API_BASE_URL"
-        >
-          API Base URL
-        </label>
-        <input type="text" id="api-base-url" placeholder=""
-          {...register("API_BASE_URL")}
-        >
-        </input >
-        {errors.API_BASE_URL && (
-          <p style={{ color: 'red' }}>
-            {errors.API_BASE_URL.message}
-          </p>
-        )}
-        <button type="submit" disabled={!formState.isValid}>save</button>
-      </form>
-      <LanguagesForm languageOptions={languageOptions} />
-      {changesStatusMessage ? <p>{changesStatusMessage}</p> : null}
-    </div >
+    <AuthProvider>
+      <div>
+        <h1>Translate</h1>
+        <Routes>
+          <Route element={<Outlet />}>
+            <Route path="/" element={
+              <APIBaseURLForm nextRoute="/apikey" />
+            } />
+            <Route path="/apikey" element={
+              <RequireAPIBaseURL>
+                <APIKeyForm nextRoute="/languages" />
+              </RequireAPIBaseURL>
+            } />
+            <Route path="/languages" element={
+              <RequireAPIKey>
+                <LanguagesForm />
+              </RequireAPIKey>
+            } />
+          </Route>
+        </Routes>
+      </div>
+    </AuthProvider>
   );
-}
+};
 
 export default App;
