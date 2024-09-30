@@ -13,27 +13,35 @@ export const LanguagesForm: FC = () => {
     mode: "all",
   });
   const [languageOptions, setLanguageOptions] = useState<NormalizedLanguages | null>(null);
+  const [languageChangeStatus, setLanguageChangeStatus] = useState<'saved' | 'failed to save' | null>(null);
   const sourceLanguageWatch = watch("sourceLanguage");
   const targetLanguageWatch = watch("targetLanguage");
 
   useEffect(() => {
-    chrome.storage.local.get<ExtensionStorage>()
-      .then(({ sourceLanguage, targetLanguage }) => {
-        if (sourceLanguage) setValue("sourceLanguage", sourceLanguage);
-        if (targetLanguage) setValue("targetLanguage", targetLanguage);
-      });
-  }, []);
+    const timerId = setTimeout(() => {
+      setLanguageChangeStatus(null)
+    }, 1000);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [languageChangeStatus]);
 
   useEffect(() => {
-    sendMessage<{}, NormalizedLanguages>({ type: API_ENDPOINTS.LANGUAGES })
-      .then((response) => {
-        if (response.success) {
-          const { data } = response;
-          setLanguageOptions(data);
-        } else {
-          setLanguageOptions(null)
-        };
-      })
+    const getLanguages = async () => {
+      const languageOptions = await sendMessage<{}, NormalizedLanguages>({ type: API_ENDPOINTS.LANGUAGES })
+      if (!languageOptions.success) {
+        setLanguageOptions(null);
+
+        return;
+      }
+      const { data } = languageOptions;
+      setLanguageOptions(data);
+      const { sourceLanguage, targetLanguage } = await chrome.storage.local.get<ExtensionStorage>();
+      if (sourceLanguage) setValue("sourceLanguage", sourceLanguage);
+      if (targetLanguage) setValue("targetLanguage", targetLanguage);
+    };
+    getLanguages();
   }, []);
 
   useEffect(() => {
@@ -43,18 +51,20 @@ export const LanguagesForm: FC = () => {
       if (targets.includes(targetLanguageWatch)) return;
 
       setValue("targetLanguage", targets[0]);
-    }
-  }, [sourceLanguageWatch]);
+    };
+  }, [languageOptions, sourceLanguageWatch]);
 
   const onSubmit: SubmitHandler<LanguagesFormSchema> = ({ sourceLanguage, targetLanguage }) => {
     chrome.storage.local.set<ExtensionStorage>({ sourceLanguage, targetLanguage })
       .then(() => {
         setValue("sourceLanguage", sourceLanguage);
         setValue("targetLanguage", targetLanguage);
+        setLanguageChangeStatus('saved');
       })
       .catch(() => {
         setValue("sourceLanguage", "");
         setValue("targetLanguage", "");
+        setLanguageChangeStatus('failed to save');
       });
   };
 
@@ -90,6 +100,7 @@ export const LanguagesForm: FC = () => {
           }
         </select>
       </> : null}
+      {languageChangeStatus ? <p>{languageChangeStatus}</p> : null}
       <button type="submit" disabled={!formState.isValid}>save</button>
     </form>
   )

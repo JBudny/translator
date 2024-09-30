@@ -17,7 +17,7 @@ const App: FC = () => {
   const [languages, setLanguages] = useState<{ source: string, target: string }>({ source: "", target: "" });
 
   useEffect(() => {
-    const languagesListener = () => {
+    const getLanguages = () => {
       chrome.storage.local.get<ExtensionStorage>(
         ["sourceLanguage", "targetLanguage"],
         ({ sourceLanguage, targetLanguage }) => {
@@ -25,10 +25,13 @@ const App: FC = () => {
             setLanguages({ source: sourceLanguage, target: targetLanguage });
         });
     };
-    chrome.storage.onChanged.addListener(languagesListener);
+    // Get languages initially
+    getLanguages();
+    // Set languages listener for language change events
+    chrome.storage.onChanged.addListener(getLanguages);
 
     return () => {
-      chrome.storage.onChanged.removeListener(languagesListener);
+      chrome.storage.onChanged.removeListener(getLanguages);
     };
   }, []);
 

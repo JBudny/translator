@@ -1,4 +1,4 @@
-import { createContext, FC, PropsWithChildren, ReducerWithoutAction, useEffect, useReducer, useState } from "react";
+import { createContext, FC, PropsWithChildren, useEffect, useReducer } from "react";
 import { Action, AuthProviderState, Dispatch } from "./AuthProvider.types";
 import { authReducer } from "./AuthProvider.reducer";
 import { ExtensionStorage } from "../extensionStorage.types";
@@ -13,7 +13,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 
   useEffect(() => {
-    const authListener = () => {
+    const getAuth = () => {
       chrome.storage.local.get<ExtensionStorage>(
         ["apiBaseURL", "apiKey"], ({ apiBaseURL, apiKey }) => {
           if (apiBaseURL) {
@@ -32,31 +32,14 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
           };
         });
     };
-    chrome.storage.onChanged.addListener(authListener);
+    // Get auth data initially
+    getAuth();
+    // Set auth data listener for auth data change events
+    chrome.storage.onChanged.addListener(getAuth);
+
     return () => {
-      chrome.storage.onChanged.removeListener(authListener);
+      chrome.storage.onChanged.removeListener(getAuth);
     };
-  }, []);
-
-  useEffect(() => {
-    chrome.storage.local.get<ExtensionStorage>()
-      .then(({ apiBaseURL, apiKey }) => {
-        if (apiBaseURL) {
-          const action: Action = {
-            type: "apiBaseUrlSet",
-            payload: { apiBaseURL }
-          };
-          dispatch(action);
-        };
-
-        if (apiKey) {
-          const action: Action = {
-            type: "apiKeySet",
-            payload: { apiKey }
-          };
-          dispatch(action);
-        };
-      });
   }, []);
 
   const value = { state, dispatch }
