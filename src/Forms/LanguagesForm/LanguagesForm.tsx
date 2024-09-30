@@ -7,7 +7,7 @@ import { LanguagesFormSchema, languagesFormSchema } from "./LanguagesForm.schema
 import { ExtensionStorage } from "../../extensionStorage.types";
 
 export const LanguagesForm: FC = () => {
-  const { watch, handleSubmit, formState, register, setValue, getValues, trigger } = useForm<LanguagesFormSchema>({
+  const { watch, handleSubmit, formState, register, setValue } = useForm<LanguagesFormSchema>({
     resolver: yupResolver(languagesFormSchema),
     defaultValues: { sourceLanguage: "", targetLanguage: "" },
     mode: "all",
@@ -37,7 +37,7 @@ export const LanguagesForm: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (languageOptions) {
+    if (languageOptions && sourceLanguageWatch) {
       const { targets } = languageOptions.entities.languages[sourceLanguageWatch];
 
       if (targets.includes(targetLanguageWatch)) return;

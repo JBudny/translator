@@ -7,12 +7,30 @@ import {
   TranslateActionPayload,
   sendMessage,
 } from "../../service-worker";
+import { ExtensionStorage } from "../../src/extensionStorage.types";
 
 const App: FC = () => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
   const [position, setPosition] = useState<PositionState>({ x: 0, y: 0 });
   const [translation, setTranslation] = useState<TranslateResponse | null>(null);
   const [error, setError] = useState<MessageErrorResponse['error'] | null>(null);
+  const [languages, setLanguages] = useState<{ source: string, target: string }>({ source: "", target: "" });
+
+  useEffect(() => {
+    const languagesListener = () => {
+      chrome.storage.local.get<ExtensionStorage>(
+        ["sourceLanguage", "targetLanguage"],
+        ({ sourceLanguage, targetLanguage }) => {
+          if (sourceLanguage && targetLanguage)
+            setLanguages({ source: sourceLanguage, target: targetLanguage });
+        });
+    };
+    chrome.storage.onChanged.addListener(languagesListener);
+
+    return () => {
+      chrome.storage.onChanged.removeListener(languagesListener);
+    };
+  }, []);
 
   useEffect(() => {
     const handleMouseUp = ({ x, y }: MouseEvent) => {
@@ -30,7 +48,16 @@ const App: FC = () => {
 
   const handleTranslationButtonClick = async () => {
     if (!selectedText) return;
-    sendMessage<TranslateActionPayload, TranslateResponse>({ type: API_ENDPOINTS.TRANSLATE, payload: { q: selectedText, source: "en", target: "pl" } })
+    const { source, target } = languages;
+    const translateAction = {
+      type: API_ENDPOINTS.TRANSLATE,
+      payload: {
+        q: selectedText,
+        source,
+        target
+      }
+    };
+    sendMessage<TranslateActionPayload, TranslateResponse>(translateAction)
       .then((response) => {
         if (!response.success)
           setError(response.error);
@@ -40,7 +67,8 @@ const App: FC = () => {
           setTranslation({ alternatives, translatedText });
         };
 
-      }).finally(() => setSelectedText(""));
+      })
+      .finally(() => setSelectedText(""));
   };
 
   const unsetTranslation = () => {
