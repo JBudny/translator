@@ -6,6 +6,7 @@ import { useAuth } from "../../AuthProvider";
 import { Navigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
+import { StyledTypography } from "../../../components";
 
 export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
   const auth = useAuth();
@@ -35,7 +36,9 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="api-key">API key</label>
+      <label htmlFor="api-key">
+        <StyledTypography $size="medium" $weight="medium" as="span">API key</StyledTypography>
+      </label>
       <input type="text" id="api-key" placeholder=""
         {...register("apiKey")}>
       </input >
@@ -44,7 +47,9 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
           {errors.apiKey.message}
         </p>
       )}
-      <button type="submit" disabled={!formState.isValid}>save</button>
+      <button type="submit" disabled={!formState.isValid}>
+        <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
+      </button>
     </form>
   );
 };

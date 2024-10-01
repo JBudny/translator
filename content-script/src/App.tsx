@@ -8,6 +8,7 @@ import {
   sendMessage,
 } from "../../service-worker";
 import { ExtensionStorage } from "../../src/extensionStorage.types";
+import { StyledTypography } from "../../components";
 
 const App: FC = () => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -95,15 +96,21 @@ const App: FC = () => {
       {translation ?
         <div style={{ backgroundColor: '#fff', padding: '5px', border: '2px solid black' }}>
           <button onClick={unsetTranslation}>X</button>
-          <p>{translation.translatedText}</p>
+          <StyledTypography $size="medium" $weight="normal" as="p">
+            {translation.translatedText}
+          </StyledTypography>
           {translation.alternatives?.length ? (
             <>
-              <p>Also</p>
+              <StyledTypography $size="medium" $weight="normal" as="p">
+                Alternative translations
+              </StyledTypography>
               <ol>
                 {
                   translation.alternatives.map((alternative, index) =>
                     <li key={index}>
-                      {alternative}
+                      <StyledTypography $size="small" $weight="normal" as="span">
+                        {alternative}
+                      </StyledTypography>
                     </li>)
                 }
               </ol>
@@ -114,9 +121,17 @@ const App: FC = () => {
       {error ? (
         <div style={{ backgroundColor: '#fff', padding: '5px', border: '2px solid black' }}>
           <button onClick={unsetError}>X</button>
-          <p>Error</p>
-          {error.cause ? (<p>Code: {error.cause}</p>) : null}
-          <p>Message: {error.message}</p>
+          <StyledTypography $size="medium" $weight="medium" as="p" $color="red500">
+            Error
+          </StyledTypography>
+          {error.cause ? (
+            <StyledTypography $size="medium" $weight="normal" as="p" $color="red500">
+              Code: {error.cause}
+            </StyledTypography>
+          ) : null}
+          <StyledTypography $size="medium" $weight="normal" as="p" $color="red500">
+            Message: {error.message}
+          </StyledTypography>
         </div>
       ) : null}
     </div>

@@ -5,6 +5,7 @@ import { API_ENDPOINTS, NormalizedLanguages } from "../../../api";
 import { sendMessage } from "../../../service-worker";
 import { LanguagesFormSchema, languagesFormSchema } from "./LanguagesForm.schema";
 import { ExtensionStorage } from "../../extensionStorage.types";
+import { StyledTypography } from "../../../components";
 
 export const LanguagesForm: FC = () => {
   const { watch, handleSubmit, formState, register, setValue } = useForm<LanguagesFormSchema>({
@@ -73,7 +74,7 @@ export const LanguagesForm: FC = () => {
       <label
         htmlFor="source-language"
       >
-        Source
+        <StyledTypography $size="medium" $weight="medium" as="span">Source</StyledTypography>
       </label>
       <select id="source-language" {...register("sourceLanguage")}>
         <option value="">Select option</option>
@@ -88,7 +89,7 @@ export const LanguagesForm: FC = () => {
         <label
           htmlFor="target-language"
         >
-          Target
+          <StyledTypography $size="medium" $weight="medium" as="span">Target</StyledTypography>
         </label>
         <select id="target-language" {...register("targetLanguage")}>
           <option value="">Select option</option>
@@ -100,8 +101,11 @@ export const LanguagesForm: FC = () => {
           }
         </select>
       </> : null}
-      {languageChangeStatus ? <p>{languageChangeStatus}</p> : null}
-      <button type="submit" disabled={!formState.isValid}>save</button>
+      {languageChangeStatus ? 
+      <StyledTypography $size="small" $weight="normal" as="span">{languageChangeStatus}</StyledTypography> : null}
+      <button type="submit" disabled={!formState.isValid}>
+        <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
+      </button>
     </form>
   )
 }

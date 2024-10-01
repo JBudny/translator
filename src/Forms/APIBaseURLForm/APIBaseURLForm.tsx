@@ -6,6 +6,7 @@ import { useAuth } from "../../AuthProvider";
 import { Navigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
+import { StyledTypography } from "../../../components";
 
 export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
   const auth = useAuth();
@@ -35,7 +36,9 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="api-base-url">API URL</label>
+      <label htmlFor="api-base-url">
+        <StyledTypography $size="medium" $weight="medium" as="span">API URL</StyledTypography>
+      </label>
       <input type="text" id="api-base-url" placeholder=""
         {...register("apiBaseURL")}>
       </input >
@@ -44,7 +47,9 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
           {errors.apiBaseURL.message}
         </p>
       )}
-      <button type="submit" disabled={!formState.isValid}>save</button>
+      <button type="submit" disabled={!formState.isValid}>
+        <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
+      </button>
     </form>
   );
 };
