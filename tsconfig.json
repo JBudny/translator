@@ -17,6 +17,6 @@
     "jsx": "react-jsx",
     "types": ["chrome"]
   },
-  "include": ["src", "content-script/src", "service-worker/", "api/"],
+  "include": ["src", "content-script/src", "service-worker/", "api/", "styled.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
