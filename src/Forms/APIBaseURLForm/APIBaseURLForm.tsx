@@ -7,6 +7,7 @@ import { Navigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
 import { StyledTypography } from "../../../components";
+import { StyledForm } from '../../components'
 
 export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
   const auth = useAuth();
@@ -35,21 +36,18 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="api-base-url">
-        <StyledTypography $size="medium" $weight="medium" as="span">API URL</StyledTypography>
-      </label>
-      <input type="text" id="api-base-url" placeholder=""
-        {...register("apiBaseURL")}>
-      </input >
-      {errors.apiBaseURL && (
-        <p style={{ color: 'red' }}>
-          {errors.apiBaseURL.message}
-        </p>
-      )}
-      <button type="submit" disabled={!formState.isValid}>
-        <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
-      </button>
-    </form>
+    <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <StyledForm.Content>
+        <StyledForm.Field error={errors.apiBaseURL} htmlFor="api-base-url" label="API URL">
+          <StyledForm.Input type="text" id="api-base-url" placeholder=""
+            {...register("apiBaseURL")} />
+        </StyledForm.Field>
+      </StyledForm.Content>
+      <StyledForm.Footer>
+        <button type="submit" disabled={!formState.isValid}>
+          <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
+        </button>
+      </StyledForm.Footer>
+    </StyledForm>
   );
 };

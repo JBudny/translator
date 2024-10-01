@@ -6,6 +6,7 @@ import { sendMessage } from "../../../service-worker";
 import { LanguagesFormSchema, languagesFormSchema } from "./LanguagesForm.schema";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { StyledTypography } from "../../../components";
+import { StyledForm } from "../../components";
 
 export const LanguagesForm: FC = () => {
   const { watch, handleSubmit, formState, register, setValue } = useForm<LanguagesFormSchema>({
@@ -55,6 +56,8 @@ export const LanguagesForm: FC = () => {
     };
   }, [languageOptions, sourceLanguageWatch]);
 
+  const { errors } = formState;
+
   const onSubmit: SubmitHandler<LanguagesFormSchema> = ({ sourceLanguage, targetLanguage }) => {
     chrome.storage.local.set<ExtensionStorage>({ sourceLanguage, targetLanguage })
       .then(() => {
@@ -70,42 +73,49 @@ export const LanguagesForm: FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} >
-      <label
-        htmlFor="source-language"
-      >
-        <StyledTypography $size="medium" $weight="medium" as="span">Source</StyledTypography>
-      </label>
-      <select id="source-language" {...register("sourceLanguage")}>
-        <option value="">Select option</option>
-        {
-          languageOptions?.result.map((id) => {
-            const { name } = languageOptions.entities.languages[id];
-            return <option value={id}>{name}</option>
-          })
-        }
-      </select>
-      {sourceLanguageWatch !== "" ? <>
-        <label
-          htmlFor="target-language"
-        >
-          <StyledTypography $size="medium" $weight="medium" as="span">Target</StyledTypography>
-        </label>
-        <select id="target-language" {...register("targetLanguage")}>
-          <option value="">Select option</option>
-          {
-            languageOptions?.entities.languages[sourceLanguageWatch].targets.map(target => {
-              const { name } = languageOptions.entities.languages[target];
-              return <option value={target}>{name}</option>
-            })
-          }
-        </select>
-      </> : null}
-      {languageChangeStatus ? 
-      <StyledTypography $size="small" $weight="normal" as="span">{languageChangeStatus}</StyledTypography> : null}
-      <button type="submit" disabled={!formState.isValid}>
-        <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
-      </button>
-    </form>
-  )
-}
+    <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <StyledForm.Content>
+        <StyledForm.Field
+          error={errors.sourceLanguage}
+          htmlFor="source-language"
+          label="Source">
+          <StyledForm.Select
+            id="source-language"
+            {...register("sourceLanguage")}>
+            <option value="">Select option</option>
+            {
+              languageOptions?.result.map((id) => {
+                const { name } = languageOptions.entities.languages[id];
+                return <option value={id}>{name}</option>
+              })
+            }
+          </StyledForm.Select>
+        </StyledForm.Field>
+        {sourceLanguageWatch !== "" ?
+          <StyledForm.Field
+            error={errors.targetLanguage}
+            htmlFor="target-language"
+            label="Target">
+            <StyledForm.Select
+              id="target-language"
+              {...register("targetLanguage")}>
+              <option value="">Select option</option>
+              {
+                languageOptions?.entities.languages[sourceLanguageWatch].targets.map(target => {
+                  const { name } = languageOptions.entities.languages[target];
+                  return <option value={target}>{name}</option>
+                })
+              }
+            </StyledForm.Select>
+          </StyledForm.Field> : null}
+      </StyledForm.Content>
+      <StyledForm.Footer>
+        {languageChangeStatus ?
+          <StyledTypography $size="small" $weight="normal" as="span">{languageChangeStatus}</StyledTypography> : null}
+        <button type="submit" disabled={!formState.isValid}>
+          <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
+        </button>
+      </StyledForm.Footer>
+    </StyledForm>
+  );
+};

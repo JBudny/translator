@@ -7,6 +7,7 @@ import { Navigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
 import { StyledTypography } from "../../../components";
+import { StyledForm } from "../../components";
 
 export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
   const auth = useAuth();
@@ -35,21 +36,18 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="api-key">
-        <StyledTypography $size="medium" $weight="medium" as="span">API key</StyledTypography>
-      </label>
-      <input type="text" id="api-key" placeholder=""
-        {...register("apiKey")}>
-      </input >
-      {errors.apiKey && (
-        <p style={{ color: 'red' }}>
-          {errors.apiKey.message}
-        </p>
-      )}
-      <button type="submit" disabled={!formState.isValid}>
-        <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
-      </button>
-    </form>
+    <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <StyledForm.Content>
+        <StyledForm.Field error={errors.apiKey} htmlFor="api-key" label="API key">
+          <StyledForm.Input type="text" id="api-key" placeholder=""
+            {...register("apiKey")} />
+        </StyledForm.Field>
+      </StyledForm.Content>
+      <StyledForm.Footer>
+        <button type="submit" disabled={!formState.isValid}>
+          <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
+        </button>
+      </StyledForm.Footer>
+    </StyledForm >
   );
 };
