@@ -8,7 +8,7 @@ import {
   sendMessage,
 } from "../../service-worker";
 import { ExtensionStorage } from "../../src/extensionStorage.types";
-import { StyledTypography } from "../../components";
+import { StyledTypography, StyledAppWrapper } from "../../components";
 
 const App: FC = () => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -92,9 +92,10 @@ const App: FC = () => {
         zIndex: '99999'
       }}
     >
+
       {selectedText && !translation ? <TranslateButton onClick={handleTranslationButtonClick} /> : null}
-      {translation ?
-        <div style={{ backgroundColor: '#fff', padding: '5px', border: '2px solid black' }}>
+      {translation ? (
+        <StyledAppWrapper>
           <button onClick={unsetTranslation}>X</button>
           <StyledTypography $size="medium" $weight="normal" as="p">
             {translation.translatedText}
@@ -116,10 +117,11 @@ const App: FC = () => {
               </ol>
             </>
           ) : null}
-        </div>
+        </ StyledAppWrapper>
+      )
         : null}
       {error ? (
-        <div style={{ backgroundColor: '#fff', padding: '5px', border: '2px solid black' }}>
+        <StyledAppWrapper>
           <button onClick={unsetError}>X</button>
           <StyledTypography $size="medium" $weight="medium" as="p" $color="red500">
             Error
@@ -132,9 +134,9 @@ const App: FC = () => {
           <StyledTypography $size="medium" $weight="normal" as="p" $color="red500">
             Message: {error.message}
           </StyledTypography>
-        </div>
+        </StyledAppWrapper>
       ) : null}
-    </div>
+    </div >
   );
 };
 
