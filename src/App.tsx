@@ -1,8 +1,9 @@
-import { FC, PropsWithChildren } from "react";
+import { FC, HTMLAttributes, PropsWithChildren } from "react";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import { APIBaseURLForm, APIKeyForm, LanguagesForm } from "./Forms";
-import { StyledTypography, StyledAppWrapper } from "../components";
+import { StyledTypography, StyledAppWrapper, StyledAppHeader } from "../components";
+import { StyledPopupWrapper } from "./components";
 
 const RequireAPIBaseURL: FC<PropsWithChildren> = ({ children }) => {
   let auth = useAuth();
@@ -32,26 +33,30 @@ const RequireAPIKey: FC<PropsWithChildren> = ({ children }) => {
 const App: FC = () => {
   return (
     <AuthProvider>
-      <StyledAppWrapper>
-        <StyledTypography $size="large" $weight="medium" as="h1">Translate</StyledTypography>
-        <Routes>
-          <Route element={<Outlet />}>
-            <Route path="/" element={
-              <APIBaseURLForm nextRoute="/apikey" />
-            } />
-            <Route path="/apikey" element={
-              <RequireAPIBaseURL>
-                <APIKeyForm nextRoute="/languages" />
-              </RequireAPIBaseURL>
-            } />
-            <Route path="/languages" element={
-              <RequireAPIKey>
-                <LanguagesForm />
-              </RequireAPIKey>
-            } />
-          </Route>
-        </Routes>
-      </StyledAppWrapper>
+      <StyledPopupWrapper>
+        <StyledAppWrapper>
+          <StyledAppHeader>
+            <StyledTypography $size="large" $weight="medium" as="h1">Translate</StyledTypography>
+          </StyledAppHeader>
+          <Routes>
+            <Route element={<Outlet />}>
+              <Route path="/" element={
+                <APIBaseURLForm nextRoute="/apikey" />
+              } />
+              <Route path="/apikey" element={
+                <RequireAPIBaseURL>
+                  <APIKeyForm nextRoute="/languages" />
+                </RequireAPIBaseURL>
+              } />
+              <Route path="/languages" element={
+                <RequireAPIKey>
+                  <LanguagesForm />
+                </RequireAPIKey>
+              } />
+            </Route>
+          </Routes>
+        </StyledAppWrapper>
+      </StyledPopupWrapper>
     </AuthProvider>
   );
 };

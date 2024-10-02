@@ -5,19 +5,17 @@ import { StyledTypography } from '../../../components'
 import { StyledFormElementCSS, StyledTileCSS, StyledTypographyBaseCSS, TileProps } from '../../../components/shared';
 
 const StyledFormBase = styled.form<TileProps>`
-  ${StyledTileCSS}
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.tokens.spacing2};
-  padding: ${({ theme }) => theme.tokens.spacing2};
-  border-radius: ${({ theme }) => theme.tokens.borderRadius2};
+  gap: ${({ theme }) => theme.tokens.spacing3};
+  padding: ${({ theme }) => theme.tokens.spacing3};
   background-color: ${({ theme }) => `rgb(${theme.palette.gray500})`};
 `;
 
 const StyledFormContentBase = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.tokens.spacing2};
+  gap: ${({ theme }) => theme.tokens.spacing3};
 `;
 
 const StyledFormFieldBase = styled.div`
@@ -42,6 +40,11 @@ const StyledSelectBase = styled.select<StyledStyledSelectBaseProps>`
   border-radius: ${({ theme }) => theme.tokens.borderRadius1};
 `;
 
+const StyledFormFooterBase = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const StyledForm: StyledFormProps = ({ children, ...props }) => (
   <StyledFormBase $variant="highlighted" {...props}>
     {children}
@@ -63,11 +66,11 @@ const StyledFormContent: StyledFormProps["Content"] = ({ children, ...props }) =
   </StyledFormContentBase>
 );
 
-const FormFooter: StyledFormProps["Footer"] = ({ children, ...props }) => (
-  <div {...props}>{children}</div>
+const StyledFormFooter: StyledFormProps["Footer"] = ({ children, ...props }) => (
+  <StyledFormFooterBase {...props}>{children}</StyledFormFooterBase>
 );
 
-const FormField: StyledFormProps["Field"] = ({
+const StyledFormField: StyledFormProps["Field"] = ({
   children,
   htmlFor,
   label,
@@ -120,7 +123,7 @@ const FormInput = forwardRef<
 
 StyledForm.Header = StyledFormHeader;
 StyledForm.Content = StyledFormContent;
-StyledForm.Footer = FormFooter;
-StyledForm.Field = FormField;
+StyledForm.Footer = StyledFormFooter;
+StyledForm.Field = StyledFormField;
 StyledForm.Input = FormInput;
 StyledForm.Select = StyledSelect;
