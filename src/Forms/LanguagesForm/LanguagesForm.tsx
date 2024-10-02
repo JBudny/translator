@@ -5,7 +5,7 @@ import { API_ENDPOINTS, NormalizedLanguages } from "../../../api";
 import { sendMessage } from "../../../service-worker";
 import { LanguagesFormSchema, languagesFormSchema } from "./LanguagesForm.schema";
 import { ExtensionStorage } from "../../extensionStorage.types";
-import { StyledTypography } from "../../../components";
+import { StyledButton, StyledTypography } from "../../../components";
 import { StyledForm } from "../../components";
 
 export const LanguagesForm: FC = () => {
@@ -112,9 +112,9 @@ export const LanguagesForm: FC = () => {
       <StyledForm.Footer>
         {languageChangeStatus ?
           <StyledTypography $size="small" $weight="normal" as="span">{languageChangeStatus}</StyledTypography> : null}
-        <button type="submit" disabled={!formState.isValid}>
+        <StyledButton type="submit" disabled={!formState.isValid}>
           <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
-        </button>
+        </StyledButton>
       </StyledForm.Footer>
     </StyledForm>
   );

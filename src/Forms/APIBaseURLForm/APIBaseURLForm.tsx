@@ -6,8 +6,8 @@ import { useAuth } from "../../AuthProvider";
 import { Navigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
-import { StyledTypography } from "../../../components";
-import { StyledForm } from '../../components'
+import { StyledButton, StyledTypography } from "../../../components";
+import { StyledForm } from "../../components";
 
 export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
   const auth = useAuth();
@@ -44,9 +44,9 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
         </StyledForm.Field>
       </StyledForm.Content>
       <StyledForm.Footer>
-        <button type="submit" disabled={!formState.isValid}>
+        <StyledButton type="submit" disabled={!formState.isValid}>
           <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
-        </button>
+        </StyledButton>
       </StyledForm.Footer>
     </StyledForm>
   );

@@ -8,7 +8,7 @@ import {
   sendMessage,
 } from "../../service-worker";
 import { ExtensionStorage } from "../../src/extensionStorage.types";
-import { StyledTypography, StyledAppWrapper } from "../../components";
+import { StyledTypography, StyledAppWrapper, StyledButton } from "../../components";
 
 const App: FC = () => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -89,14 +89,15 @@ const App: FC = () => {
         position: 'fixed',
         left: `calc(${position.x}px - 15px)`,
         top: `calc(${position.y}px - 45px)`,
-        zIndex: '99999'
+        zIndex: '99999',
+        maxWidth: '75ch'
       }}
     >
 
       {selectedText && !translation ? <TranslateButton onClick={handleTranslationButtonClick} /> : null}
       {translation ? (
         <StyledAppWrapper>
-          <button onClick={unsetTranslation}>X</button>
+          <StyledButton onClick={unsetTranslation}>X</StyledButton>
           <StyledTypography $size="medium" $weight="normal" as="p">
             {translation.translatedText}
           </StyledTypography>
@@ -122,7 +123,7 @@ const App: FC = () => {
         : null}
       {error ? (
         <StyledAppWrapper>
-          <button onClick={unsetError}>X</button>
+          <StyledButton onClick={unsetError}>X</StyledButton>
           <StyledTypography $size="medium" $weight="medium" as="p" $color="red500">
             Error
           </StyledTypography>

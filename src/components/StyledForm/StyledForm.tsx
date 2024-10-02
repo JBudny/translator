@@ -11,6 +11,7 @@ const StyledFormBase = styled.form<TileProps>`
   gap: ${({ theme }) => theme.tokens.spacing2};
   padding: ${({ theme }) => theme.tokens.spacing2};
   border-radius: ${({ theme }) => theme.tokens.borderRadius2};
+  background-color: ${({ theme }) => `rgb(${theme.palette.gray500})`};
 `;
 
 const StyledFormContentBase = styled.div`
