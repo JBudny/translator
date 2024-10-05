@@ -3,7 +3,7 @@ import { APIBaseURLFormSchema, apiBaseURLFormSchema } from "./APIBaseURLForm.sch
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useAuth } from "../../AuthProvider";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
 import { StyledButton, StyledTypography } from "../../../components";
@@ -11,6 +11,7 @@ import { StyledForm } from "../../components";
 
 export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
   const auth = useAuth();
+  const navigate = useNavigate();
   const { handleSubmit, formState, register, setValue } = useForm<APIBaseURLFormSchema>({
     resolver: yupResolver(apiBaseURLFormSchema),
     defaultValues: { apiBaseURL: auth?.state.apiBaseURL },
@@ -24,19 +25,17 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
       });
   }, []);
 
-  if (auth && auth.state.apiBaseURL)
-    return <Navigate to={nextRoute} replace />;
-
   const { errors } = formState;
 
   const onSubmit: SubmitHandler<APIBaseURLFormSchema> = ({ apiBaseURL }) => {
     chrome.storage.local.set<ExtensionStorage>({ apiBaseURL })
-      .then(() => setValue("apiBaseURL", apiBaseURL))
+      .then(() => navigate('/apikey'))
       .catch(() => setValue("apiBaseURL", ""));
   };
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <StyledForm.Header $size="large" $weight="normal" as="h2">Set API URL</StyledForm.Header>
       <StyledForm.Content>
         <StyledForm.Field error={errors.apiBaseURL} htmlFor="api-base-url" label="API URL">
           <StyledForm.Input type="text" id="api-base-url" placeholder=""

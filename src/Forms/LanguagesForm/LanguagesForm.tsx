@@ -15,19 +15,8 @@ export const LanguagesForm: FC = () => {
     mode: "all",
   });
   const [languageOptions, setLanguageOptions] = useState<NormalizedLanguages | null>(null);
-  const [languageChangeStatus, setLanguageChangeStatus] = useState<'saved' | 'failed to save' | null>(null);
   const sourceLanguageWatch = watch("sourceLanguage");
   const targetLanguageWatch = watch("targetLanguage");
-
-  useEffect(() => {
-    const timerId = setTimeout(() => {
-      setLanguageChangeStatus(null)
-    }, 1000);
-
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [languageChangeStatus]);
 
   useEffect(() => {
     const getLanguages = async () => {
@@ -63,17 +52,16 @@ export const LanguagesForm: FC = () => {
       .then(() => {
         setValue("sourceLanguage", sourceLanguage);
         setValue("targetLanguage", targetLanguage);
-        setLanguageChangeStatus('saved');
       })
       .catch(() => {
         setValue("sourceLanguage", "");
         setValue("targetLanguage", "");
-        setLanguageChangeStatus('failed to save');
       });
   };
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <StyledForm.Header $size="large" $weight="normal" as="h2">Choose languages</StyledForm.Header>
       <StyledForm.Content>
         <StyledForm.Field
           error={errors.sourceLanguage}
@@ -110,8 +98,6 @@ export const LanguagesForm: FC = () => {
           </StyledForm.Field> : null}
       </StyledForm.Content>
       <StyledForm.Footer>
-        {languageChangeStatus ?
-          <StyledTypography $size="small" $weight="normal" as="span">{languageChangeStatus}</StyledTypography> : null}
         <StyledButton type="submit" disabled={!formState.isValid}>
           <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
         </StyledButton>

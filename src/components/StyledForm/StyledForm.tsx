@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { forwardRef, InputHTMLAttributes, SelectHTMLAttributes } from "react";
 import { StyledFormInputBaseProps, StyledFormProps, StyledStyledSelectBaseProps } from "./StyledForm.types";
 import { StyledTypography } from '../../../components'
-import { StyledFormElementCSS, StyledTileCSS, StyledTypographyBaseCSS, TileProps } from '../../../components/shared';
+import { StyledFormElementCSS, StyledTypographyBaseCSS, TileProps } from '../../../components/shared';
 
 const StyledFormBase = styled.form<TileProps>`
   display: flex;
@@ -15,7 +15,7 @@ const StyledFormBase = styled.form<TileProps>`
 const StyledFormContentBase = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.tokens.spacing3};
+  gap: ${({ theme }) => theme.tokens.spacing2};
 `;
 
 const StyledFormFieldBase = styled.div`
@@ -38,11 +38,12 @@ const StyledSelectBase = styled.select<StyledStyledSelectBaseProps>`
   padding: ${({ theme }) => theme.tokens.spacing2};
   border: none;
   border-radius: ${({ theme }) => theme.tokens.borderRadius1};
+  cursor: pointer;
 `;
 
 const StyledFormFooterBase = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 `;
 
 export const StyledForm: StyledFormProps = ({ children, ...props }) => (
@@ -52,12 +53,15 @@ export const StyledForm: StyledFormProps = ({ children, ...props }) => (
 );
 
 const StyledFormHeader: StyledFormProps["Header"] = ({
-  heading,
+  $size,
+  $weight,
+  as,
+  children,
   ...props
 }) => {
   return (
-    <StyledTypography $size="medium" $weight="medium" as="span" {...props}>{heading}</StyledTypography>
-  )
+    <StyledTypography $size={$size} $weight={$weight} as={as} {...props}>{children}</StyledTypography>
+  );
 };
 
 const StyledFormContent: StyledFormProps["Content"] = ({ children, ...props }) => (
@@ -79,7 +83,7 @@ const StyledFormField: StyledFormProps["Field"] = ({
 }) => (
   <StyledFormFieldBase {...props}>
     <label htmlFor={htmlFor}>
-      <StyledTypography $size="medium" $weight="medium" as="span" $color="gray100">
+      <StyledTypography $size="medium" $weight="normal" as="span" $color="gray100">
         {label}
       </StyledTypography>
     </label>
