@@ -3,4 +3,5 @@ export interface ExtensionStorage {
   apiBaseURL?: string
   sourceLanguage?: string
   targetLanguage?: string
+  keyRequired?: boolean
 };

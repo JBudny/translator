@@ -29,7 +29,7 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
 
   const onSubmit: SubmitHandler<ApiKeyFormSchema> = ({ apiKey }) => {
     chrome.storage.local.set<ExtensionStorage>({ apiKey })
-      .then(() => navigate('/languages'))
+      .then(() => navigate(nextRoute))
       .catch(() => setValue("apiKey", ""));
   };
 

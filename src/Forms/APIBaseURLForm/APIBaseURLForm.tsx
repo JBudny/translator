@@ -29,7 +29,7 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
 
   const onSubmit: SubmitHandler<APIBaseURLFormSchema> = ({ apiBaseURL }) => {
     chrome.storage.local.set<ExtensionStorage>({ apiBaseURL })
-      .then(() => navigate('/apikey'))
+      .then(() => navigate(nextRoute))
       .catch(() => setValue("apiBaseURL", ""));
   };
 

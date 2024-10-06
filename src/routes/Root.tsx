@@ -2,6 +2,10 @@ import { FC, HTMLAttributes, useEffect } from "react";
 import { useAuth } from "../AuthProvider";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Navigation logic here is used to redirect to the first empty step of the
+ * multi step form after it was closed and opened again.
+ */
 export const Root: FC<HTMLAttributes<HTMLDivElement>> = ({ children }) => {
   const auth = useAuth();
   const navigation = useNavigate();

@@ -8,3 +8,4 @@ export {
 export { api, currentApiKey, currentBaseUrl } from "./api";
 export { API_ENDPOINTS, API_TIMEOUT } from "./constants";
 export { ApiError } from "./errors";
+export { type SettingsResponse, settings } from './settings';

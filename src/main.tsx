@@ -5,14 +5,17 @@ import App from "./App";
 import { ThemeProvider } from "styled-components";
 import { schema } from "../theme";
 import { AuthProvider } from "./AuthProvider";
+import { ServerSettingsProvider } from "./ServerSettingsProvider";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider theme={schema.dark}>
       <AuthProvider>
-        <MemoryRouter>
-          <App />
-        </MemoryRouter>
+        <ServerSettingsProvider>
+          <MemoryRouter>
+            <App />
+          </MemoryRouter>
+        </ServerSettingsProvider>
       </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>

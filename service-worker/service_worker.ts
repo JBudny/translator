@@ -1,5 +1,5 @@
-import { ApiError, languages, translate, TranslateResponse } from "../api";
-import { Actions, isLanguagesAction, isTranslateAction, MessageResponse, TranslateAction } from "./service_worker.types";
+import { ApiError, languages, settings, SettingsResponse, translate, TranslateResponse } from "../api";
+import { Actions, isGetSettingsAction, isLanguagesAction, isTranslateAction, MessageResponse, TranslateAction } from "./service_worker.types";
 import { NormalizedLanguages } from "../api";
 
 const handleTranslate = async (
@@ -52,15 +52,32 @@ const handleLanguage = async (sendResponse: (response: MessageResponse<Normalize
       }
     });
   }
-}
+};
 
-chrome.runtime.onMessage.addListener((action: Actions, _sender, sendResponse: (response?: MessageResponse<NormalizedLanguages | TranslateResponse>) => void) => {
+const handleGetSettings = async (sendResponse: (response: MessageResponse<SettingsResponse>) => void) => {
+  try {
+    const response = await settings();
+    sendResponse({ success: true, data: response });
+  } catch (error) {
+    sendResponse({
+      success: false,
+      error: {
+        message: "Unknown error.",
+      }
+    });
+  }
+};
+
+chrome.runtime.onMessage.addListener((action: Actions, _sender, sendResponse: (response?: MessageResponse<NormalizedLanguages | TranslateResponse | SettingsResponse>) => void) => {
   const handleMessage = async () => {
     if (isTranslateAction(action)) {
       handleTranslate(action, sendResponse);
     };
     if (isLanguagesAction(action)) {
       handleLanguage(sendResponse);
+    };
+    if (isGetSettingsAction(action)) {
+      handleGetSettings(sendResponse);
     };
   };
 
