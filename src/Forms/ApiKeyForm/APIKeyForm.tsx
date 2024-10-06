@@ -2,7 +2,7 @@ import { FC, useEffect } from "react"
 import { ApiKeyFormSchema, apiKeyFormSchema } from "./ApiKeyForm.schema";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useAuth } from "../../AuthProvider";
+import { useUserSettings } from "../../UserSettingsProvider";
 import { useNavigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
@@ -10,7 +10,7 @@ import { StyledButton, StyledTypography } from "../../../components";
 import { StyledForm } from "../../components";
 
 export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
-  const auth = useAuth();
+  const auth = useUserSettings();
   const navigate = useNavigate();
   const { handleSubmit, formState, register, setValue } = useForm<ApiKeyFormSchema>({
     resolver: yupResolver(apiKeyFormSchema),

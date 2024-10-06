@@ -4,19 +4,19 @@ import { MemoryRouter } from "react-router-dom";
 import App from "./App";
 import { ThemeProvider } from "styled-components";
 import { schema } from "../theme";
-import { AuthProvider } from "./AuthProvider";
+import { UserSettingsProvider } from "./UserSettingsProvider";
 import { ServerSettingsProvider } from "./ServerSettingsProvider";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider theme={schema.dark}>
-      <AuthProvider>
+      <UserSettingsProvider>
         <ServerSettingsProvider>
           <MemoryRouter>
             <App />
           </MemoryRouter>
         </ServerSettingsProvider>
-      </AuthProvider>
+      </UserSettingsProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

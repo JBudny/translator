@@ -1,5 +1,5 @@
 import { FC, HTMLAttributes, useEffect } from "react";
-import { useAuth } from "../AuthProvider";
+import { useUserSettings } from "../UserSettingsProvider";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
  * multi step form after it was closed and opened again.
  */
 export const Root: FC<HTMLAttributes<HTMLDivElement>> = ({ children }) => {
-  const auth = useAuth();
+  const auth = useUserSettings();
   const navigation = useNavigate();
 
   if (!auth) return null;

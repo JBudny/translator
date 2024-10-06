@@ -9,7 +9,7 @@ interface Language {
   };
 };
 
-export interface SettingsResponse {
+export interface ServerSettingsResponse {
   apiKeys: boolean;
   charLimit: number;
   filesTranslation: true;

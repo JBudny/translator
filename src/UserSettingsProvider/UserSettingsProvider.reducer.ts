@@ -1,6 +1,8 @@
-import { Action, AuthProviderState } from "./AuthProvider.types";
+import { UserSettingsProviderAction, UserSettingsProviderState } from "./UserSettingsProvider.types";
 
-export const authReducer = (state: AuthProviderState, { type, payload }: Action): AuthProviderState => {
+export const userSettingsReducer = (
+  state: UserSettingsProviderState,
+  { type, payload }: UserSettingsProviderAction): UserSettingsProviderState => {
   switch (type) {
     case "apiBaseUrlSet":
       return ({ ...state, apiBaseURL: payload.apiBaseURL });

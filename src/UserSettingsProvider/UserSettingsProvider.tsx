@@ -1,34 +1,33 @@
 import { createContext, FC, PropsWithChildren, useEffect, useReducer } from "react";
-import { Action, AuthProviderState, Dispatch } from "./AuthProvider.types";
-import { authReducer } from "./AuthProvider.reducer";
+import { UserSettingsProviderAction, UserSettingsProviderState, UserSettingsProviderDispatch } from "./UserSettingsProvider.types";
+import { userSettingsReducer } from "./UserSettingsProvider.reducer";
 import { ExtensionStorage } from "../extensionStorage.types";
 import { sendMessage } from "../../service-worker";
-import { API_ENDPOINTS, SettingsResponse } from "../../api";
-import { useServerSettings } from "../ServerSettingsProvider";
+import { API_ENDPOINTS, ServerSettingsResponse } from "../../api";
 
-export const AuthContext = createContext<
-  { state: AuthProviderState; dispatch: Dispatch } | null
->(null);
+export const UserSettingsContext = createContext<{
+  state: UserSettingsProviderState;
+  dispatch: UserSettingsProviderDispatch
+} | null>(null);
 
-export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [state, dispatch] = useReducer<typeof authReducer>(authReducer,
+export const UserSettingsProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [state, dispatch] = useReducer<typeof userSettingsReducer>(userSettingsReducer,
     { apiBaseURL: "", apiKey: "" }
   );
-  const serverSettings = useServerSettings()
 
   useEffect(() => {
-    const getAuth = () => {
+    const getUserSettings = () => {
       chrome.storage.local.get<ExtensionStorage>(
         ["apiBaseURL", "apiKey"], ({ apiBaseURL, apiKey }) => {
           if (apiBaseURL) {
-            const action: Action = {
+            const action: UserSettingsProviderAction = {
               type: "apiBaseUrlSet",
               payload: { apiBaseURL }
             };
             dispatch(action);
           };
           if (apiKey) {
-            const action: Action = {
+            const action: UserSettingsProviderAction = {
               type: "apiKeySet",
               payload: { apiKey }
             };
@@ -36,19 +35,19 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
           };
         });
     };
-    // Get auth data initially
-    getAuth();
-    // Set auth data listener for auth data change events
-    chrome.storage.onChanged.addListener(getAuth);
+    // Get user settings data initially
+    getUserSettings();
+    // Set listener for user settings data change events
+    chrome.storage.onChanged.addListener(getUserSettings);
 
     return () => {
-      chrome.storage.onChanged.removeListener(getAuth);
+      chrome.storage.onChanged.removeListener(getUserSettings);
     };
   }, []);
 
   useEffect(() => {
-    const fetchSettings = () => {
-      sendMessage<{}, SettingsResponse>({ type: API_ENDPOINTS.GET_SETTINGS })
+    const fetchServerSettings = () => {
+      sendMessage<{}, ServerSettingsResponse>({ type: API_ENDPOINTS.GET_SERVER_SETTINGS })
         .then((response) => {
           if (!response.success) {
             chrome.storage.local.remove<ExtensionStorage>("keyRequired");
@@ -63,14 +62,14 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
         });
     };
 
-    if (state.apiBaseURL) fetchSettings();
+    if (state.apiBaseURL) fetchServerSettings();
   }, [state.apiBaseURL]);
 
   const value = { state, dispatch }
 
   return (
-    <AuthContext.Provider value={value}>
+    <UserSettingsContext.Provider value={value}>
       {children}
-    </AuthContext.Provider>
+    </UserSettingsContext.Provider>
   )
 }
