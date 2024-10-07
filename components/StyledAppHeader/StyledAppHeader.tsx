@@ -7,7 +7,7 @@ const StyledAppHeaderBase = styled.div`
   padding: ${({ theme }) => theme.tokens.spacing1};
   align-items: center;
   justify-content: center;
-  background-color: ${({ theme }) => `rgb(${theme.palette.teal500})`};
+  background-color: ${({ theme }) => `rgb(${theme.palette.gray500})`};
 `;
 
 export const StyledAppHeader: FC<HTMLAttributes<HTMLDivElement>> = ({ children, ...props }) => {

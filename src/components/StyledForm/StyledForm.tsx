@@ -1,15 +1,15 @@
 import styled from "styled-components";
-import { forwardRef, InputHTMLAttributes, SelectHTMLAttributes } from "react";
+import { FC, forwardRef, InputHTMLAttributes, OptionHTMLAttributes, SelectHTMLAttributes } from "react";
 import { StyledFormInputBaseProps, StyledFormProps, StyledStyledSelectBaseProps } from "./StyledForm.types";
 import { StyledTypography } from '../../../components'
-import { StyledFormElementCSS, StyledTypographyBaseCSS, TileProps } from '../../../components/shared';
+import { StyledTypographyBaseCSS } from '../../../components/shared';
 
-const StyledFormBase = styled.form<TileProps>`
+const StyledFormBase = styled.form`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.tokens.spacing3};
   padding: ${({ theme }) => theme.tokens.spacing3};
-  background-color: ${({ theme }) => `rgb(${theme.palette.gray500})`};
+  background-color: ${({ theme }) => `rgb(${theme.palette.gray700})`};
 `;
 
 const StyledFormContentBase = styled.div`
@@ -22,22 +22,29 @@ const StyledFormFieldBase = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.tokens.spacing2};
+  padding: ${({ theme }) => theme.tokens.spacing2};
+  border-radius: ${({ theme }) => theme.tokens.borderRadius2};
+  background-color: ${({ theme }) => `rgb(${theme.palette.gray500})`} ;
 `;
 
 const StyledFormInputBase = styled.input<StyledFormInputBaseProps>`
-  ${StyledFormElementCSS};
   ${StyledTypographyBaseCSS};
   padding: ${({ theme }) => theme.tokens.spacing2};
+  background-color: ${({ theme }) => theme.palette.transparent};
   border: none;
-  border-radius: ${({ theme }) => theme.tokens.borderRadius1};
+  border-bottom: ${({ theme }) => `1px solid rgb(${theme.palette.gray100})`};
+
+  &::placeholder {
+    color: ${({ theme }) => `rgb(${theme.palette.gray300})`}; 
+  };
 `;
 
 const StyledSelectBase = styled.select<StyledStyledSelectBaseProps>`
-  ${StyledFormElementCSS};
   ${StyledTypographyBaseCSS};
   padding: ${({ theme }) => theme.tokens.spacing2};
+  background-color: ${({ theme }) => theme.palette.transparent};
   border: none;
-  border-radius: ${({ theme }) => theme.tokens.borderRadius1};
+  border-bottom: ${({ theme }) => `1px solid rgb(${theme.palette.gray100})`};
   cursor: pointer;
 `;
 
@@ -46,8 +53,12 @@ const StyledFormFooterBase = styled.div`
   justify-content: flex-end;
 `;
 
+const StyledOptionBase = styled.option`
+    color: ${({ theme }) => `rgb(${theme.palette.gray700})`};
+`;
+
 export const StyledForm: StyledFormProps = ({ children, ...props }) => (
-  <StyledFormBase $variant="highlighted" {...props}>
+  <StyledFormBase {...props}>
     {children}
   </StyledFormBase>
 );
@@ -104,12 +115,15 @@ const StyledSelect = forwardRef<
     $size="small"
     $weight="normal"
     ref={ref}
-    $variant="highlighted"
     {...props}
   >
     {children}
   </StyledSelectBase>
 ));
+
+const StyledOption: FC<OptionHTMLAttributes<HTMLOptionElement>> = ({ children, ...props }) => {
+  return (<StyledOptionBase {...props}>{children}</StyledOptionBase>);
+};
 
 const FormInput = forwardRef<
   HTMLInputElement,
@@ -120,7 +134,6 @@ const FormInput = forwardRef<
     $weight="normal"
     ref={ref}
     type={type}
-    $variant="highlighted"
     {...props}
   />
 ));
@@ -131,3 +144,4 @@ StyledForm.Footer = StyledFormFooter;
 StyledForm.Field = StyledFormField;
 StyledForm.Input = FormInput;
 StyledForm.Select = StyledSelect;
+StyledForm.Option = StyledOption;

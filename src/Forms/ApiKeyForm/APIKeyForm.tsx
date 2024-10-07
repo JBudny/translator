@@ -43,7 +43,7 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
         </StyledForm.Field>
       </StyledForm.Content>
       <StyledForm.Footer>
-        <StyledButton type="submit" disabled={!formState.isValid}>
+        <StyledButton $appearance="transparent" type="submit" disabled={!formState.isValid}>
           <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
         </StyledButton>
       </StyledForm.Footer>

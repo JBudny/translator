@@ -70,11 +70,11 @@ export const LanguagesForm: FC = () => {
           <StyledForm.Select
             id="source-language"
             {...register("sourceLanguage")}>
-            <option value="">Select option</option>
+            <StyledForm.Option value="">Select option</StyledForm.Option>
             {
               languageOptions?.result.map((id) => {
                 const { name } = languageOptions.entities.languages[id];
-                return <option value={id}>{name}</option>
+                return <StyledForm.Option value={id}>{name}</StyledForm.Option>
               })
             }
           </StyledForm.Select>
@@ -87,18 +87,18 @@ export const LanguagesForm: FC = () => {
             <StyledForm.Select
               id="target-language"
               {...register("targetLanguage")}>
-              <option value="">Select option</option>
+              <StyledForm.Option value="">Select option</StyledForm.Option>
               {
                 languageOptions?.entities.languages[sourceLanguageWatch].targets.map(target => {
                   const { name } = languageOptions.entities.languages[target];
-                  return <option value={target}>{name}</option>
+                  return <StyledForm.Option value={target}>{name}</StyledForm.Option>
                 })
               }
             </StyledForm.Select>
           </StyledForm.Field> : null}
       </StyledForm.Content>
       <StyledForm.Footer>
-        <StyledButton type="submit" disabled={!formState.isValid}>
+        <StyledButton $appearance="transparent" type="submit" disabled={!formState.isValid}>
           <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
         </StyledButton>
       </StyledForm.Footer>

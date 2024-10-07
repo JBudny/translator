@@ -9,6 +9,7 @@ export interface Palette {
   red500: string,
   teal500: string,
   yellow500: string,
+  transparent: string,
 };
 
 export interface Font {

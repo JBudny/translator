@@ -15,14 +15,15 @@ export const schema: Schema = {
     },
     name: 'dark',
     palette: {
-      gray100: '214, 216, 219',
-      gray300: '073, 078, 084',
-      gray500: '031, 034, 038',
-      gray700: '015, 016, 019',
-      green500: '122, 199, 079',
-      red500: '242, 067, 051',
-      teal500: '035, 150, 127',
-      yellow500: '234, 144, 016',
+      gray100: '255, 255, 255',
+      gray300: '182, 182, 182',
+      gray500: '040, 043, 047',
+      gray700: '031, 034, 038',
+      green500: '128, 201, 084',
+      red500: '252, 156, 156',
+      teal500: '047, 204, 172',
+      yellow500: '242, 167, 060',
+      transparent: 'transparent',
     },
     tokens: {
       borderRadius1: '5px',
@@ -35,5 +36,5 @@ export const schema: Schema = {
       spacing3: '15px',
       touchableSize: '40px',
     },
-  }
+  },
 };
