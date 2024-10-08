@@ -1,4 +1,4 @@
-import { ApiKeyFormSchema, APIBaseURLFormSchema } from "../Forms";
+import { ApiKeyFormSchema, APIBaseURLFormSchema } from "../forms";
 
 export interface UserSettingsProviderState extends APIBaseURLFormSchema, ApiKeyFormSchema { };
 

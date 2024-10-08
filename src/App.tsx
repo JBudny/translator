@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
-import { APIBaseURLForm, APIKeyForm, LanguagesForm } from "./Forms";
+import { APIBaseURLForm, APIKeyForm, LanguagesForm } from "./forms";
 import { StyledAppWrapper, StyledAppHeader } from "../components";
 import { StyledAppHeading, StyledBackButton, StyledPopupWrapper } from "./components";
 import { KeyRequired, Root } from "./routes"
