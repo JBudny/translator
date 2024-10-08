@@ -38,7 +38,7 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
       <StyledForm.Header $size="large" $weight="normal" as="h2">Set API URL</StyledForm.Header>
       <StyledForm.Content>
         <StyledForm.Field error={errors.apiBaseURL} htmlFor="api-base-url" label="API URL">
-          <StyledForm.Input type="text" id="api-base-url" placeholder="e.g. http://127.0.0.1:5000"
+          <StyledForm.Input autoFocus id="api-base-url" placeholder="e.g. http://127.0.0.1:5000" type="text"
             {...register("apiBaseURL")} />
         </StyledForm.Field>
       </StyledForm.Content>

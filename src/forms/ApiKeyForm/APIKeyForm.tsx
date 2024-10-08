@@ -38,7 +38,7 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
       <StyledForm.Header $size="large" $weight="normal" as="h2">Set API key</StyledForm.Header>
       <StyledForm.Content>
         <StyledForm.Field error={errors.apiKey} htmlFor="api-key" label="API key">
-          <StyledForm.Input type="text" id="api-key" placeholder=""
+          <StyledForm.Input autoFocus id="api-key" placeholder="" type="text"
             {...register("apiKey")} />
         </StyledForm.Field>
       </StyledForm.Content>

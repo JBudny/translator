@@ -68,6 +68,7 @@ export const LanguagesForm: FC = () => {
           htmlFor="source-language"
           label="Source">
           <StyledForm.Select
+            autoFocus
             id="source-language"
             {...register("sourceLanguage")}>
             <StyledForm.Option value="">Select option</StyledForm.Option>
