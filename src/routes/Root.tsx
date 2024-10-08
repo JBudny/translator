@@ -1,6 +1,6 @@
 import { FC, HTMLAttributes, useEffect } from "react";
-import { useUserSettings } from "../UserSettingsProvider";
 import { useNavigate } from "react-router-dom";
+import { useUserSettings } from "../contexts";
 
 /**
  * Navigation logic here is used to redirect to the first empty step of the

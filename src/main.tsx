@@ -4,8 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import App from "./App";
 import { ThemeProvider } from "styled-components";
 import { schema } from "../theme";
-import { UserSettingsProvider } from "./UserSettingsProvider";
-import { ServerSettingsProvider } from "./ServerSettingsProvider";
+import { ServerSettingsProvider, UserSettingsProvider } from "./contexts";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

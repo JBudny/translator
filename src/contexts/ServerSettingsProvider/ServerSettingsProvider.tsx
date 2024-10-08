@@ -1,7 +1,7 @@
 import { createContext, FC, PropsWithChildren, useEffect, useReducer } from "react";
 import { ServerSettingsProviderAction, ServerSettingsProviderDispatch, ServerSettingsProviderState } from "./ServerSettingsProvider.types";
 import { serverSettingsReducer } from "./ServerSettingsProvider.reducer";
-import { ExtensionStorage } from "../extensionStorage.types";
+import { ExtensionStorage } from "../../extensionStorage.types";
 
 export const ServerSettingsContext = createContext<{
   state: ServerSettingsProviderState;

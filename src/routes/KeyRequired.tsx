@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren } from "react";
-import { useServerSettings } from "../ServerSettingsProvider";
 import { Navigate } from "react-router-dom";
+import { useServerSettings } from "../contexts";
 
 export const KeyRequired: FC<PropsWithChildren> = ({ children }) => {
   const serverSettings = useServerSettings();

@@ -1,9 +1,9 @@
 import { createContext, FC, PropsWithChildren, useEffect, useReducer } from "react";
 import { UserSettingsProviderAction, UserSettingsProviderState, UserSettingsProviderDispatch } from "./UserSettingsProvider.types";
 import { userSettingsReducer } from "./UserSettingsProvider.reducer";
-import { ExtensionStorage } from "../extensionStorage.types";
-import { sendMessage } from "../../service-worker";
-import { API_ENDPOINTS, ServerSettingsResponse } from "../../api";
+import { ExtensionStorage } from "../../extensionStorage.types";
+import { sendMessage } from "../../../service-worker";
+import { API_ENDPOINTS, ServerSettingsResponse } from "../../../api";
 
 export const UserSettingsContext = createContext<{
   state: UserSettingsProviderState;
