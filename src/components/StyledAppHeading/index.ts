@@ -1,1 +1,0 @@
-export { StyledAppHeading } from './StyledAppHeading';

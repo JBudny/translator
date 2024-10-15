@@ -14,8 +14,7 @@ import {
   StyledBox,
   DisplayMessageError,
   StyledDistribute,
-  StyledJustify,
-  StyledAppWrapper
+  StyledJustify
 } from "../../components";
 
 const App: FC = () => {
@@ -100,7 +99,7 @@ const App: FC = () => {
   };
 
   return (
-    <div
+    <StyledBox
       style={{
         position: 'fixed',
         left: `calc(${position.x}px - 15px)`,
@@ -109,31 +108,41 @@ const App: FC = () => {
         maxWidth: '75ch'
       }}
     >
-      {selectedText && !translation ? <TranslateButton onClick={handleTranslationButtonClick} /> : null}
+      {selectedText && !translation && !error ? <TranslateButton onClick={handleTranslationButtonClick} /> : null}
       {translation ? (
-        <StyledAppWrapper>
-          <StyledButton onClick={unsetTranslation}>X</StyledButton>
-          <StyledTypography $size="medium" $weight="normal" as="p">
-            {translation.translatedText}
-          </StyledTypography>
-          {translation.alternatives?.length ? (
-            <>
-              <StyledTypography $size="medium" $weight="normal" as="p">
-                Alternative translations
-              </StyledTypography>
-              <ol>
-                {
-                  translation.alternatives.map((alternative, index) =>
-                    <li key={index}>
-                      <StyledTypography $size="small" $weight="normal" as="span">
-                        {alternative}
-                      </StyledTypography>
-                    </li>)
-                }
-              </ol>
-            </>
-          ) : null}
-        </ StyledAppWrapper>
+        <StyledBox background="gray700" padding="spacing3">
+          <StyledDistribute gap="spacing3">
+            <StyledJustify justify="start">
+              <StyledButton onClick={unsetTranslation}>
+                <StyledTypography $size="medium" $weight="medium" as="span">
+                  X
+                </StyledTypography>
+              </StyledButton>
+            </StyledJustify>
+            <StyledTypography $size="medium" $weight="normal" as="p">
+              {translation.translatedText}
+            </StyledTypography>
+            {translation.alternatives?.length ? (
+              <StyledBox padding="spacing2" background="gray500" rounding="borderRadius2">
+                <StyledDistribute gap="spacing2">
+                  <StyledTypography $size="medium" $weight="normal" as="p">
+                    Alternative translations
+                  </StyledTypography>
+                  <ol>
+                    {
+                      translation.alternatives.map((alternative, index) =>
+                        <li key={index}>
+                          <StyledTypography $size="small" $weight="normal" as="span">
+                            {alternative}
+                          </StyledTypography>
+                        </li>)
+                    }
+                  </ol>
+                </StyledDistribute>
+              </StyledBox>
+            ) : null}
+          </StyledDistribute>
+        </ StyledBox>
       )
         : null}
       {error ? (
@@ -150,7 +159,7 @@ const App: FC = () => {
           </StyledDistribute>
         </StyledBox>
       ) : null}
-    </div >
+    </StyledBox >
   );
 };
 

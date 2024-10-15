@@ -1,1 +1,0 @@
-export { StyledAppWrapper } from './StyledAppWrapper';

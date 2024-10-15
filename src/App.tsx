@@ -1,38 +1,42 @@
 import { FC } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import { APIBaseURLForm, APIKeyForm, LanguagesForm } from "./forms";
-import { StyledAppWrapper, StyledAppHeader } from "../components";
-import { StyledAppHeading, StyledBackButton, StyledPopupWrapper } from "./components";
+import { StyledAppHeader, StyledBox, StyledTypography } from "../components";
+import { StyledBackButton, StyledPopupWrapper } from "./components";
 import { KeyRequired, Root } from "./routes"
 
 const App: FC = () => {
   return (
     <StyledPopupWrapper>
-      <StyledAppWrapper>
-        <Routes>
-          <Route element={
-            <Root>
-              <StyledAppHeader>
-                <StyledBackButton />
-                <StyledAppHeading>Translator</StyledAppHeading>
-              </StyledAppHeader>
+      <Routes>
+        <Route element={
+          <Root>
+            <StyledAppHeader>
+              <StyledBackButton />
+              <StyledBox padding="spacing2">
+                <StyledTypography $size="medium" $weight="medium" as="h1">
+                  Translator
+                </StyledTypography>
+              </StyledBox>
+            </StyledAppHeader>
+            <StyledBox background="gray700" padding="spacing3">
               <Outlet />
-            </Root>
-          }>
-            <Route path="/" element={
-              <APIBaseURLForm nextRoute="/apikey" />
-            } />
-            <Route path="/apikey" element={
-              <KeyRequired>
-                <APIKeyForm nextRoute="/languages" />
-              </KeyRequired>
-            } />
-            <Route path="/languages" element={
-              <LanguagesForm />
-            } />
-          </Route>
-        </Routes>
-      </StyledAppWrapper>
+            </StyledBox>
+          </Root>
+        }>
+          <Route path="/" element={
+            <APIBaseURLForm nextRoute="/apikey" />
+          } />
+          <Route path="/apikey" element={
+            <KeyRequired>
+              <APIKeyForm nextRoute="/languages" />
+            </KeyRequired>
+          } />
+          <Route path="/languages" element={
+            <LanguagesForm />
+          } />
+        </Route>
+      </Routes>
     </StyledPopupWrapper>
   );
 };
