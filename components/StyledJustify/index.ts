@@ -1,0 +1,1 @@
+export { StyledJustify } from './StyledJustify';

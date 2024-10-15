@@ -1,13 +1,17 @@
-import { FC, FormHTMLAttributes, HTMLAttributes, InputHTMLAttributes, OptionHTMLAttributes, SelectHTMLAttributes } from "react";
+import {
+  FC,
+  FormHTMLAttributes,
+  HTMLAttributes,
+  InputHTMLAttributes,
+  OptionHTMLAttributes,
+  SelectHTMLAttributes
+} from "react";
 import { FieldError } from "react-hook-form";
 import { StyledTypographyBaseProps } from "../../../components/shared";
-import { StyledTypographyProps } from "../../../components";
+import { StyledDistributeProps } from "../../../components";
 
 export interface StyledFormProps
-  extends FC<FormHTMLAttributes<HTMLFormElement>> {
-  Header: FC<HTMLAttributes<HTMLDivElement> & StyledTypographyProps>;
-  Content: FC<HTMLAttributes<HTMLDivElement>>;
-  Footer: FC<HTMLAttributes<HTMLDivElement>>;
+  extends FC<FormHTMLAttributes<HTMLFormElement>>, StyledDistributeProps {
   Field: FC<
     HTMLAttributes<HTMLDivElement> & {
       htmlFor: string

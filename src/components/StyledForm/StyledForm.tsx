@@ -1,31 +1,23 @@
 import styled from "styled-components";
-import { FC, forwardRef, InputHTMLAttributes, OptionHTMLAttributes, SelectHTMLAttributes } from "react";
-import { StyledFormInputBaseProps, StyledFormProps, StyledStyledSelectBaseProps } from "./StyledForm.types";
-import { StyledTypography } from '../../../components'
+import {
+  FC,
+  forwardRef,
+  InputHTMLAttributes,
+  OptionHTMLAttributes,
+  SelectHTMLAttributes
+} from "react";
+import {
+  StyledFormInputBaseProps,
+  StyledFormProps,
+  StyledStyledSelectBaseProps
+} from "./StyledForm.types";
+import {
+  StyledBox,
+  StyledDistribute,
+  StyledDistributeBase,
+  StyledTypography
+} from '../../../components'
 import { StyledTypographyBaseCSS } from '../../../components/shared';
-
-const StyledFormBase = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.tokens.spacing3};
-  padding: ${({ theme }) => theme.tokens.spacing3};
-  background-color: ${({ theme }) => `rgb(${theme.palette.gray700})`};
-`;
-
-const StyledFormContentBase = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.tokens.spacing2};
-`;
-
-const StyledFormFieldBase = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.tokens.spacing2};
-  padding: ${({ theme }) => theme.tokens.spacing2};
-  border-radius: ${({ theme }) => theme.tokens.borderRadius2};
-  background-color: ${({ theme }) => `rgb(${theme.palette.gray500})`} ;
-`;
 
 const StyledFormInputBase = styled.input<StyledFormInputBaseProps>`
   ${StyledTypographyBaseCSS};
@@ -48,42 +40,18 @@ const StyledSelectBase = styled.select<StyledStyledSelectBaseProps>`
   cursor: pointer;
 `;
 
-const StyledFormFooterBase = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
 const StyledOptionBase = styled.option`
-    color: ${({ theme }) => `rgb(${theme.palette.gray700})`};
+  color: ${({ theme }) => `rgb(${theme.palette.gray700})`};
 `;
 
-export const StyledForm: StyledFormProps = ({ children, ...props }) => (
-  <StyledFormBase {...props}>
-    {children}
-  </StyledFormBase>
-);
+export const StyledForm: StyledFormProps = ({ children, ...props }) => {
 
-const StyledFormHeader: StyledFormProps["Header"] = ({
-  $size,
-  $weight,
-  as,
-  children,
-  ...props
-}) => {
   return (
-    <StyledTypography $size={$size} $weight={$weight} as={as} {...props}>{children}</StyledTypography>
+    <StyledDistributeBase as='form' $direction="column" $gap="spacing3" {...props}>
+      {children}
+    </StyledDistributeBase>
   );
 };
-
-const StyledFormContent: StyledFormProps["Content"] = ({ children, ...props }) => (
-  <StyledFormContentBase {...props}>
-    {children}
-  </StyledFormContentBase>
-);
-
-const StyledFormFooter: StyledFormProps["Footer"] = ({ children, ...props }) => (
-  <StyledFormFooterBase {...props}>{children}</StyledFormFooterBase>
-);
 
 const StyledFormField: StyledFormProps["Field"] = ({
   children,
@@ -92,19 +60,21 @@ const StyledFormField: StyledFormProps["Field"] = ({
   error,
   ...props
 }) => (
-  <StyledFormFieldBase {...props}>
-    <label htmlFor={htmlFor}>
-      <StyledTypography $size="medium" $weight="normal" as="span" $color="gray100">
-        {label}
-      </StyledTypography>
-    </label>
-    {children}
-    {error?.message && (
-      <StyledTypography $size="medium" $weight="normal" as="span" $color="red500">
-        {error.message}
-      </StyledTypography>
-    )}
-  </StyledFormFieldBase>
+  <StyledBox background="gray500" padding="spacing2" rounding="borderRadius2" {...props}>
+    <StyledDistribute gap="spacing2">
+      <label htmlFor={htmlFor}>
+        <StyledTypography $size="medium" $weight="normal" as="span" $color="gray100">
+          {label}
+        </StyledTypography>
+      </label>
+      {children}
+      {error?.message && (
+        <StyledTypography $size="medium" $weight="normal" as="span" $color="red500">
+          {error.message}
+        </StyledTypography>
+      )}
+    </StyledDistribute>
+  </StyledBox>
 );
 
 const StyledSelect = forwardRef<
@@ -138,9 +108,6 @@ const FormInput = forwardRef<
   />
 ));
 
-StyledForm.Header = StyledFormHeader;
-StyledForm.Content = StyledFormContent;
-StyledForm.Footer = StyledFormFooter;
 StyledForm.Field = StyledFormField;
 StyledForm.Input = FormInput;
 StyledForm.Select = StyledSelect;

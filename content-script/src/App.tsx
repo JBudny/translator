@@ -8,7 +8,15 @@ import {
   sendMessage,
 } from "../../service-worker";
 import { ExtensionStorage } from "../../src/extensionStorage.types";
-import { StyledTypography, StyledAppWrapper, StyledButton } from "../../components";
+import {
+  StyledTypography,
+  StyledButton,
+  StyledBox,
+  DisplayMessageError,
+  StyledDistribute,
+  StyledJustify,
+  StyledAppWrapper
+} from "../../components";
 
 const App: FC = () => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -16,6 +24,30 @@ const App: FC = () => {
   const [translation, setTranslation] = useState<TranslateResponse | null>(null);
   const [error, setError] = useState<MessageErrorResponse['error'] | null>(null);
   const [languages, setLanguages] = useState<{ source: string, target: string }>({ source: "", target: "" });
+
+  const getTranslation = async () => {
+    if (!selectedText) return;
+    const { source, target } = languages;
+    const translateAction = {
+      type: API_ENDPOINTS.TRANSLATE,
+      payload: {
+        q: selectedText,
+        source,
+        target
+      }
+    };
+    const translation = await sendMessage<TranslateActionPayload, TranslateResponse>(translateAction)
+    if (!translation.success) {
+      setTranslation(null);
+      const { error } = translation;
+      setError(error);
+
+      return;
+    };
+    const { data } = translation;
+    setTranslation(data);
+    setSelectedText("");
+  };
 
   useEffect(() => {
     const getLanguages = () => {
@@ -51,28 +83,7 @@ const App: FC = () => {
   }, [selectedText, translation]);
 
   const handleTranslationButtonClick = async () => {
-    if (!selectedText) return;
-    const { source, target } = languages;
-    const translateAction = {
-      type: API_ENDPOINTS.TRANSLATE,
-      payload: {
-        q: selectedText,
-        source,
-        target
-      }
-    };
-    sendMessage<TranslateActionPayload, TranslateResponse>(translateAction)
-      .then((response) => {
-        if (!response.success)
-          setError(response.error);
-
-        if (response.success) {
-          const { data: { translatedText, alternatives } } = response;
-          setTranslation({ alternatives, translatedText });
-        };
-
-      })
-      .finally(() => setSelectedText(""));
+    getTranslation();
   };
 
   const unsetTranslation = () => {
@@ -82,6 +93,11 @@ const App: FC = () => {
   const unsetError = () => {
     setError(null);
   }
+
+  const handleRetry = () => {
+    setError(null);
+    getTranslation();
+  };
 
   return (
     <div
@@ -93,7 +109,6 @@ const App: FC = () => {
         maxWidth: '75ch'
       }}
     >
-
       {selectedText && !translation ? <TranslateButton onClick={handleTranslationButtonClick} /> : null}
       {translation ? (
         <StyledAppWrapper>
@@ -122,20 +137,18 @@ const App: FC = () => {
       )
         : null}
       {error ? (
-        <StyledAppWrapper>
-          <StyledButton onClick={unsetError}>X</StyledButton>
-          <StyledTypography $size="medium" $weight="medium" as="p" $color="red500">
-            Error
-          </StyledTypography>
-          {error.cause ? (
-            <StyledTypography $size="medium" $weight="normal" as="p" $color="red500">
-              Code: {error.cause}
-            </StyledTypography>
-          ) : null}
-          <StyledTypography $size="medium" $weight="normal" as="p" $color="red500">
-            Message: {error.message}
-          </StyledTypography>
-        </StyledAppWrapper>
+        <StyledBox background="gray700" padding="spacing3">
+          <StyledDistribute gap="spacing3">
+            <StyledJustify justify="start">
+              <StyledButton onClick={unsetError}>
+                <StyledTypography $size="medium" $weight="medium" as="span">
+                  X
+                </StyledTypography>
+              </StyledButton>
+            </StyledJustify>
+            <DisplayMessageError error={error} onRetry={handleRetry} />
+          </StyledDistribute>
+        </StyledBox>
       ) : null}
     </div >
   );

@@ -1,6 +1,51 @@
-import { ApiError, languages, settings, ServerSettingsResponse, translate, TranslateResponse } from "../api";
-import { Actions, isGetServerSettingsAction, isLanguagesAction, isTranslateAction, MessageResponse, TranslateAction } from "./service_worker.types";
+import {
+  ApiError,
+  languages,
+  settings,
+  ServerSettingsResponse,
+  translate,
+  TranslateResponse
+} from "../api";
+import {
+  Actions,
+  isGetServerSettingsAction,
+  isLanguagesAction,
+  isTranslateAction,
+  MessageErrorResponse,
+  MessageResponse,
+  TranslateAction
+} from "./service_worker.types";
 import { NormalizedLanguages } from "../api";
+
+const handleError = (
+  error: unknown,
+  sendResponse: (response: MessageErrorResponse) => void,
+  context: string
+): void => {
+  let errorMessage: MessageErrorResponse = {
+    success: false,
+    error: { message: '' },
+  };
+
+  if (error instanceof ApiError) {
+    errorMessage.error = { message: error.message, cause: error.cause.code };
+    sendResponse(errorMessage);
+
+    return;
+  };
+
+  if (error instanceof Error) {
+    errorMessage.error.message = error.message;
+    sendResponse(errorMessage);
+
+    return;
+  };
+
+  errorMessage.error.message = `Unknown error inside the service worker ${context}.`;
+  sendResponse(errorMessage);
+
+  return;
+};
 
 const handleTranslate = async (
   { payload: { q, source, target } }: TranslateAction,
@@ -8,64 +53,31 @@ const handleTranslate = async (
 ) => {
   try {
     const translation = await translate(q, source, target);
-    sendResponse({
-      success: true,
-      data: translation
-    });
+
+    sendResponse({ success: true, data: translation });
   } catch (error) {
-    if (error instanceof ApiError) {
-      sendResponse({
-        success: false,
-        error: {
-          message: error.message,
-          cause: error.cause.code
-        }
-      });
-    } else if (error instanceof Error) {
-      sendResponse({
-        success: false,
-        error: {
-          message: error.message,
-        }
-      });
-    } else {
-      sendResponse({
-        success: false,
-        error: {
-          message: "Unknown error.",
-        }
-      });
-    }
-  }
+    handleError(error, sendResponse, 'handleTranslate');
+  };
 };
 
-const handleLanguage = async (sendResponse: (response: MessageResponse<NormalizedLanguages>) => void) => {
+const handleLanguages = async (sendResponse: (response: MessageResponse<NormalizedLanguages>) => void) => {
   try {
     const response = await languages();
 
     sendResponse({ success: true, data: response });
   } catch (error) {
-    sendResponse({
-      success: false,
-      error: {
-        message: "Unknown error.",
-      }
-    });
-  }
+    handleError(error, sendResponse, 'handleLanguages');
+  };
 };
 
 const handleGetServerSettings = async (sendResponse: (response: MessageResponse<ServerSettingsResponse>) => void) => {
   try {
     const response = await settings();
+
     sendResponse({ success: true, data: response });
   } catch (error) {
-    sendResponse({
-      success: false,
-      error: {
-        message: "Unknown error.",
-      }
-    });
-  }
+    handleError(error, sendResponse, 'handleGetServerSettings');
+  };
 };
 
 chrome.runtime.onMessage.addListener((action: Actions, _sender, sendResponse: (response?: MessageResponse<NormalizedLanguages | TranslateResponse | ServerSettingsResponse>) => void) => {
@@ -74,7 +86,7 @@ chrome.runtime.onMessage.addListener((action: Actions, _sender, sendResponse: (r
       handleTranslate(action, sendResponse);
     };
     if (isLanguagesAction(action)) {
-      handleLanguage(sendResponse);
+      handleLanguages(sendResponse);
     };
     if (isGetServerSettingsAction(action)) {
       handleGetServerSettings(sendResponse);

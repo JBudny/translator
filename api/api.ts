@@ -31,10 +31,10 @@ export const api = async <T>(endpoint: API_ENDPOINTS, init: RequestInit): Promis
     const response = await fetch(API_URL, init);
 
     if (!response.ok) {
-      if (response.status === 400) throw new ApiError("Invalid request.", { code: response.status })
-      if (response.status === 403) throw new ApiError("Banned.", { code: response.status })
-      if (response.status === 429) throw new ApiError("Slow down.", { code: response.status })
-      if (response.status === 500) throw new ApiError("Server error.", { code: response.status })
+      if (response.status === 400) throw new ApiError(`Invalid request. (${endpoint})`, { code: response.status })
+      if (response.status === 403) throw new ApiError(`Banned. (${endpoint})`, { code: response.status })
+      if (response.status === 429) throw new ApiError(`Slow down. (${endpoint})`, { code: response.status })
+      if (response.status === 500) throw new ApiError(`Server error. (${endpoint})`, { code: response.status })
     };
 
     return await response.json() as T;
@@ -43,11 +43,11 @@ export const api = async <T>(endpoint: API_ENDPOINTS, init: RequestInit): Promis
       throw new ApiError(error.message, { code: error.cause.code });
     } else if (error instanceof DOMException &&
       (error.name === "TimeoutError" || error.name === "AbortError")) {
-      throw new Error('The request was aborted due to a timeout.');
+      throw new Error(`The ${endpoint} request was aborted due to a timeout.`);
     } else if (error instanceof TypeError) {
-      throw new Error('An error occurred while parsing the JSON response.');
+      throw new Error(`An error occurred while parsing the ${endpoint} JSON response.`);
     } else {
-      throw new Error("Unknown error.");
+      throw new Error(`Unknown error while fetching the ${endpoint} data.`);
     };
   };
 };
