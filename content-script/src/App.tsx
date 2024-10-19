@@ -102,7 +102,7 @@ const App: FC<AppProps> = (props) => {
 
   return (
     <StyledBox
-      rounding="borderRadius1"
+      rounding="borderRadius2"
       style={{
         position: 'fixed',
         left: `calc(${position.x}px - 15px)`,
