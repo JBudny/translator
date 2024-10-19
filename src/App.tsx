@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import { APIBaseURLForm, APIKeyForm, LanguagesForm } from "./forms";
-import { StyledAppHeader, StyledBox, StyledTypography } from "../components";
+import { StyledAppHeader, StyledBox, StyledText } from "../components";
 import { StyledBackButton, StyledPopupWrapper } from "./components";
 import { KeyRequired, Root } from "./routes"
 
@@ -14,9 +14,9 @@ const App: FC = () => {
             <StyledAppHeader>
               <StyledBackButton />
               <StyledBox padding="spacing2">
-                <StyledTypography $size="medium" $weight="medium" as="h1">
+                <StyledText $size="medium" $weight="medium" as="h1">
                   Translator
-                </StyledTypography>
+                </StyledText>
               </StyledBox>
             </StyledAppHeader>
             <StyledBox background="gray700" padding="spacing3">

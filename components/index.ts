@@ -1,4 +1,4 @@
-export { StyledTypography, type StyledTypographyProps } from './StyledTypography';
+export { StyledText, type StyledTextProps } from './StyledText';
 export { StyledButton } from './StyledButton';
 export { StyledAppHeader } from './StyledAppHeader';
 export {

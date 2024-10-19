@@ -15,12 +15,12 @@ import {
   StyledBox,
   StyledDistribute,
   StyledDistributeBase,
-  StyledTypography
+  StyledText
 } from '../../../components'
-import { StyledTypographyBaseCSS } from '../../../components/shared';
+import { StyledTextBaseCSS } from '../../../components/shared';
 
 const StyledFormInputBase = styled.input<StyledFormInputBaseProps>`
-  ${StyledTypographyBaseCSS};
+  ${StyledTextBaseCSS};
   padding: ${({ theme }) => theme.tokens.spacing2};
   background-color: ${({ theme }) => theme.palette.transparent};
   border: none;
@@ -32,7 +32,7 @@ const StyledFormInputBase = styled.input<StyledFormInputBaseProps>`
 `;
 
 const StyledSelectBase = styled.select<StyledStyledSelectBaseProps>`
-  ${StyledTypographyBaseCSS};
+  ${StyledTextBaseCSS};
   padding: ${({ theme }) => theme.tokens.spacing2};
   background-color: ${({ theme }) => theme.palette.transparent};
   border: none;
@@ -63,15 +63,15 @@ const StyledFormField: StyledFormProps["Field"] = ({
   <StyledBox background="gray500" padding="spacing2" rounding="borderRadius2" {...props}>
     <StyledDistribute gap="spacing2">
       <label htmlFor={htmlFor}>
-        <StyledTypography $size="medium" $weight="normal" as="span" $color="gray100">
+        <StyledText $size="medium" $weight="normal" as="span" $color="gray100">
           {label}
-        </StyledTypography>
+        </StyledText>
       </label>
       {children}
       {error?.message && (
-        <StyledTypography $size="medium" $weight="normal" as="span" $color="red500">
+        <StyledText $size="medium" $weight="normal" as="span" $color="red500">
           {error.message}
-        </StyledTypography>
+        </StyledText>
       )}
     </StyledDistribute>
   </StyledBox>

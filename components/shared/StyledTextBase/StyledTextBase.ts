@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
-import { StyledTypographyBaseProps } from './StyledTypographyBase.types';
+import { StyledTextBaseProps } from './StyledTextBase.types';
 
-export const StyledTypographyBaseCSS = css<StyledTypographyBaseProps>`
+export const StyledTextBaseCSS = css<StyledTextBaseProps>`
   text-align: ${({ $align }) => $align || 'left'};
   font-weight: ${({ theme, $weight }) => theme.font.weight[$weight]};
   font-size: ${({ theme, $size }) => theme.font.size[$size]};
@@ -9,6 +9,6 @@ export const StyledTypographyBaseCSS = css<StyledTypographyBaseProps>`
     `rgb(${$color ? theme.palette[$color] : theme.palette.gray100})`};
 `
 
-export const StyledTypographyBase = styled.span<StyledTypographyBaseProps>`
-  ${StyledTypographyBaseCSS}
+export const StyledTextBase = styled.span<StyledTextBaseProps>`
+  ${StyledTextBaseCSS}
 `;

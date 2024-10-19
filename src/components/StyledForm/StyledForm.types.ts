@@ -7,7 +7,7 @@ import {
   SelectHTMLAttributes
 } from "react";
 import { FieldError } from "react-hook-form";
-import { StyledTypographyBaseProps } from "../../../components/shared";
+import { StyledTextBaseProps } from "../../../components/shared";
 import { StyledDistributeProps } from "../../../components";
 
 export interface StyledFormProps
@@ -24,6 +24,6 @@ export interface StyledFormProps
   Option: FC<OptionHTMLAttributes<HTMLOptionElement>>;
 };
 
-export interface StyledFormInputBaseProps extends StyledTypographyBaseProps { }
+export interface StyledFormInputBaseProps extends StyledTextBaseProps { }
 
-export interface StyledStyledSelectBaseProps extends StyledTypographyBaseProps { };
+export interface StyledStyledSelectBaseProps extends StyledTextBaseProps { };

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 import { StyledButtonProps } from './StyledButton.types';
-import { StyledTypographyBase } from "../shared";
+import { StyledTextBase } from "../shared";
 
 const StyledButtonBase = styled.button<StyledButtonProps>`
   padding: ${({ theme }) => theme.tokens.spacing2};
@@ -16,7 +16,7 @@ const StyledButtonBase = styled.button<StyledButtonProps>`
 
   &:disabled {
     cursor: default;
-    ${StyledTypographyBase} {
+    ${StyledTextBase} {
       color: ${({ theme }) => `rgb(${theme.palette.gray300})`}; 
     };
   };

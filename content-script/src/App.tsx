@@ -9,7 +9,7 @@ import {
 } from "../../service-worker";
 import { ExtensionStorage } from "../../src/extensionStorage.types";
 import {
-  StyledTypography,
+  StyledText,
   StyledButton,
   StyledBox,
   DisplayMessageError,
@@ -119,27 +119,27 @@ const App: FC<AppProps> = (props) => {
           <StyledDistribute gap="spacing3">
             <StyledJustify justify="start">
               <StyledButton onClick={unsetTranslation}>
-                <StyledTypography $size="medium" $weight="medium" as="span">
+                <StyledText $size="medium" $weight="medium" as="span">
                   X
-                </StyledTypography>
+                </StyledText>
               </StyledButton>
             </StyledJustify>
-            <StyledTypography $size="medium" $weight="normal" as="p">
+            <StyledText $size="medium" $weight="normal" as="p">
               {translation.translatedText}
-            </StyledTypography>
+            </StyledText>
             {translation.alternatives?.length ? (
               <StyledBox padding="spacing2" background="gray500" rounding="borderRadius2">
                 <StyledDistribute gap="spacing2">
-                  <StyledTypography $size="medium" $weight="normal" as="p">
+                  <StyledText $size="medium" $weight="normal" as="p">
                     Alternative translations
-                  </StyledTypography>
+                  </StyledText>
                   <StyledList as="ol">
                     {
                       translation.alternatives.map((alternative, index) =>
                         <StyledList.ListItem key={index}>
-                          <StyledTypography $size="small" $weight="normal" as="span">
+                          <StyledText $size="small" $weight="normal" as="span">
                             {alternative}
-                          </StyledTypography>
+                          </StyledText>
                         </StyledList.ListItem>)
                     }
                   </StyledList>
@@ -155,9 +155,9 @@ const App: FC<AppProps> = (props) => {
           <StyledDistribute gap="spacing3">
             <StyledJustify justify="start">
               <StyledButton onClick={unsetError}>
-                <StyledTypography $size="medium" $weight="medium" as="span">
+                <StyledText $size="medium" $weight="medium" as="span">
                   X
-                </StyledTypography>
+                </StyledText>
               </StyledButton>
             </StyledJustify>
             <DisplayMessageError error={error} onRetry={handleRetry} />

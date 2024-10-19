@@ -10,7 +10,7 @@ import {
   StyledButton,
   StyledDistribute,
   StyledJustify,
-  StyledTypography
+  StyledText
 } from "../../../components";
 import { StyledForm } from "../../components";
 
@@ -80,7 +80,7 @@ export const LanguagesForm: FC = () => {
 
   return (
     <StyledDistribute gap="spacing3">
-      <StyledTypography $size="large" $weight="normal" as="h2">Choose languages</StyledTypography>
+      <StyledText $size="large" $weight="normal" as="h2">Choose languages</StyledText>
       <StyledForm id="languages-form" onSubmit={handleSubmit(onSubmit)}>
         <StyledForm.Field
           error={errors.sourceLanguage}
@@ -119,7 +119,7 @@ export const LanguagesForm: FC = () => {
       </StyledForm>
       <StyledJustify justify="end">
         <StyledButton $appearance="transparent" form="languages-form" type="submit" disabled={!formState.isValid}>
-          <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
+          <StyledText $size="medium" $weight="medium" as="span">Save</StyledText>
         </StyledButton>
       </StyledJustify>
     </StyledDistribute>

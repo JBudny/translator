@@ -12,7 +12,7 @@ import {
   StyledButton,
   StyledDistribute,
   StyledJustify,
-  StyledTypography
+  StyledText
 } from "../../../components";
 import { StyledForm } from "../../components";
 import { useUserSettings } from "../../contexts";
@@ -43,7 +43,7 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
 
   return (
     <StyledDistribute gap="spacing3">
-      <StyledTypography $size="large" $weight="normal" as="h2">Set API URL</StyledTypography>
+      <StyledText $size="large" $weight="normal" as="h2">Set API URL</StyledText>
       <StyledForm id="api-base-url-form" onSubmit={handleSubmit(onSubmit)}>
         <StyledForm.Field error={errors.apiBaseURL} htmlFor="api-base-url" label="API URL">
           <StyledForm.Input autoFocus id="api-base-url" placeholder="e.g. http://127.0.0.1:5000" type="text"
@@ -52,7 +52,7 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
       </StyledForm>
       <StyledJustify justify="end">
         <StyledButton $appearance="transparent" form="api-base-url-form" type="submit" disabled={!formState.isValid}>
-          <StyledTypography $size="medium" $weight="medium" as="span">Save</StyledTypography>
+          <StyledText $size="medium" $weight="medium" as="span">Save</StyledText>
         </StyledButton>
       </StyledJustify>
     </StyledDistribute>

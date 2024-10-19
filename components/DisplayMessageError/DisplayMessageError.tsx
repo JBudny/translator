@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import {
   StyledDistribute,
-  StyledTypography,
+  StyledText,
   StyledBox,
   StyledJustify,
   StyledButton
@@ -12,34 +12,34 @@ export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ error, onRet
 
   return (
     <StyledDistribute gap="spacing3">
-      <StyledTypography $size="large" $weight="normal" as="h2" $color="red500">
+      <StyledText $size="large" $weight="normal" as="h2" $color="red500">
         Error!
-      </StyledTypography>
+      </StyledText>
       <StyledBox padding="spacing2" background="gray500" rounding="borderRadius2">
         <StyledDistribute gap="spacing3">
           {error.cause ? (
             <StyledDistribute gap="spacing2">
-              <StyledTypography $size="medium" $weight="normal" as="span" $color="gray100">
+              <StyledText $size="medium" $weight="normal" as="span" $color="gray100">
                 Code
-              </StyledTypography>
-              <StyledTypography $size="medium" $weight="normal" as="span" $color="red500">
+              </StyledText>
+              <StyledText $size="medium" $weight="normal" as="span" $color="red500">
                 {(error.cause).toString()}
-              </StyledTypography>
+              </StyledText>
             </StyledDistribute>
           ) : null}
           <StyledDistribute>
-            <StyledTypography $size="medium" $weight="normal" as="span" $color="gray100">
+            <StyledText $size="medium" $weight="normal" as="span" $color="gray100">
               Message
-            </StyledTypography>
-            <StyledTypography $size="medium" $weight="normal" as="span" $color="red500">
+            </StyledText>
+            <StyledText $size="medium" $weight="normal" as="span" $color="red500">
               {error.message}
-            </StyledTypography>
+            </StyledText>
           </StyledDistribute>
         </StyledDistribute>
       </StyledBox>
       <StyledJustify justify="end">
         <StyledButton $appearance="transparent" onClick={onRetry} type="submit">
-          <StyledTypography $size="medium" $weight="medium" as="span">Try Again</StyledTypography>
+          <StyledText $size="medium" $weight="medium" as="span">Try Again</StyledText>
         </StyledButton>
       </StyledJustify>
     </StyledDistribute>

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { StyledButton, StyledTypography } from "../../../components";
+import { StyledButton, StyledText } from "../../../components";
 import styled from "styled-components";
 
 const BackButtonBase = styled.div`
@@ -21,7 +21,7 @@ export const StyledBackButton: FC = () => {
   return (
     <BackButtonBase>
       <StyledButton onClick={goBack} $appearance="transparent">
-        <StyledTypography $size="medium" $weight="medium" as="span">{"< back"}</StyledTypography>
+        <StyledText $size="medium" $weight="medium" as="span">{"< back"}</StyledText>
       </StyledButton>
     </BackButtonBase>
   );

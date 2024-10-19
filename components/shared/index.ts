@@ -1,7 +1,7 @@
 export {
-  StyledTypographyBase,
-  StyledTypographyBaseCSS,
-  type StyledTypographyBaseProps,
-  type TypographySize,
-  type TypographyWeight
-} from './StyledTypographyBase';
+  StyledTextBase,
+  StyledTextBaseCSS,
+  type StyledTextBaseProps,
+  type TextSize,
+  type TextWeight
+} from './StyledTextBase';
