@@ -4,9 +4,9 @@ export const schema: Schema = {
   dark: {
     font: {
       size: {
-        large: '1.5rem',
-        medium: '1.2rem',
-        small: '1rem',
+        large: '1.5em',
+        medium: '1.2em',
+        small: '1em',
       },
       weight: {
         medium: '600',

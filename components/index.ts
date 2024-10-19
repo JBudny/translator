@@ -11,3 +11,4 @@ export {
 export { StyledBox } from './StyledBox';
 export { StyledJustify } from './StyledJustify';
 export { DisplayMessageError } from './DisplayMessageError';
+export { CSSReset } from './CSSReset';

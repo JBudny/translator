@@ -3,18 +3,19 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import { ThemeProvider } from "styled-components";
 import { schema } from "../../theme";
+import { CSSReset } from "../../components";
+import ShadowRoot from 'react-shadow/styled-components'
 
-const app = document.createElement("div");
-app.id = "translator-extension-root";
-
+const app = document.createElement('div');
 document.body.prepend(app);
 
-const root = createRoot(app);
-
-root.render(
+createRoot(app).render(
   <React.StrictMode>
     <ThemeProvider theme={schema.dark}>
-      <App />
+      <ShadowRoot.div>
+        <CSSReset />
+        <App id="translator-extension-root" />
+      </ShadowRoot.div>
     </ThemeProvider>
   </React.StrictMode>
 );

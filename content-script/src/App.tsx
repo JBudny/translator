@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, HTMLAttributes, useEffect, useState } from "react";
 import { TranslateButton } from "./components";
 import { PositionState, SelectedTextState } from "./App.types";
 import { API_ENDPOINTS, TranslateResponse } from "../../api";
@@ -17,7 +17,9 @@ import {
   StyledJustify
 } from "../../components";
 
-const App: FC = () => {
+interface AppProps extends HTMLAttributes<HTMLDivElement> { }
+
+const App: FC<AppProps> = (props) => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
   const [position, setPosition] = useState<PositionState>({ x: 0, y: 0 });
   const [translation, setTranslation] = useState<TranslateResponse | null>(null);
@@ -100,13 +102,16 @@ const App: FC = () => {
 
   return (
     <StyledBox
+      rounding="borderRadius1"
       style={{
         position: 'fixed',
         left: `calc(${position.x}px - 15px)`,
         top: `calc(${position.y}px - 45px)`,
         zIndex: '99999',
-        maxWidth: '75ch'
+        maxWidth: '75ch',
+        overflow: 'hidden'
       }}
+      {...props}
     >
       {selectedText && !translation && !error ? <TranslateButton onClick={handleTranslationButtonClick} /> : null}
       {translation ? (

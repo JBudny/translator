@@ -7,7 +7,6 @@ export const StyledTypographyBaseCSS = css<StyledTypographyBaseProps>`
   font-size: ${({ theme, $size }) => theme.font.size[$size]};
   color: ${({ theme, $color }) =>
     `rgb(${$color ? theme.palette[$color] : theme.palette.gray100})`};
-  line-height: 1;
 `
 
 export const StyledTypographyBase = styled.span<StyledTypographyBaseProps>`
