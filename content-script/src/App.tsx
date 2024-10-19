@@ -1,5 +1,5 @@
 import { FC, HTMLAttributes, useEffect, useState } from "react";
-import { TranslateButton } from "./components";
+import { StyledList, TranslateButton } from "./components";
 import { PositionState, SelectedTextState } from "./App.types";
 import { API_ENDPOINTS, TranslateResponse } from "../../api";
 import {
@@ -133,16 +133,16 @@ const App: FC<AppProps> = (props) => {
                   <StyledTypography $size="medium" $weight="normal" as="p">
                     Alternative translations
                   </StyledTypography>
-                  <ol>
+                  <StyledList as="ol">
                     {
                       translation.alternatives.map((alternative, index) =>
-                        <li key={index}>
+                        <StyledList.ListItem key={index}>
                           <StyledTypography $size="small" $weight="normal" as="span">
                             {alternative}
                           </StyledTypography>
-                        </li>)
+                        </StyledList.ListItem>)
                     }
-                  </ol>
+                  </StyledList>
                 </StyledDistribute>
               </StyledBox>
             ) : null}
