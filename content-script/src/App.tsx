@@ -98,14 +98,16 @@ const App: FC<AppProps> = (props) => {
     getTranslation();
   };
 
-  // Check if activeElement is body in order to avoid rendering translation
-  // button when user has input focused.
-  const isActiveBody = document.activeElement === document.body;
+  // Array of tags that selected text inside of could be selected without
+  // triggering translation feature
+  const disabledTags = ['INPUT', 'TEXTAREA'];
+  const activeElement = document.activeElement;
+  const isTranslationEnabled = activeElement && !disabledTags.includes(activeElement.tagName);
 
   return (
     <ClientRectAware position={position} {...props}>
       {
-        isActiveBody && selectedText && !translation &&
+        isTranslationEnabled && selectedText && !translation &&
           !error ? <TranslateButton onClick={handleTranslationButtonClick} /> : null
       }
       {translation ? (
