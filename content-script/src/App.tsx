@@ -1,6 +1,6 @@
-import { FC, HTMLAttributes, useEffect, useState } from "react";
-import { StyledList, TranslateButton } from "./components";
-import { PositionState, SelectedTextState } from "./App.types";
+import { FC, useEffect, useState } from "react";
+import { ClientRectAware, PositionState, StyledList, TranslateButton } from "./components";
+import { AppProps, SelectedTextState } from "./App.types";
 import { API_ENDPOINTS, TranslateResponse } from "../../api";
 import {
   MessageErrorResponse,
@@ -16,8 +16,6 @@ import {
   StyledDistribute,
   StyledJustify
 } from "../../components";
-
-interface AppProps extends HTMLAttributes<HTMLDivElement> { }
 
 const App: FC<AppProps> = (props) => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -100,20 +98,16 @@ const App: FC<AppProps> = (props) => {
     getTranslation();
   };
 
+  // Check if activeElement is body in order to avoid rendering translation
+  // button when user has input focused.
+  const isActiveBody = document.activeElement === document.body;
+
   return (
-    <StyledBox
-      rounding="borderRadius2"
-      style={{
-        position: 'fixed',
-        left: `calc(${position.x}px - 15px)`,
-        top: `calc(${position.y}px - 45px)`,
-        zIndex: '99999',
-        maxWidth: '75ch',
-        overflow: 'hidden'
-      }}
-      {...props}
-    >
-      {selectedText && !translation && !error ? <TranslateButton onClick={handleTranslationButtonClick} /> : null}
+    <ClientRectAware position={position} {...props}>
+      {
+        isActiveBody && selectedText && !translation &&
+          !error ? <TranslateButton onClick={handleTranslationButtonClick} /> : null
+      }
       {translation ? (
         <StyledBox background="gray700" padding="spacing3">
           <StyledDistribute gap="spacing3">
@@ -164,7 +158,7 @@ const App: FC<AppProps> = (props) => {
           </StyledDistribute>
         </StyledBox>
       ) : null}
-    </StyledBox >
+    </ClientRectAware>
   );
 };
 

@@ -1,5 +1,5 @@
+import { HTMLAttributes } from "react";
+
 export type SelectedTextState = string | undefined;
-export interface PositionState {
-  x: number;
-  y: number;
-};
+
+export interface AppProps extends HTMLAttributes<HTMLDivElement> { };

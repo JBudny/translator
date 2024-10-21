@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, forwardRef, useRef } from "react";
 import styled from "styled-components";
 import { StyledBoxBaseProps, StyledBoxProps } from './StyledBox.types';
 
@@ -8,9 +8,10 @@ const StyledBoxBase = styled.div<StyledBoxBaseProps>`
   border-radius: ${({ theme, $rounding }) => $rounding === 'none' ? '0px' : theme.tokens[$rounding]};
 `;
 
-export const StyledBox: FC<StyledBoxProps> = ({ children, padding = 'none', background = 'none', rounding = 'none', ...props }) => {
-
-  return (
-    <StyledBoxBase $padding={padding} $background={background} $rounding={rounding} {...props}>{children}</StyledBoxBase>
-  );
-};
+export const StyledBox = forwardRef<HTMLDivElement, StyledBoxProps>(
+  ({ children, padding = 'none', background = 'none', rounding = 'none', ...props }, ref) => {
+    return (
+      <StyledBoxBase ref={ref} $padding={padding} $background={background} $rounding={rounding} {...props}>{children}</StyledBoxBase>
+    );
+  }
+);
