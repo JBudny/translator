@@ -1,7 +1,7 @@
 import { FC, HTMLAttributes, PropsWithChildren } from "react";
 import styled from "styled-components";
 
-type Justify = 'start' | 'end' | 'center' | 'between' | 'around';
+type Justify = 'space-around' | 'space-between' | 'center' | 'flex-end' | 'flex-start';
 
 interface StyledJustifyBaseProps {
   $justify: Justify;
@@ -11,17 +11,9 @@ interface StyledJustifyProps extends HTMLAttributes<HTMLDivElement>, PropsWithCh
   justify: Justify;
 };
 
-const justifyMap = new Map([
-  ['start', 'flex-start'],
-  ['end', 'flex-end'],
-  ['center', 'center'],
-  ['between', 'space-between'],
-  ['around', 'space-around'],
-]);
-
 const StyledJustifyBase = styled.div<StyledJustifyBaseProps>`
   display: flex;
-  justify-content: ${({ $justify }) => justifyMap.get($justify)};
+  justify-content: ${({ $justify }) => $justify};
 `;
 
 export const StyledJustify: FC<StyledJustifyProps> = ({ children, justify, ...props }) => {

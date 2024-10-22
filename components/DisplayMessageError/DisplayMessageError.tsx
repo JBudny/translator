@@ -11,12 +11,12 @@ import { DisplayMessageErrorProps } from './DisplayMessageError.types'
 export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ error, onRetry }) => {
 
   return (
-    <StyledDistribute gap="spacing3">
+    <StyledDistribute gap="spacing2">
       <StyledText $size="large" $weight="normal" as="h2" $color="red500">
         Error!
       </StyledText>
       <StyledBox padding="spacing2" background="gray500" rounding="borderRadius2">
-        <StyledDistribute gap="spacing3">
+        <StyledDistribute gap="spacing2">
           {error.cause ? (
             <StyledDistribute gap="spacing2">
               <StyledText $size="medium" $weight="normal" as="span" $color="gray100">
@@ -27,7 +27,7 @@ export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ error, onRet
               </StyledText>
             </StyledDistribute>
           ) : null}
-          <StyledDistribute>
+          <StyledDistribute gap="spacing1">
             <StyledText $size="medium" $weight="normal" as="span" $color="gray100">
               Message
             </StyledText>
@@ -37,7 +37,7 @@ export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ error, onRet
           </StyledDistribute>
         </StyledDistribute>
       </StyledBox>
-      <StyledJustify justify="end">
+      <StyledJustify justify="flex-end">
         <StyledButton $appearance="transparent" onClick={onRetry} type="submit">
           <StyledText $size="medium" $weight="medium" as="span">Try Again</StyledText>
         </StyledButton>

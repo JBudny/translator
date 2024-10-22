@@ -1,7 +1,9 @@
 import { FC } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { StyledButton, StyledText } from "../../../components";
+import { StyledAlign, StyledButton, StyledDistribute, StyledJustify, StyledText } from "../../../components";
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
 const BackButtonBase = styled.div`
   display: flex;
@@ -21,7 +23,14 @@ export const StyledBackButton: FC = () => {
   return (
     <BackButtonBase>
       <StyledButton onClick={goBack} $appearance="transparent">
-        <StyledText $size="medium" $weight="medium" as="span">{"< back"}</StyledText>
+        <StyledDistribute direction="row">
+          <StyledAlign align="center">
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </StyledAlign>
+          <StyledText $size="medium" $weight="medium" as="span">
+            back
+          </StyledText>
+        </StyledDistribute>
       </StyledButton>
     </BackButtonBase>
   );

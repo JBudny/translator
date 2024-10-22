@@ -1,0 +1,1 @@
+export { StyledAlign } from './StyledAlign';

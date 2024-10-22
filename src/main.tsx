@@ -1,3 +1,4 @@
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";

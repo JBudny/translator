@@ -117,7 +117,7 @@ export const LanguagesForm: FC = () => {
             </StyledForm.Select>
           </StyledForm.Field> : null}
       </StyledForm>
-      <StyledJustify justify="end">
+      <StyledJustify justify="flex-end">
         <StyledButton $appearance="transparent" form="languages-form" type="submit" disabled={!formState.isValid}>
           <StyledText $size="medium" $weight="medium" as="span">Save</StyledText>
         </StyledButton>

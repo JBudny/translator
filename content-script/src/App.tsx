@@ -16,6 +16,8 @@ import {
   StyledDistribute,
   StyledJustify
 } from "../../components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClose, faCross } from "@fortawesome/free-solid-svg-icons";
 
 const App: FC<AppProps> = (props) => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -112,12 +114,10 @@ const App: FC<AppProps> = (props) => {
       }
       {translation ? (
         <StyledBox background="gray700" padding="spacing3">
-          <StyledDistribute gap="spacing3">
-            <StyledJustify justify="start">
+          <StyledDistribute gap="spacing2">
+            <StyledJustify justify="flex-start">
               <StyledButton onClick={unsetTranslation}>
-                <StyledText $size="medium" $weight="medium" as="span">
-                  X
-                </StyledText>
+                <FontAwesomeIcon icon={faClose} height="1em" />
               </StyledButton>
             </StyledJustify>
             <StyledText $size="medium" $weight="normal" as="p">
@@ -125,7 +125,7 @@ const App: FC<AppProps> = (props) => {
             </StyledText>
             {translation.alternatives?.length ? (
               <StyledBox padding="spacing2" background="gray500" rounding="borderRadius2">
-                <StyledDistribute gap="spacing2">
+                <StyledDistribute gap="spacing1">
                   <StyledText $size="medium" $weight="normal" as="p">
                     Alternative translations
                   </StyledText>
@@ -148,12 +148,10 @@ const App: FC<AppProps> = (props) => {
         : null}
       {error ? (
         <StyledBox background="gray700" padding="spacing3">
-          <StyledDistribute gap="spacing3">
-            <StyledJustify justify="start">
+          <StyledDistribute gap="spacing2">
+            <StyledJustify justify="flex-start">
               <StyledButton onClick={unsetError}>
-                <StyledText $size="medium" $weight="medium" as="span">
-                  X
-                </StyledText>
+                <FontAwesomeIcon icon={faClose} height="1em" />
               </StyledButton>
             </StyledJustify>
             <DisplayMessageError error={error} onRetry={handleRetry} />

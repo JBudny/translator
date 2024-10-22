@@ -47,7 +47,7 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
             {...register("apiKey")} />
         </StyledForm.Field>
       </StyledForm >
-      <StyledJustify justify="end">
+      <StyledJustify justify="flex-end">
         <StyledButton $appearance="transparent" form="api-key-form" type="submit" disabled={!formState.isValid}>
           <StyledText $size="medium" $weight="medium" as="span">Save</StyledText>
         </StyledButton>

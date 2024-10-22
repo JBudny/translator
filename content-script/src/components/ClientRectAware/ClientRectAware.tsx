@@ -3,6 +3,7 @@ import { StyledBox } from "../../../../components";
 import { ClientRectAwareProps } from "./ClientRectAware.types";
 import { CURSOR_OFFSET_X, CURSOR_OFFSET_Y } from "./constants";
 import { getLeftOffset, getMaxHeight, getMaxWidth, getTopOffset } from "./utils";
+import { useTheme } from "styled-components";
 
 export const ClientRectAware: FC<ClientRectAwareProps> = ({
   children,
@@ -10,6 +11,7 @@ export const ClientRectAware: FC<ClientRectAwareProps> = ({
   ...props
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const { palette: { gray100 } } = useTheme();
 
   const renderWithinClientRect = () => {
     if (!document.documentElement.clientWidth || !ref.current) return;
@@ -74,7 +76,8 @@ export const ClientRectAware: FC<ClientRectAwareProps> = ({
         top: `calc(${position.y}px - ${CURSOR_OFFSET_Y}px)`,
         zIndex: '99999',
         overflow: 'auto',
-        width: 'max-content'
+        width: 'max-content',
+        boxShadow: `rgba(${gray100}, 0.5) 0px 0px 5px 0px`
       }}
       {...props}
     >

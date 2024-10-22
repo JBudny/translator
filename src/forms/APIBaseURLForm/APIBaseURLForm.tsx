@@ -50,7 +50,7 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
             {...register("apiBaseURL")} />
         </StyledForm.Field>
       </StyledForm>
-      <StyledJustify justify="end">
+      <StyledJustify justify="flex-end">
         <StyledButton $appearance="transparent" form="api-base-url-form" type="submit" disabled={!formState.isValid}>
           <StyledText $size="medium" $weight="medium" as="span">Save</StyledText>
         </StyledButton>
