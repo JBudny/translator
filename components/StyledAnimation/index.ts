@@ -1,0 +1,1 @@
+export { StyledAnimation } from './StyledAnimation';

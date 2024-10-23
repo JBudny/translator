@@ -1,7 +1,17 @@
+import { keyframes } from 'styled-components';
 import { Schema } from './schema.types';
 
 export const schema: Schema = {
   dark: {
+    animations: {
+      rotate: keyframes`
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }`,
+    },
     font: {
       size: {
         large: '1.5em',

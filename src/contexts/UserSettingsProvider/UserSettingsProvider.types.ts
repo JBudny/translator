@@ -1,6 +1,9 @@
+import { AsyncStatus } from "../../../types";
 import { APIBaseURLFormSchema, ApiKeyFormSchema } from "../../forms";
 
-export interface UserSettingsProviderState extends APIBaseURLFormSchema, ApiKeyFormSchema { };
+export interface UserSettingsProviderState extends APIBaseURLFormSchema, ApiKeyFormSchema {
+  status: AsyncStatus;
+};
 
 interface ApiBaseURLSetAction {
   type: 'apiBaseUrlSet';
@@ -12,5 +15,10 @@ interface ApiKeySetAction {
   payload: { apiKey: UserSettingsProviderState['apiKey'] };
 };
 
-export type UserSettingsProviderAction = ApiBaseURLSetAction | ApiKeySetAction;
+interface StatusSetAction {
+  type: 'statusSet';
+  payload: { status: AsyncStatus };
+};
+
+export type UserSettingsProviderAction = ApiBaseURLSetAction | ApiKeySetAction | StatusSetAction;
 export type UserSettingsProviderDispatch = (action: UserSettingsProviderAction) => void;

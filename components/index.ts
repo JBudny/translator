@@ -13,3 +13,5 @@ export { StyledJustify } from './StyledJustify';
 export { StyledAlign } from './StyledAlign';
 export { DisplayMessageError } from './DisplayMessageError';
 export { CSSReset } from './CSSReset';
+export { StyledAnimation } from './StyledAnimation';
+export { StyledLoadingIndicator } from './StyledLoadingIndicator';

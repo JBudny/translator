@@ -14,10 +14,13 @@ import {
   StyledBox,
   DisplayMessageError,
   StyledDistribute,
-  StyledJustify
+  StyledJustify,
+  StyledLoadingIndicator
 } from "../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faCross } from "@fortawesome/free-solid-svg-icons";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { useTheme } from "styled-components";
+import { AsyncStatus } from '../../types';
 
 const App: FC<AppProps> = (props) => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -25,6 +28,7 @@ const App: FC<AppProps> = (props) => {
   const [translation, setTranslation] = useState<TranslateResponse | null>(null);
   const [error, setError] = useState<MessageErrorResponse['error'] | null>(null);
   const [languages, setLanguages] = useState<{ source: string, target: string }>({ source: "", target: "" });
+  const [status, setStatus] = useState<AsyncStatus>('idle');
 
   const getTranslation = async () => {
     if (!selectedText) return;
@@ -37,17 +41,37 @@ const App: FC<AppProps> = (props) => {
         target
       }
     };
-    const translation = await sendMessage<TranslateActionPayload, TranslateResponse>(translateAction)
-    if (!translation.success) {
-      setTranslation(null);
-      const { error } = translation;
-      setError(error);
+    setStatus('pending');
+    sendMessage<TranslateActionPayload, TranslateResponse>(translateAction)
+      .then(translation => {
+        if (!translation.success) {
+          setTranslation(null);
+          const { error } = translation;
+          setError(error);
 
-      return;
-    };
-    const { data } = translation;
-    setTranslation(data);
-    setSelectedText("");
+          return;
+        };
+
+        const { data } = translation;
+        setTranslation(data);
+        setSelectedText("");
+      })
+      .catch((error) => {
+        setTranslation(null);
+        if (error instanceof Error) {
+          const { message, cause } = error;
+          if (typeof cause === 'number') {
+            setError({ message, cause })
+
+            return;
+          };
+
+          setError({ message });
+        }
+      })
+      .finally(() => {
+        setStatus('idle');
+      });
   };
 
   useEffect(() => {
@@ -108,12 +132,17 @@ const App: FC<AppProps> = (props) => {
 
   return (
     <ClientRectAware position={position} {...props}>
+      {status === 'pending' ?
+        <StyledBox padding="spacing3" background="gray700">
+          <StyledLoadingIndicator title="Waiting for translation" />
+        </StyledBox>
+        : null}
       {
-        isTranslationEnabled && selectedText && !translation &&
+        status === 'idle' && isTranslationEnabled && selectedText && !translation &&
           !error ? <TranslateButton onClick={handleTranslationButtonClick} /> : null
       }
-      {translation ? (
-        <StyledBox background="gray700" padding="spacing3">
+      {status === 'idle' && translation ? (
+        <StyledBox background="gray700" padding="spacing3" style={{ transition: "all 230ms" }}>
           <StyledDistribute gap="spacing2">
             <StyledJustify justify="flex-start">
               <StyledButton onClick={unsetTranslation}>
@@ -146,7 +175,7 @@ const App: FC<AppProps> = (props) => {
         </ StyledBox>
       )
         : null}
-      {error ? (
+      {status === 'idle' && error ? (
         <StyledBox background="gray700" padding="spacing3">
           <StyledDistribute gap="spacing2">
             <StyledJustify justify="flex-start">

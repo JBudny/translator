@@ -9,9 +9,11 @@ import { useNavigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
 import {
+  StyledBox,
   StyledButton,
   StyledDistribute,
   StyledJustify,
+  StyledLoadingIndicator,
   StyledText
 } from "../../../components";
 import { StyledForm } from "../../components";
@@ -20,9 +22,14 @@ import { useUserSettings } from "../../contexts";
 export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
   const auth = useUserSettings();
   const navigate = useNavigate();
+
+  if (!auth) return null;
+
+  const { state: { apiBaseURL, status } } = auth;
+
   const { handleSubmit, formState, register, setValue } = useForm<APIBaseURLFormSchema>({
     resolver: yupResolver(apiBaseURLFormSchema),
-    defaultValues: { apiBaseURL: auth?.state.apiBaseURL },
+    defaultValues: { apiBaseURL },
     mode: "all",
   });
 
@@ -40,6 +47,12 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
       .then(() => navigate(nextRoute))
       .catch(() => setValue("apiBaseURL", ""));
   };
+
+  if (status === 'pending') return (
+    <StyledBox padding="spacing3" background="gray700">
+      <StyledLoadingIndicator title="Fetching server settings" />
+    </StyledBox>
+  );
 
   return (
     <StyledDistribute gap="spacing3">

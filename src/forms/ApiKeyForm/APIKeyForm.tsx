@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
 import {
+  StyledBox,
   StyledButton,
   StyledDistribute,
   StyledJustify,
+  StyledLoadingIndicator,
   StyledText
 } from "../../../components";
 import { StyledForm } from "../../components";
@@ -16,10 +18,15 @@ import { useUserSettings } from "../../contexts";
 
 export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
   const auth = useUserSettings();
+
+  if (!auth) return null;
+
+  const { state: { apiKey, status } } = auth;
+
   const navigate = useNavigate();
   const { handleSubmit, formState, register, setValue } = useForm<ApiKeyFormSchema>({
     resolver: yupResolver(apiKeyFormSchema),
-    defaultValues: { apiKey: auth?.state.apiKey },
+    defaultValues: { apiKey },
     mode: "all",
   });
 
@@ -37,6 +44,12 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
       .then(() => navigate(nextRoute))
       .catch(() => setValue("apiKey", ""));
   };
+
+  if (status === 'pending') return (
+    <StyledBox padding="spacing3" background="gray700">
+      <StyledLoadingIndicator title="Fetching server settings" />
+    </StyledBox>
+  );
 
   return (
     <StyledDistribute gap="spacing3">

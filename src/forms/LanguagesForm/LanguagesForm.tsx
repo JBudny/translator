@@ -7,12 +7,15 @@ import { LanguagesFormSchema, languagesFormSchema } from "./LanguagesForm.schema
 import { ExtensionStorage } from "../../extensionStorage.types";
 import {
   DisplayMessageError,
+  StyledBox,
   StyledButton,
   StyledDistribute,
   StyledJustify,
+  StyledLoadingIndicator,
   StyledText
 } from "../../../components";
 import { StyledForm } from "../../components";
+import { AsyncStatus } from "../../../types";
 
 export const LanguagesForm: FC = () => {
   const { watch, handleSubmit, formState, register, setValue } = useForm<LanguagesFormSchema>({
@@ -24,8 +27,10 @@ export const LanguagesForm: FC = () => {
   const [error, setError] = useState<MessageErrorResponse['error'] | null>(null);
   const sourceLanguageWatch = watch("sourceLanguage");
   const targetLanguageWatch = watch("targetLanguage");
+  const [status, setStatus] = useState<AsyncStatus>('idle');
 
   const getLanguages = async () => {
+    setStatus('pending');
     const languageOptions = await sendMessage<{}, NormalizedLanguages>({ type: API_ENDPOINTS.LANGUAGES })
     if (!languageOptions.success) {
       setLanguageOptions(null);
@@ -34,6 +39,7 @@ export const LanguagesForm: FC = () => {
 
       return;
     };
+    setStatus('idle');
     const { data } = languageOptions;
     setLanguageOptions(data);
     const { sourceLanguage, targetLanguage } = await chrome.storage.local.get<ExtensionStorage>();
@@ -77,6 +83,12 @@ export const LanguagesForm: FC = () => {
         setValue("targetLanguage", "");
       });
   };
+
+  if (status === 'pending') return (
+    <StyledBox padding="spacing3" background="gray700">
+      <StyledLoadingIndicator title="Fetching available languages" />
+    </StyledBox>
+  );
 
   return (
     <StyledDistribute gap="spacing3">

@@ -12,7 +12,7 @@ export const UserSettingsContext = createContext<{
 
 export const UserSettingsProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer<typeof userSettingsReducer>(userSettingsReducer,
-    { apiBaseURL: "", apiKey: "" }
+    { apiBaseURL: "", apiKey: "", status: "idle" }
   );
 
   useEffect(() => {
@@ -47,6 +47,11 @@ export const UserSettingsProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const fetchServerSettings = () => {
+      const pendingStatusAction: UserSettingsProviderAction = {
+        type: "statusSet",
+        payload: { status: 'pending' }
+      };
+      dispatch(pendingStatusAction);
       sendMessage<{}, ServerSettingsResponse>({ type: API_ENDPOINTS.GET_SERVER_SETTINGS })
         .then((response) => {
           if (!response.success) {
@@ -59,6 +64,12 @@ export const UserSettingsProvider: FC<PropsWithChildren> = ({ children }) => {
         })
         .catch(() => {
           chrome.storage.local.remove<ExtensionStorage>("keyRequired");
+        }).finally(() => {
+          const idleStatusAction: UserSettingsProviderAction = {
+            type: "statusSet",
+            payload: { status: 'idle' }
+          };
+          dispatch(idleStatusAction);
         });
     };
 

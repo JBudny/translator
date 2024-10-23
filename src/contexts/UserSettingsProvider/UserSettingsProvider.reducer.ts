@@ -8,6 +8,8 @@ export const userSettingsReducer = (
       return ({ ...state, apiBaseURL: payload.apiBaseURL });
     case "apiKeySet":
       return ({ ...state, apiKey: payload.apiKey });
+    case "statusSet":
+      return ({ ...state, status: payload.status });
 
     default: {
       throw new Error(`Unhandled action type: ${type}`)
