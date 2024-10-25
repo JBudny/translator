@@ -4,7 +4,7 @@
   "description": "Translator extension",
   "version": "1.0.0",
   "action": {
-    "default_title": "Popup",
+    "default_title": "Translator",
     "default_icon": "icon128.png",
     "default_popup": "index.html"
   },
