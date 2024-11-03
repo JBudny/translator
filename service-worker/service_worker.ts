@@ -8,7 +8,7 @@ import {
 } from "../api";
 import {
   Actions,
-  isGetServerSettingsAction,
+  isServerSettingsAction,
   isLanguagesAction,
   isTranslateAction,
   MessageErrorResponse,
@@ -88,7 +88,7 @@ chrome.runtime.onMessage.addListener((action: Actions, _sender, sendResponse: (r
     if (isLanguagesAction(action)) {
       handleLanguages(sendResponse);
     };
-    if (isGetServerSettingsAction(action)) {
+    if (isServerSettingsAction(action)) {
       handleGetServerSettings(sendResponse);
     };
   };

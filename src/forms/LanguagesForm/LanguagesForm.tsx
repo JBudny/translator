@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FC, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { API_ENDPOINTS, NormalizedLanguages } from "../../../api";
+import { NormalizedLanguages } from "../../../api";
 import { MessageErrorResponse, sendMessage } from "../../../service-worker";
 import { LanguagesFormSchema, languagesFormSchema } from "./LanguagesForm.schema";
 import { ExtensionStorage } from "../../extensionStorage.types";
@@ -16,6 +16,7 @@ import {
 } from "../../../components";
 import { StyledForm } from "../../components";
 import { AsyncStatus } from "../../../types";
+import { languagesAction } from "../../../service-worker/service_worker.actions";
 
 export const LanguagesForm: FC = () => {
   const { watch, handleSubmit, formState, register, setValue } = useForm<LanguagesFormSchema>({
@@ -31,7 +32,7 @@ export const LanguagesForm: FC = () => {
 
   const getLanguages = async () => {
     setStatus('pending');
-    const languageOptions = await sendMessage<{}, NormalizedLanguages>({ type: API_ENDPOINTS.LANGUAGES })
+    const languageOptions = await sendMessage<{}, NormalizedLanguages>(languagesAction())
     if (!languageOptions.success) {
       setLanguageOptions(null);
       const { error } = languageOptions;

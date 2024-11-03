@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { ClientRectAware, PositionState, StyledList, TranslateButton } from "./components";
 import { AppProps, SelectedTextState } from "./App.types";
-import { API_ENDPOINTS, TranslateResponse } from "../../api";
+import { TranslateResponse } from "../../api";
 import {
   MessageErrorResponse,
   TranslateActionPayload,
@@ -19,8 +19,8 @@ import {
 } from "../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { useTheme } from "styled-components";
 import { AsyncStatus } from '../../types';
+import { translateAction } from "../../service-worker/service_worker.actions";
 
 const App: FC<AppProps> = (props) => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -33,16 +33,8 @@ const App: FC<AppProps> = (props) => {
   const getTranslation = async () => {
     if (!selectedText) return;
     const { source, target } = languages;
-    const translateAction = {
-      type: API_ENDPOINTS.TRANSLATE,
-      payload: {
-        q: selectedText,
-        source,
-        target
-      }
-    };
     setStatus('pending');
-    sendMessage<TranslateActionPayload, TranslateResponse>(translateAction)
+    sendMessage<TranslateActionPayload, TranslateResponse>(translateAction(selectedText, source, target))
       .then(translation => {
         if (!translation.success) {
           setTranslation(null);

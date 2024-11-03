@@ -3,7 +3,8 @@ import { UserSettingsProviderAction, UserSettingsProviderState, UserSettingsProv
 import { userSettingsReducer } from "./UserSettingsProvider.reducer";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { sendMessage } from "../../../service-worker";
-import { API_ENDPOINTS, ServerSettingsResponse } from "../../../api";
+import { ServerSettingsResponse } from "../../../api";
+import { serverSettingsAction } from "../../../service-worker/service_worker.actions";
 
 export const UserSettingsContext = createContext<{
   state: UserSettingsProviderState;
@@ -52,7 +53,7 @@ export const UserSettingsProvider: FC<PropsWithChildren> = ({ children }) => {
         payload: { status: 'pending' }
       };
       dispatch(pendingStatusAction);
-      sendMessage<{}, ServerSettingsResponse>({ type: API_ENDPOINTS.GET_SERVER_SETTINGS })
+      sendMessage<{}, ServerSettingsResponse>(serverSettingsAction())
         .then((response) => {
           if (!response.success) {
             chrome.storage.local.remove<ExtensionStorage>("keyRequired");
