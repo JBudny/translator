@@ -8,7 +8,7 @@ import {
 } from '..'
 import { DisplayMessageErrorProps } from './DisplayMessageError.types'
 
-export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ error, onRetry }) => {
+export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ error, onRetry, onReset }) => {
 
   return (
     <StyledDistribute gap="spacing2">
@@ -37,7 +37,12 @@ export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ error, onRet
           </StyledDistribute>
         </StyledDistribute>
       </StyledBox>
-      <StyledJustify justify="flex-end">
+      <StyledJustify justify={onReset ? "space-between" : "flex-end"}>
+        {onReset ? (
+          <StyledButton $appearance="transparent" onClick={onReset} type="submit">
+            <StyledText $size="medium" $weight="medium" as="span">Reset error</StyledText>
+          </StyledButton>
+        ) : null}
         <StyledButton $appearance="transparent" onClick={onRetry} type="submit">
           <StyledText $size="medium" $weight="medium" as="span">Try Again</StyledText>
         </StyledButton>
