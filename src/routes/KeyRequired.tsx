@@ -1,15 +1,15 @@
 import { FC, PropsWithChildren } from "react";
 import { Navigate } from "react-router-dom";
-import { useServerSettings } from "../contexts";
+import { useSettings } from "../../contexts";
 
 export const KeyRequired: FC<PropsWithChildren> = ({ children }) => {
-  const serverSettings = useServerSettings();
+  const settings = useSettings();
 
-  if (!serverSettings) {
+  if (!settings) {
     return <Navigate to="/" replace />
   }
 
-  if (serverSettings.state.keyRequired === false) {
+  if (settings.state.keyRequired === false) {
     return <Navigate to="/languages" replace />;
   };
 

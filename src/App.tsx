@@ -4,6 +4,7 @@ import { APIBaseURLForm, APIKeyForm, LanguagesForm } from "./forms";
 import { StyledAppHeader, StyledBox, StyledText } from "../components";
 import { StyledBackButton, StyledPopupWrapper } from "./components";
 import { KeyRequired, Root } from "./routes"
+import { SettingsProvider, StorageProvider } from "../contexts";
 
 const App: FC = () => {
   return (
@@ -20,7 +21,11 @@ const App: FC = () => {
               </StyledBox>
             </StyledAppHeader>
             <StyledBox background="gray700" padding="spacing3">
-              <Outlet />
+              <StorageProvider>
+                <SettingsProvider>
+                  <Outlet />
+                </SettingsProvider>
+              </StorageProvider>
             </StyledBox>
           </Root>
         }>

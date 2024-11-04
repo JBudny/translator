@@ -1,18 +1,18 @@
 import { FC, HTMLAttributes, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserSettings } from "../contexts";
+import { useStorage } from "../../contexts";
 
 /**
  * Navigation logic here is used to redirect to the first empty step of the
  * multi step form after it was closed and opened again.
  */
 export const Root: FC<HTMLAttributes<HTMLDivElement>> = ({ children }) => {
-  const auth = useUserSettings();
+  const storage = useStorage();
   const navigation = useNavigate();
 
-  if (!auth) return null;
+  if (!storage) return null;
 
-  const { state: { apiBaseURL, apiKey } } = auth;
+  const { state: { apiBaseURL, apiKey } } = storage;
 
   useEffect(() => {
     if (apiBaseURL) navigation("apikey");

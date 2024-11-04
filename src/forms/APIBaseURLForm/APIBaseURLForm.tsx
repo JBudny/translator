@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react"
+import { FC, useEffect, useState } from "react"
 import {
   APIBaseURLFormSchema,
   apiBaseURLFormSchema
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
 import {
+  DisplayMessageError,
   StyledBox,
   StyledButton,
   StyledDistribute,
@@ -17,15 +18,18 @@ import {
   StyledText
 } from "../../../components";
 import { StyledForm } from "../../components";
-import { useUserSettings } from "../../contexts";
+import {
+  getServerSettings,
+  settingsErrorReset,
+  useSettings,
+  useStorage
+} from "../../../contexts";
 
 export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
-  const auth = useUserSettings();
   const navigate = useNavigate();
-
-  if (!auth) return null;
-
-  const { state: { apiBaseURL, status } } = auth;
+  const { state: { apiBaseURL } } = useStorage();
+  const { state: { status, error: settingsError }, settingsDispatch } = useSettings();
+  const [error, setError] = useState<string | null>(null);
 
   const { handleSubmit, formState, register, setValue } = useForm<APIBaseURLFormSchema>({
     resolver: yupResolver(apiBaseURLFormSchema),
@@ -34,18 +38,41 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
   });
 
   useEffect(() => {
-    chrome.storage.local.get<ExtensionStorage>()
-      .then(({ apiBaseURL }) => {
-        if (apiBaseURL) setValue("apiBaseURL", apiBaseURL);
-      });
-  }, []);
+    if (apiBaseURL) setValue("apiBaseURL", apiBaseURL);
+  }, [apiBaseURL]);
 
   const { errors } = formState;
 
   const onSubmit: SubmitHandler<APIBaseURLFormSchema> = ({ apiBaseURL }) => {
     chrome.storage.local.set<ExtensionStorage>({ apiBaseURL })
-      .then(() => navigate(nextRoute))
-      .catch(() => setValue("apiBaseURL", ""));
+      .then(() => {
+        if (!settingsError) {
+          const onSuccess = () => {
+            navigate(nextRoute);
+          };
+          if (apiBaseURL) {
+            getServerSettings(settingsDispatch, onSuccess);
+          }
+        };
+      })
+      .catch((error) => {
+        if (chrome.runtime.lastError) {
+          setError(
+            chrome.runtime.lastError.message ||
+            `Unknown error while setting the API URL to the storage. (APIBaseURLForm)`
+          );
+
+          return;
+        }
+
+        if (error instanceof Error) {
+          setError(error.message);
+
+          return;
+        }
+
+        setError(`Unknown error while setting the API URL to the storage. (APIBaseURLForm)`);
+      });
   };
 
   if (status === 'pending') return (
@@ -53,6 +80,21 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
       <StyledLoadingIndicator title="Fetching server settings" />
     </StyledBox>
   );
+
+  const onSettingsErrorRetry = () => {
+    const onSuccess = () => {
+      navigate(nextRoute);
+    };
+    if (apiBaseURL) {
+      getServerSettings(settingsDispatch, onSuccess);
+    }
+  };
+
+  const onSettingsErrorReset = () => {
+    settingsDispatch(settingsErrorReset);
+  };
+
+  if (settingsError) return <DisplayMessageError error={{ message: settingsError }} onRetry={onSettingsErrorRetry} onReset={onSettingsErrorReset} />
 
   return (
     <StyledDistribute gap="spacing3">
