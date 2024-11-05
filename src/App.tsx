@@ -3,7 +3,7 @@ import { Outlet, Route, Routes } from "react-router-dom";
 import { APIBaseURLForm, APIKeyForm, LanguagesForm } from "./forms";
 import { StyledAppHeader, StyledBox, StyledText } from "../components";
 import { StyledBackButton, StyledPopupWrapper } from "./components";
-import { KeyRequired, Root } from "./routes"
+import { KeyRequired } from "./routes"
 import { SettingsProvider, StorageProvider } from "../contexts";
 
 const App: FC = () => {
@@ -11,7 +11,7 @@ const App: FC = () => {
     <StyledPopupWrapper>
       <Routes>
         <Route element={
-          <Root>
+          <>
             <StyledAppHeader>
               <StyledBackButton />
               <StyledBox padding="spacing2">
@@ -27,7 +27,7 @@ const App: FC = () => {
                 </SettingsProvider>
               </StorageProvider>
             </StyledBox>
-          </Root>
+          </>
         }>
           <Route path="/" element={
             <APIBaseURLForm nextRoute="/apikey" />

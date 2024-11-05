@@ -7,7 +7,7 @@ export const KeyRequired: FC<PropsWithChildren> = ({ children }) => {
 
   if (!settings) {
     return <Navigate to="/" replace />
-  }
+  };
 
   if (settings.state.keyRequired === false) {
     return <Navigate to="/languages" replace />;
