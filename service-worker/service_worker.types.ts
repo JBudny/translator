@@ -6,7 +6,7 @@ export type ServerSettingsActionType = API_ENDPOINTS.GET_SERVER_SETTINGS;
 export type TranslateActionType = API_ENDPOINTS.TRANSLATE;
 
 export interface LanguagesActionPayload {
-  apiBaseURL: string;
+  apiBaseURL?: string;
 };
 
 export interface ServerSettingsActionPayload {
@@ -17,6 +17,8 @@ export interface TranslateActionPayload {
   q: string;
   source: string;
   target: string;
+  apiBaseURL?: string;
+  apiKey?: string;
 };
 
 export interface DetectActionPayload {
@@ -34,10 +36,10 @@ export interface PayloadAction<T> extends Action {
 };
 
 export type DetectAction = PayloadAction<DetectActionPayload>;
-export type LanguagesAction = Action;
-export type ServerSettingsAction = Action;
+export type LanguagesAction = PayloadAction<LanguagesActionPayload>;
+export type ServerSettingsAction = PayloadAction<ServerSettingsActionPayload>;;
 export type TranslateAction = PayloadAction<TranslateActionPayload>;
-export type Actions = DetectAction | LanguagesAction | TranslateAction;
+export type Actions = Action | DetectAction | LanguagesAction | TranslateAction;
 
 export const isLanguagesAction = (action: Actions): action is LanguagesAction =>
   action.type === API_ENDPOINTS.LANGUAGES;

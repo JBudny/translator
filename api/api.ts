@@ -1,33 +1,12 @@
-import { ExtensionStorage } from "../src/extensionStorage.types";
 import { API_ENDPOINTS } from "./constants";
 import { ApiError } from "./errors";
 
-let currentApiKey: string | undefined = '';
-let currentBaseUrl: string | undefined = '';
-
-chrome.storage.onChanged.addListener((changes) => {
-  if ('apiKey' in changes) {
-    currentApiKey = changes.apiKey.newValue;
-  }
-  if ('apiBaseURL' in changes) {
-    currentBaseUrl = changes.apiBaseURL.newValue;
-  }
-});
-
-chrome.storage.local.get<ExtensionStorage>()
-  .then(({ apiKey, apiBaseURL }) => {
-    if (apiKey)
-      currentApiKey = apiKey;
-    if (apiBaseURL)
-      currentBaseUrl = apiBaseURL;
-  });
-
-export const api = async <T>(endpoint: API_ENDPOINTS, init: RequestInit): Promise<T> => {
-  if (!currentBaseUrl)
+export const api = async <T>(endpoint: API_ENDPOINTS, init: RequestInit, apiBaseURL?: string): Promise<T> => {
+  if (!apiBaseURL)
     throw new Error("API Base URL is not set");
 
   try {
-    const API_URL = new URL(endpoint, currentBaseUrl);
+    const API_URL = new URL(endpoint, apiBaseURL);
     const response = await fetch(API_URL, init);
 
     if (!response.ok) {
@@ -51,5 +30,3 @@ export const api = async <T>(endpoint: API_ENDPOINTS, init: RequestInit): Promis
     };
   };
 };
-
-export { currentApiKey, currentBaseUrl };

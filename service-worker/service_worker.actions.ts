@@ -6,11 +6,14 @@ import {
   TranslateAction
 } from "./service_worker.types";
 
-export const serverSettingsAction = (): ServerSettingsAction => ({
-  type: API_ENDPOINTS.GET_SERVER_SETTINGS
-});
+export const serverSettingsAction =
+  (apiBaseURL: string): ServerSettingsAction => ({
+    payload: { apiBaseURL },
+    type: API_ENDPOINTS.GET_SERVER_SETTINGS
+  });
 
-export const languagesAction = (): LanguagesAction => ({
+export const languagesAction = (apiBaseURL?: string): LanguagesAction => ({
+  payload: { apiBaseURL },
   type: API_ENDPOINTS.LANGUAGES
 });
 
@@ -18,8 +21,10 @@ export const translateAction = (
   q: string,
   source: string,
   target: string,
+  apiBaseURL?: string,
+  apiKey?: string
 ): TranslateAction => ({
-  payload: { q, source, target },
+  payload: { apiBaseURL, q, source, target, apiKey },
   type: API_ENDPOINTS.TRANSLATE
 });
 

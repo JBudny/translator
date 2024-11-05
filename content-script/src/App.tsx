@@ -6,6 +6,7 @@ import {
   MessageErrorResponse,
   TranslateActionPayload,
   sendMessage,
+  translateAction,
 } from "../../service-worker";
 import { ExtensionStorage } from "../../src/extensionStorage.types";
 import {
@@ -20,7 +21,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { AsyncStatus } from '../../types';
-import { translateAction } from "../../service-worker/service_worker.actions";
+import { useStorage } from "../../contexts";
 
 const App: FC<AppProps> = (props) => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
@@ -29,12 +30,15 @@ const App: FC<AppProps> = (props) => {
   const [error, setError] = useState<MessageErrorResponse['error'] | null>(null);
   const [languages, setLanguages] = useState<{ source: string, target: string }>({ source: "", target: "" });
   const [status, setStatus] = useState<AsyncStatus>('idle');
+  const { state: { apiBaseURL, apiKey } } = useStorage();
 
   const getTranslation = async () => {
     if (!selectedText) return;
     const { source, target } = languages;
     setStatus('pending');
-    sendMessage<TranslateActionPayload, TranslateResponse>(translateAction(selectedText, source, target))
+    sendMessage<TranslateActionPayload, TranslateResponse>(
+      translateAction(selectedText, source, target, apiBaseURL, apiKey)
+    )
       .then(translation => {
         if (!translation.success) {
           setTranslation(null);

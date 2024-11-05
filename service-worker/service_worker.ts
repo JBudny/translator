@@ -11,8 +11,10 @@ import {
   isServerSettingsAction,
   isLanguagesAction,
   isTranslateAction,
+  LanguagesAction,
   MessageErrorResponse,
   MessageResponse,
+  ServerSettingsAction,
   TranslateAction
 } from "./service_worker.types";
 import { NormalizedLanguages } from "../api";
@@ -41,18 +43,18 @@ const handleError = (
     return;
   };
 
-  errorMessage.error.message = `Unknown error inside the service worker ${context}.`;
+  errorMessage.error.message = `Unknown error inside the service worker. (${context})`;
   sendResponse(errorMessage);
 
   return;
 };
 
 const handleTranslate = async (
-  { payload: { q, source, target } }: TranslateAction,
+  { payload: { q, source, target, apiBaseURL, apiKey } }: TranslateAction,
   sendResponse: (response: MessageResponse<TranslateResponse>) => void
 ) => {
   try {
-    const translation = await translate(q, source, target);
+    const translation = await translate(q, source, target, apiBaseURL, apiKey);
 
     sendResponse({ success: true, data: translation });
   } catch (error) {
@@ -60,9 +62,11 @@ const handleTranslate = async (
   };
 };
 
-const handleLanguages = async (sendResponse: (response: MessageResponse<NormalizedLanguages>) => void) => {
+const handleLanguages = async (
+  { payload: { apiBaseURL } }: LanguagesAction,
+  sendResponse: (response: MessageResponse<NormalizedLanguages>) => void) => {
   try {
-    const response = await languages();
+    const response = await languages(apiBaseURL);
 
     sendResponse({ success: true, data: response });
   } catch (error) {
@@ -70,13 +74,15 @@ const handleLanguages = async (sendResponse: (response: MessageResponse<Normaliz
   };
 };
 
-const handleGetServerSettings = async (sendResponse: (response: MessageResponse<ServerSettingsResponse>) => void) => {
+const handleServerSettings = async (
+  { payload: { apiBaseURL } }: ServerSettingsAction,
+  sendResponse: (response: MessageResponse<ServerSettingsResponse>) => void) => {
   try {
-    const response = await settings();
+    const response = await settings(apiBaseURL);
 
     sendResponse({ success: true, data: response });
   } catch (error) {
-    handleError(error, sendResponse, 'handleGetServerSettings');
+    handleError(error, sendResponse, 'handleServerSettings');
   };
 };
 
@@ -84,13 +90,24 @@ chrome.runtime.onMessage.addListener((action: Actions, _sender, sendResponse: (r
   const handleMessage = async () => {
     if (isTranslateAction(action)) {
       handleTranslate(action, sendResponse);
+
+      return;
     };
     if (isLanguagesAction(action)) {
-      handleLanguages(sendResponse);
+      handleLanguages(action, sendResponse);
+
+      return;
     };
     if (isServerSettingsAction(action)) {
-      handleGetServerSettings(sendResponse);
+      handleServerSettings(action, sendResponse);
+
+      return;
     };
+
+    handleError(
+      new Error("Unknown message type in service worker"),
+      sendResponse, 'handleMessage'
+    );
   };
 
   handleMessage();

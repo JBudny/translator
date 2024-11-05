@@ -3,13 +3,17 @@ import { api } from "../api";
 import { API_ENDPOINTS, API_TIMEOUT } from "../constants";
 import { Language, LanguagesResponse, NormalizedLanguages } from "./languages.types";
 
-export const languages = async (): Promise<NormalizedLanguages> => {
+export const languages = async (apiBaseURL?: string): Promise<NormalizedLanguages> => {
   try {
-    const response: LanguagesResponse = await api<LanguagesResponse>(API_ENDPOINTS.LANGUAGES, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      signal: AbortSignal.timeout(API_TIMEOUT),
-    });
+    const response: LanguagesResponse = await api<LanguagesResponse>(
+      API_ENDPOINTS.LANGUAGES,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(API_TIMEOUT),
+      },
+      apiBaseURL
+    );
 
     const removeSourceLanguageFromTargets = (language: Language) => ({
       ...language,
@@ -30,5 +34,4 @@ export const languages = async (): Promise<NormalizedLanguages> => {
   } catch (error) {
     throw error;
   }
-}
-
+};

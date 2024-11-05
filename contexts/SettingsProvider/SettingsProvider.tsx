@@ -26,11 +26,12 @@ import {
 
 export const getServerSettings = async (
   dispatch: (action: SettingsProviderAction) => void,
+  apiBaseURL: string,
   onSuccess?: () => void,
 ) => {
   dispatch(settingsStatusSet('pending'));
   return sendMessage<ServerSettingsActionPayload, ServerSettingsResponse>(
-    serverSettingsAction()
+    serverSettingsAction(apiBaseURL)
   )
     .then((response) => {
       if (!response.success) {

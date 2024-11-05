@@ -51,7 +51,7 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
             navigate(nextRoute);
           };
           if (apiBaseURL) {
-            getServerSettings(settingsDispatch, onSuccess);
+            getServerSettings(settingsDispatch, apiBaseURL, onSuccess);
           }
         };
       })
@@ -81,20 +81,20 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
     </StyledBox>
   );
 
-  const onSettingsErrorRetry = () => {
+  const onRetry = () => {
     const onSuccess = () => {
       navigate(nextRoute);
     };
     if (apiBaseURL) {
-      getServerSettings(settingsDispatch, onSuccess);
+      getServerSettings(settingsDispatch, apiBaseURL, onSuccess);
     }
   };
 
-  const onSettingsErrorReset = () => {
+  const onReset = () => {
     settingsDispatch(settingsErrorReset);
   };
 
-  if (settingsError) return <DisplayMessageError error={{ message: settingsError }} onRetry={onSettingsErrorRetry} onReset={onSettingsErrorReset} />
+  if (settingsError) return <DisplayMessageError error={{ message: settingsError }} onRetry={onRetry} onReset={onReset} />
 
   return (
     <StyledDistribute gap="spacing3">
