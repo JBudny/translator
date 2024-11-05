@@ -10,7 +10,7 @@ export interface LanguagesActionPayload {
 };
 
 export interface ServerSettingsActionPayload {
-  apiBaseURL: string;
+  apiBaseURL?: string;
 };
 
 export interface TranslateActionPayload {

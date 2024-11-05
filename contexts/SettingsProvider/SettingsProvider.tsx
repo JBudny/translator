@@ -26,7 +26,7 @@ import {
 
 export const getServerSettings = async (
   dispatch: (action: SettingsProviderAction) => void,
-  apiBaseURL: string,
+  apiBaseURL?: string,
   onSuccess?: () => void,
 ) => {
   dispatch(settingsStatusSet('pending'));

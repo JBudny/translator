@@ -50,9 +50,7 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
           const onSuccess = () => {
             navigate(nextRoute);
           };
-          if (apiBaseURL) {
-            getServerSettings(settingsDispatch, apiBaseURL, onSuccess);
-          }
+          getServerSettings(settingsDispatch, apiBaseURL, onSuccess);
         };
       })
       .catch((error) => {
@@ -85,9 +83,8 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
     const onSuccess = () => {
       navigate(nextRoute);
     };
-    if (apiBaseURL) {
-      getServerSettings(settingsDispatch, apiBaseURL, onSuccess);
-    }
+
+    getServerSettings(settingsDispatch, apiBaseURL, onSuccess);
   };
 
   const onReset = () => {

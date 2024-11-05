@@ -2,7 +2,7 @@ import { api } from "../api";
 import { API_ENDPOINTS, API_TIMEOUT } from "../constants";
 import { ServerSettingsResponse } from "./settings.types";
 
-export const settings = async (apiBaseURL: string): Promise<ServerSettingsResponse> => {
+export const settings = async (apiBaseURL?: string): Promise<ServerSettingsResponse> => {
   return await api<ServerSettingsResponse>(
     API_ENDPOINTS.GET_SERVER_SETTINGS,
     {

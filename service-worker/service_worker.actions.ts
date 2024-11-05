@@ -7,7 +7,7 @@ import {
 } from "./service_worker.types";
 
 export const serverSettingsAction =
-  (apiBaseURL: string): ServerSettingsAction => ({
+  (apiBaseURL?: string): ServerSettingsAction => ({
     payload: { apiBaseURL },
     type: API_ENDPOINTS.GET_SERVER_SETTINGS
   });
