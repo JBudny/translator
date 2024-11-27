@@ -1,6 +1,7 @@
-export { languages } from './languages';
+export { fetchLanguages } from './languages';
 export {
   type Language,
   type LanguagesResponse,
-  type NormalizedLanguages
+  type NormalizedLanguagesResponse
 } from './languages.types';
+export { transformLanguagesResponse } from './languages.utils'

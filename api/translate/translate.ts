@@ -2,7 +2,7 @@ import { api } from "../api";
 import { API_ENDPOINTS, API_TIMEOUT } from "../constants";
 import { TranslateResponse } from "./translate.types";
 
-export const translate = async (
+export const fetchTranslate = async (
   q: string,
   source: string,
   target: string,

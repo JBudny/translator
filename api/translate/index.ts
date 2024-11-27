@@ -1,2 +1,2 @@
-export { translate } from './translate';
+export { fetchTranslate } from './translate';
 export { type TranslateResponse } from './translate.types';

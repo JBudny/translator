@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FC, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { NormalizedLanguages } from "../../../api";
+import { NormalizedLanguagesResponse } from "../../../api";
 import {
   MessageErrorResponse,
   sendMessage,
@@ -29,7 +29,7 @@ export const LanguagesForm: FC = () => {
     defaultValues: { sourceLanguage: "", targetLanguage: "" },
     mode: "all",
   });
-  const [languageOptions, setLanguageOptions] = useState<NormalizedLanguages | null>(null);
+  const [languageOptions, setLanguageOptions] = useState<NormalizedLanguagesResponse | null>(null);
   const [error, setError] = useState<MessageErrorResponse['error'] | null>(null);
   const sourceLanguageWatch = watch("sourceLanguage");
   const targetLanguageWatch = watch("targetLanguage");
@@ -38,7 +38,7 @@ export const LanguagesForm: FC = () => {
 
   const getLanguages = async () => {
     setStatus('pending');
-    const languageOptions = await sendMessage<LanguagesActionPayload, NormalizedLanguages>(
+    const languageOptions = await sendMessage<LanguagesActionPayload, NormalizedLanguagesResponse>(
       languagesAction(apiBaseURL)
     );
     if (!languageOptions.success) {

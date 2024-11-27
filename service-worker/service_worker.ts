@@ -1,9 +1,9 @@
 import {
   ApiError,
-  languages,
-  settings,
+  fetchLanguages,
+  fetchSettings,
   ServerSettingsResponse,
-  translate,
+  fetchTranslate,
   TranslateResponse
 } from "../api";
 import {
@@ -17,7 +17,8 @@ import {
   ServerSettingsAction,
   TranslateAction
 } from "./service_worker.types";
-import { NormalizedLanguages } from "../api";
+import { NormalizedLanguagesResponse } from "../api";
+import { transformLanguagesResponse } from "../api/languages";
 
 const handleError = (
   error: unknown,
@@ -54,7 +55,7 @@ const handleTranslate = async (
   sendResponse: (response: MessageResponse<TranslateResponse>) => void
 ) => {
   try {
-    const translation = await translate(q, source, target, apiBaseURL, apiKey);
+    const translation = await fetchTranslate(q, source, target, apiBaseURL, apiKey);
 
     sendResponse({ success: true, data: translation });
   } catch (error) {
@@ -64,11 +65,12 @@ const handleTranslate = async (
 
 const handleLanguages = async (
   { payload: { apiBaseURL } }: LanguagesAction,
-  sendResponse: (response: MessageResponse<NormalizedLanguages>) => void) => {
+  sendResponse: (response: MessageResponse<NormalizedLanguagesResponse>) => void) => {
   try {
-    const response = await languages(apiBaseURL);
+    const response = await fetchLanguages(apiBaseURL);
+    const transformedResponse = transformLanguagesResponse(response);
 
-    sendResponse({ success: true, data: response });
+    sendResponse({ success: true, data: transformedResponse });
   } catch (error) {
     handleError(error, sendResponse, 'handleLanguages');
   };
@@ -78,7 +80,7 @@ const handleServerSettings = async (
   { payload: { apiBaseURL } }: ServerSettingsAction,
   sendResponse: (response: MessageResponse<ServerSettingsResponse>) => void) => {
   try {
-    const response = await settings(apiBaseURL);
+    const response = await fetchSettings(apiBaseURL);
 
     sendResponse({ success: true, data: response });
   } catch (error) {
@@ -86,7 +88,7 @@ const handleServerSettings = async (
   };
 };
 
-chrome.runtime.onMessage.addListener((action: Actions, _sender, sendResponse: (response?: MessageResponse<NormalizedLanguages | TranslateResponse | ServerSettingsResponse>) => void) => {
+chrome.runtime.onMessage.addListener((action: Actions, _sender, sendResponse: (response?: MessageResponse<NormalizedLanguagesResponse | TranslateResponse | ServerSettingsResponse>) => void) => {
   const handleMessage = async () => {
     if (isTranslateAction(action)) {
       handleTranslate(action, sendResponse);

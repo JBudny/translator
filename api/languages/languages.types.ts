@@ -8,7 +8,7 @@ export interface Language {
 
 export type LanguagesResponse = Language[];
 
-export type NormalizedLanguages = NormalizedSchema<{
+export type NormalizedLanguagesResponse = NormalizedSchema<{
   languages: {
     [key: string]: Language;
   };
