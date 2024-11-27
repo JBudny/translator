@@ -91,7 +91,7 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
     settingsDispatch(settingsErrorReset);
   };
 
-  if (settingsError) return <DisplayMessageError error={{ message: settingsError }} onRetry={onRetry} onReset={onReset} />
+  if (settingsError) return <DisplayMessageError message={settingsError} onRetry={onRetry} onReset={onReset} />
 
   return (
     <StyledDistribute gap="spacing3">

@@ -1,10 +1,9 @@
 import {
-  ApiError,
   fetchLanguages,
   fetchSettings,
-  ServerSettingsResponse,
+  SettingsResponse,
   fetchTranslate,
-  TranslateResponse
+  TranslateResponse,
 } from "../api";
 import {
   Actions,
@@ -15,37 +14,31 @@ import {
   MessageErrorResponse,
   MessageResponse,
   ServerSettingsAction,
-  TranslateAction
+  TranslateAction,
 } from "./service_worker.types";
-import { NormalizedLanguagesResponse } from "../api";
-import { transformLanguagesResponse } from "../api/languages";
+import {
+  NormalizedLanguagesResponse,
+  transformLanguagesResponse,
+} from "../api";
 
 const handleError = (
   error: unknown,
   sendResponse: (response: MessageErrorResponse) => void,
   context: string
 ): void => {
-  let errorMessage: MessageErrorResponse = {
+  const response: MessageErrorResponse = {
     success: false,
-    error: { message: '' },
-  };
-
-  if (error instanceof ApiError) {
-    errorMessage.error = { message: error.message, cause: error.cause.code };
-    sendResponse(errorMessage);
-
-    return;
+    message: `Unknown error inside the service worker. (${context})`,
   };
 
   if (error instanceof Error) {
-    errorMessage.error.message = error.message;
-    sendResponse(errorMessage);
+    const { message } = error;
+    sendResponse({ ...response, message });
 
     return;
-  };
+  }
 
-  errorMessage.error.message = `Unknown error inside the service worker. (${context})`;
-  sendResponse(errorMessage);
+  sendResponse(response);
 
   return;
 };
@@ -55,63 +48,83 @@ const handleTranslate = async (
   sendResponse: (response: MessageResponse<TranslateResponse>) => void
 ) => {
   try {
-    const translation = await fetchTranslate(q, source, target, apiBaseURL, apiKey);
+    const translation = await fetchTranslate(
+      q,
+      source,
+      target,
+      apiBaseURL,
+      apiKey
+    );
 
     sendResponse({ success: true, data: translation });
   } catch (error) {
-    handleError(error, sendResponse, 'handleTranslate');
-  };
+    handleError(error, sendResponse, "handleTranslate");
+  }
 };
 
 const handleLanguages = async (
   { payload: { apiBaseURL } }: LanguagesAction,
-  sendResponse: (response: MessageResponse<NormalizedLanguagesResponse>) => void) => {
+  sendResponse: (response: MessageResponse<NormalizedLanguagesResponse>) => void
+) => {
   try {
     const response = await fetchLanguages(apiBaseURL);
     const transformedResponse = transformLanguagesResponse(response);
 
     sendResponse({ success: true, data: transformedResponse });
   } catch (error) {
-    handleError(error, sendResponse, 'handleLanguages');
-  };
+    handleError(error, sendResponse, "handleLanguages");
+  }
 };
 
 const handleServerSettings = async (
   { payload: { apiBaseURL } }: ServerSettingsAction,
-  sendResponse: (response: MessageResponse<ServerSettingsResponse>) => void) => {
+  sendResponse: (response: MessageResponse<SettingsResponse>) => void
+) => {
   try {
     const response = await fetchSettings(apiBaseURL);
 
     sendResponse({ success: true, data: response });
   } catch (error) {
-    handleError(error, sendResponse, 'handleServerSettings');
-  };
+    handleError(error, sendResponse, "handleServerSettings");
+  }
 };
 
-chrome.runtime.onMessage.addListener((action: Actions, _sender, sendResponse: (response?: MessageResponse<NormalizedLanguagesResponse | TranslateResponse | ServerSettingsResponse>) => void) => {
-  const handleMessage = async () => {
-    if (isTranslateAction(action)) {
-      handleTranslate(action, sendResponse);
+chrome.runtime.onMessage.addListener(
+  (
+    action: Actions,
+    _sender,
+    sendResponse: (
+      response?: MessageResponse<
+        NormalizedLanguagesResponse | TranslateResponse | SettingsResponse
+      >
+    ) => void
+  ) => {
+    const handleMessage = async () => {
+      if (isTranslateAction(action)) {
+        handleTranslate(action, sendResponse);
 
-      return;
+        return;
+      }
+      if (isLanguagesAction(action)) {
+        handleLanguages(action, sendResponse);
+
+        return;
+      }
+      if (isServerSettingsAction(action)) {
+        handleServerSettings(action, sendResponse);
+
+        return;
+      }
+
+      handleError(
+        new Error("Unknown message type in service worker"),
+        sendResponse,
+        "handleMessage"
+      );
     };
-    if (isLanguagesAction(action)) {
-      handleLanguages(action, sendResponse);
 
-      return;
-    };
-    if (isServerSettingsAction(action)) {
-      handleServerSettings(action, sendResponse);
+    handleMessage();
+    return true;
+  }
+);
 
-      return;
-    };
-
-    handleError(
-      new Error("Unknown message type in service worker"),
-      sendResponse, 'handleMessage'
-    );
-  };
-
-  handleMessage();
-  return true;
-});

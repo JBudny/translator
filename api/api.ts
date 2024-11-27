@@ -1,5 +1,4 @@
 import { API_ENDPOINTS } from "./constants";
-import { ApiError } from "./errors";
 
 export const api = async <T>(endpoint: API_ENDPOINTS, init: RequestInit, apiBaseURL?: string): Promise<T> => {
   if (!apiBaseURL)
@@ -10,16 +9,16 @@ export const api = async <T>(endpoint: API_ENDPOINTS, init: RequestInit, apiBase
     const response = await fetch(API_URL, init);
 
     if (!response.ok) {
-      if (response.status === 400) throw new ApiError(`Invalid request. (${endpoint})`, { code: response.status })
-      if (response.status === 403) throw new ApiError(`Banned. (${endpoint})`, { code: response.status })
-      if (response.status === 429) throw new ApiError(`Slow down. (${endpoint})`, { code: response.status })
-      if (response.status === 500) throw new ApiError(`Server error. (${endpoint})`, { code: response.status })
+      if (response.status === 400) throw new Error(`Invalid request. (${endpoint})`)
+      if (response.status === 403) throw new Error(`Banned. (${endpoint})`)
+      if (response.status === 429) throw new Error(`Slow down. (${endpoint})`)
+      if (response.status === 500) throw new Error(`Server error. (${endpoint})`)
     };
 
     return await response.json() as T;
   } catch (error: unknown) {
-    if (error instanceof ApiError) {
-      throw new ApiError(error.message, { code: error.cause.code });
+    if (error instanceof Error) {
+      throw new Error(error.message);
     } else if (error instanceof DOMException &&
       (error.name === "TimeoutError" || error.name === "AbortError")) {
       throw new Error(`The ${endpoint} request was aborted due to a timeout.`);

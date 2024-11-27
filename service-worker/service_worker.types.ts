@@ -52,10 +52,7 @@ export const isServerSettingsAction = (action: Actions): action is ServerSetting
 
 export interface MessageErrorResponse {
   success: false;
-  error: {
-    message: Error['message'];
-    cause?: number;
-  }
+  message: Error['message'];
 }
 
 export interface MessageSuccessResponse<T> {

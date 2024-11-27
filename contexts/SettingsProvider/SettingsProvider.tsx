@@ -12,7 +12,7 @@ import {
   settingsProviderReducer,
   SettingsProviderReducer
 } from "./SettingsProvider.reducer";
-import { ServerSettingsResponse } from "../../api";
+import { SettingsResponse } from "../../api";
 import {
   sendMessage,
   serverSettingsAction,
@@ -30,12 +30,12 @@ export const getServerSettings = async (
   onSuccess?: () => void,
 ) => {
   dispatch(settingsStatusSet('pending'));
-  return sendMessage<ServerSettingsActionPayload, ServerSettingsResponse>(
+  return sendMessage<ServerSettingsActionPayload, SettingsResponse>(
     serverSettingsAction(apiBaseURL)
   )
     .then((response) => {
       if (!response.success) {
-        dispatch(settingsErrorSet(response.error.message));
+        dispatch(settingsErrorSet(response.message));
         dispatch(settingsStatusSet('fail'));
 
         return;

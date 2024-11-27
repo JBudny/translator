@@ -1,2 +1,2 @@
 export { fetchSettings } from './settings';
-export { type ServerSettingsResponse } from './settings.types';
+export { type SettingsResponse } from './settings.types';

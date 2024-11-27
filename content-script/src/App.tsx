@@ -27,7 +27,7 @@ const App: FC<AppProps> = (props) => {
   const [selectedText, setSelectedText] = useState<SelectedTextState>("");
   const [position, setPosition] = useState<PositionState>({ x: 0, y: 0 });
   const [translation, setTranslation] = useState<TranslateResponse | null>(null);
-  const [error, setError] = useState<MessageErrorResponse['error'] | null>(null);
+  const [error, setError] = useState<MessageErrorResponse['message'] | null>(null);
   const [languages, setLanguages] = useState<{ source: string, target: string }>({ source: "", target: "" });
   const [status, setStatus] = useState<AsyncStatus>('idle');
   const { state: { apiBaseURL, apiKey } } = useStorage();
@@ -42,8 +42,8 @@ const App: FC<AppProps> = (props) => {
       .then(translation => {
         if (!translation.success) {
           setTranslation(null);
-          const { error } = translation;
-          setError(error);
+          const { message } = translation;
+          setError(message);
 
           return;
         };
@@ -55,14 +55,8 @@ const App: FC<AppProps> = (props) => {
       .catch((error) => {
         setTranslation(null);
         if (error instanceof Error) {
-          const { message, cause } = error;
-          if (typeof cause === 'number') {
-            setError({ message, cause })
-
-            return;
-          };
-
-          setError({ message });
+          const { message } = error;
+          setError(message);
         }
       })
       .finally(() => {
@@ -179,7 +173,7 @@ const App: FC<AppProps> = (props) => {
                 <FontAwesomeIcon icon={faClose} height="1em" />
               </StyledButton>
             </StyledJustify>
-            <DisplayMessageError error={error} onRetry={handleRetry} />
+            <DisplayMessageError message={error} onRetry={handleRetry} />
           </StyledDistribute>
         </StyledBox>
       ) : null}

@@ -3,9 +3,9 @@ export {
   fetchLanguages,
   type Language,
   type LanguagesResponse,
-  type NormalizedLanguagesResponse
+  type NormalizedLanguagesResponse,
+  transformLanguagesResponse
 } from './languages';
 export { api } from "./api";
 export { API_ENDPOINTS, API_TIMEOUT } from "./constants";
-export { ApiError } from "./errors";
-export { type ServerSettingsResponse, fetchSettings } from './settings';
+export { type SettingsResponse, fetchSettings } from './settings';

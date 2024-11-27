@@ -76,7 +76,7 @@ export const StorageProvider: FC<PropsWithChildren> = ({ children }) => {
   };
 
   if (state.error) return (
-    <DisplayMessageError error={{ message: state.error }} onRetry={onRetry} />
+    <DisplayMessageError message={state.error} onRetry={onRetry} />
   );
 
   const value = { state, storageDispatch };

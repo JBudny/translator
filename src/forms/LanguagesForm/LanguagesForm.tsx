@@ -30,7 +30,7 @@ export const LanguagesForm: FC = () => {
     mode: "all",
   });
   const [languageOptions, setLanguageOptions] = useState<NormalizedLanguagesResponse | null>(null);
-  const [error, setError] = useState<MessageErrorResponse['error'] | null>(null);
+  const [error, setError] = useState<MessageErrorResponse['message'] | null>(null);
   const sourceLanguageWatch = watch("sourceLanguage");
   const targetLanguageWatch = watch("targetLanguage");
   const [status, setStatus] = useState<AsyncStatus>('idle');
@@ -43,8 +43,8 @@ export const LanguagesForm: FC = () => {
     );
     if (!languageOptions.success) {
       setLanguageOptions(null);
-      const { error } = languageOptions;
-      setError(error);
+      const { message } = languageOptions;
+      setError(message);
 
       return;
     };
@@ -76,7 +76,7 @@ export const LanguagesForm: FC = () => {
   };
 
   if (error) {
-    return <DisplayMessageError error={error} onRetry={handleRetry} />;
+    return <DisplayMessageError message={error} onRetry={handleRetry} />;
   }
 
   const { errors } = formState;

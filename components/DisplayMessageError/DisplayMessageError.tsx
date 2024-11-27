@@ -8,7 +8,7 @@ import {
 } from '..'
 import { DisplayMessageErrorProps } from './DisplayMessageError.types'
 
-export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ error, onRetry, onReset }) => {
+export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ message, onRetry, onReset }) => {
 
   return (
     <StyledDistribute gap="spacing2">
@@ -17,22 +17,12 @@ export const DisplayMessageError: FC<DisplayMessageErrorProps> = ({ error, onRet
       </StyledText>
       <StyledBox padding="spacing2" background="gray500" rounding="borderRadius2">
         <StyledDistribute gap="spacing2">
-          {error.cause ? (
-            <StyledDistribute gap="spacing2">
-              <StyledText $size="medium" $weight="normal" as="span" $color="gray100">
-                Code
-              </StyledText>
-              <StyledText $size="medium" $weight="normal" as="span" $color="red500">
-                {(error.cause).toString()}
-              </StyledText>
-            </StyledDistribute>
-          ) : null}
           <StyledDistribute gap="spacing1">
             <StyledText $size="medium" $weight="normal" as="span" $color="gray100">
               Message
             </StyledText>
             <StyledText $size="medium" $weight="normal" as="span" $color="red500">
-              {error.message}
+              {message}
             </StyledText>
           </StyledDistribute>
         </StyledDistribute>
