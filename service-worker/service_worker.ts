@@ -13,11 +13,11 @@ import {
   LanguagesAction,
   MessageErrorResponse,
   MessageResponse,
-  ServerSettingsAction,
+  SettingsAction,
   TranslateAction,
 } from "./service_worker.types";
 import {
-  NormalizedLanguagesResponse,
+  LanguagesResponse,
   transformLanguagesResponse,
 } from "../api";
 
@@ -64,7 +64,7 @@ const handleTranslate = async (
 
 const handleLanguages = async (
   { payload: { apiBaseURL } }: LanguagesAction,
-  sendResponse: (response: MessageResponse<NormalizedLanguagesResponse>) => void
+  sendResponse: (response: MessageResponse<LanguagesResponse>) => void
 ) => {
   try {
     const response = await fetchLanguages(apiBaseURL);
@@ -77,7 +77,7 @@ const handleLanguages = async (
 };
 
 const handleServerSettings = async (
-  { payload: { apiBaseURL } }: ServerSettingsAction,
+  { payload: { apiBaseURL } }: SettingsAction,
   sendResponse: (response: MessageResponse<SettingsResponse>) => void
 ) => {
   try {
@@ -95,7 +95,7 @@ chrome.runtime.onMessage.addListener(
     _sender,
     sendResponse: (
       response?: MessageResponse<
-        NormalizedLanguagesResponse | TranslateResponse | SettingsResponse
+        LanguagesResponse | TranslateResponse | SettingsResponse
       >
     ) => void
   ) => {

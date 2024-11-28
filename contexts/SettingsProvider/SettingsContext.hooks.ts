@@ -2,5 +2,9 @@ import { useContext } from "react";
 import { SettingsContext } from "./SettingsProvider";
 
 export const useSettings = () => {
-  return useContext(SettingsContext);
+  const context = useContext(SettingsContext);
+
+  if (!context) throw new Error("useSettings hook must be used within a SettingsProvider");
+
+  return context
 };

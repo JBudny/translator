@@ -1,15 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { NormalizedLanguagesResponse } from "../../../api";
+import { ExtensionStorage, useFetchLanguages } from "../../../api";
 import {
-  MessageErrorResponse,
-  sendMessage,
-  LanguagesActionPayload,
-  languagesAction
-} from "../../../service-worker";
-import { LanguagesFormSchema, languagesFormSchema } from "./LanguagesForm.schema";
-import { ExtensionStorage } from "../../extensionStorage.types";
+  LanguagesFormSchema,
+  languagesFormSchema,
+} from "./LanguagesForm.schema";
 import {
   DisplayMessageError,
   StyledBox,
@@ -17,72 +13,77 @@ import {
   StyledDistribute,
   StyledJustify,
   StyledLoadingIndicator,
-  StyledText
+  StyledText,
 } from "../../../components";
 import { StyledForm } from "../../components";
-import { AsyncStatus } from "../../../types";
 import { useStorage } from "../../../contexts";
 
 export const LanguagesForm: FC = () => {
-  const { watch, handleSubmit, formState, register, setValue } = useForm<LanguagesFormSchema>({
-    resolver: yupResolver(languagesFormSchema),
-    defaultValues: { sourceLanguage: "", targetLanguage: "" },
-    mode: "all",
-  });
-  const [languageOptions, setLanguageOptions] = useState<NormalizedLanguagesResponse | null>(null);
-  const [error, setError] = useState<MessageErrorResponse['message'] | null>(null);
+  const { watch, handleSubmit, formState, register, setValue } =
+    useForm<LanguagesFormSchema>({
+      resolver: yupResolver(languagesFormSchema),
+      defaultValues: { sourceLanguage: "", targetLanguage: "" },
+      mode: "all",
+    });
+  const [languages, fetchLanguages] = useFetchLanguages();
   const sourceLanguageWatch = watch("sourceLanguage");
   const targetLanguageWatch = watch("targetLanguage");
-  const [status, setStatus] = useState<AsyncStatus>('idle');
-  const { state: { apiBaseURL } } = useStorage();
+  const [storage] = useStorage();
 
-  const getLanguages = async () => {
-    setStatus('pending');
-    const languageOptions = await sendMessage<LanguagesActionPayload, NormalizedLanguagesResponse>(
-      languagesAction(apiBaseURL)
-    );
-    if (!languageOptions.success) {
-      setLanguageOptions(null);
-      const { message } = languageOptions;
-      setError(message);
-
-      return;
-    };
-    setStatus('idle');
-    const { data } = languageOptions;
-    setLanguageOptions(data);
-    const { sourceLanguage, targetLanguage } = await chrome.storage.local.get<ExtensionStorage>();
-    if (sourceLanguage) setValue("sourceLanguage", sourceLanguage);
-    if (targetLanguage) setValue("targetLanguage", targetLanguage);
-  };
+  const {
+    data: languagesData,
+    error: languagesError,
+    isLoading: languagesIsLoading,
+  } = languages;
 
   useEffect(() => {
-    getLanguages();
-  }, []);
+    if (storage.data?.sourceLanguage)
+      setValue("sourceLanguage", storage.data?.sourceLanguage);
+    if (storage.data?.targetLanguage)
+      setValue("targetLanguage", storage.data?.targetLanguage);
+  }, [storage.data?.sourceLanguage, storage.data?.targetLanguage]);
 
   useEffect(() => {
-    if (languageOptions && sourceLanguageWatch) {
-      const { targets } = languageOptions.entities.languages[sourceLanguageWatch];
+    fetchLanguages(storage.data?.apiBaseURL);
+  }, [storage.data?.apiBaseURL, fetchLanguages]);
+
+  useEffect(() => {
+    if (languagesData && sourceLanguageWatch) {
+      const { targets } = languagesData.entities.languages[sourceLanguageWatch];
 
       if (targets.includes(targetLanguageWatch)) return;
 
       setValue("targetLanguage", targets[0]);
-    };
-  }, [languageOptions, sourceLanguageWatch]);
+    }
+  }, [
+    languagesData?.entities.languages[sourceLanguageWatch],
+    sourceLanguageWatch,
+  ]);
 
   const handleRetry = () => {
-    setError(null);
-    getLanguages();
+    fetchLanguages(storage.data?.apiBaseURL);
   };
 
-  if (error) {
-    return <DisplayMessageError message={error} onRetry={handleRetry} />;
-  }
+  if (languagesError)
+    return (
+      <DisplayMessageError message={languagesError} onRetry={handleRetry} />
+    );
+
+  if (languagesIsLoading)
+    return (
+      <StyledBox padding="spacing3" background="gray700">
+        <StyledLoadingIndicator title="Fetching available languages" />
+      </StyledBox>
+    );
 
   const { errors } = formState;
 
-  const onSubmit: SubmitHandler<LanguagesFormSchema> = ({ sourceLanguage, targetLanguage }) => {
-    chrome.storage.local.set<ExtensionStorage>({ sourceLanguage, targetLanguage })
+  const onSubmit: SubmitHandler<LanguagesFormSchema> = ({
+    sourceLanguage,
+    targetLanguage,
+  }) => {
+    chrome.storage.local
+      .set<ExtensionStorage>({ sourceLanguage, targetLanguage })
       .then(() => {
         setValue("sourceLanguage", sourceLanguage);
         setValue("targetLanguage", targetLanguage);
@@ -93,54 +94,62 @@ export const LanguagesForm: FC = () => {
       });
   };
 
-  if (status === 'pending') return (
-    <StyledBox padding="spacing3" background="gray700">
-      <StyledLoadingIndicator title="Fetching available languages" />
-    </StyledBox>
-  );
-
   return (
     <StyledDistribute gap="spacing3">
-      <StyledText $size="large" $weight="normal" as="h2">Choose languages</StyledText>
+      <StyledText $size="large" $weight="normal" as="h2">
+        Choose languages
+      </StyledText>
       <StyledForm id="languages-form" onSubmit={handleSubmit(onSubmit)}>
         <StyledForm.Field
           error={errors.sourceLanguage}
           htmlFor="source-language"
-          label="Source">
+          label="Source"
+        >
           <StyledForm.Select
             autoFocus
             id="source-language"
-            {...register("sourceLanguage")}>
+            {...register("sourceLanguage")}
+          >
             <StyledForm.Option value="">Select option</StyledForm.Option>
-            {
-              languageOptions?.result.map((id) => {
-                const { name } = languageOptions.entities.languages[id];
-                return <StyledForm.Option value={id}>{name}</StyledForm.Option>
-              })
-            }
+            {languagesData?.result.map((id) => {
+              const { name } = languagesData.entities.languages[id];
+              return <StyledForm.Option value={id}>{name}</StyledForm.Option>;
+            })}
           </StyledForm.Select>
         </StyledForm.Field>
-        {sourceLanguageWatch !== "" ?
+        {sourceLanguageWatch !== "" ? (
           <StyledForm.Field
             error={errors.targetLanguage}
             htmlFor="target-language"
-            label="Target">
+            label="Target"
+          >
             <StyledForm.Select
               id="target-language"
-              {...register("targetLanguage")}>
+              {...register("targetLanguage")}
+            >
               <StyledForm.Option value="">Select option</StyledForm.Option>
-              {
-                languageOptions?.entities.languages[sourceLanguageWatch].targets.map(target => {
-                  const { name } = languageOptions.entities.languages[target];
-                  return <StyledForm.Option value={target}>{name}</StyledForm.Option>
-                })
-              }
+              {languagesData?.entities.languages[
+                sourceLanguageWatch
+              ].targets.map((target) => {
+                const { name } = languagesData.entities.languages[target];
+                return (
+                  <StyledForm.Option value={target}>{name}</StyledForm.Option>
+                );
+              })}
             </StyledForm.Select>
-          </StyledForm.Field> : null}
+          </StyledForm.Field>
+        ) : null}
       </StyledForm>
       <StyledJustify justify="flex-end">
-        <StyledButton $appearance="transparent" form="languages-form" type="submit" disabled={!formState.isValid}>
-          <StyledText $size="medium" $weight="medium" as="span">Save</StyledText>
+        <StyledButton
+          $appearance="transparent"
+          form="languages-form"
+          type="submit"
+          disabled={!formState.isValid}
+        >
+          <StyledText $size="medium" $weight="medium" as="span">
+            Save
+          </StyledText>
         </StyledButton>
       </StyledJustify>
     </StyledDistribute>

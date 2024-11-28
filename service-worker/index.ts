@@ -12,8 +12,8 @@ export {
   type MessageResponse,
   type MessageSuccessResponse,
   type PayloadAction,
-  type ServerSettingsAction,
-  type ServerSettingsActionPayload,
+  type SettingsAction,
+  type SettingsActionPayload,
   type TranslateAction,
   type TranslateActionPayload,
   type TranslateActionType,
@@ -24,6 +24,6 @@ export { sendMessage } from './service_worker.utils';
 export {
   detectAction,
   languagesAction,
-  serverSettingsAction,
+  settingsAction,
   translateAction
 } from './service_worker.actions';

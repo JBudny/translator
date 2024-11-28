@@ -6,7 +6,7 @@ export const fetchSettings = async (
   apiBaseURL?: string
 ): Promise<SettingsResponse> =>
   await api<SettingsResponse>(
-    API_ENDPOINTS.GET_SERVER_SETTINGS,
+    API_ENDPOINTS.SETTINGS,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },

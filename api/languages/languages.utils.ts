@@ -1,13 +1,9 @@
 import { normalize, schema } from "normalizr";
-import {
-  Language,
-  LanguagesResponse,
-  NormalizedLanguagesResponse,
-} from "./languages.types";
+import { Language, LanguagesResponse } from "./languages.types";
 
 export const transformLanguagesResponse = (
-  response: LanguagesResponse
-): NormalizedLanguagesResponse => {
+  response: Language[]
+): LanguagesResponse => {
   const removeSourceLanguageFromTargets = (language: Language) => ({
     ...language,
     targets: language.targets.filter(
@@ -30,3 +26,4 @@ export const transformLanguagesResponse = (
     string[]
   >(response, [language]);
 };
+

@@ -6,10 +6,19 @@ export interface Language {
   "targets": string[];
 };
 
-export type LanguagesResponse = Language[];
-
-export type NormalizedLanguagesResponse = NormalizedSchema<{
+export type LanguagesResponse = NormalizedSchema<{
   languages: {
     [key: string]: Language;
   };
 }, string[]>;
+
+export interface FetchLanguagesState {
+  data: LanguagesResponse | null;
+  error: string | null;
+  isLoading: boolean;
+}
+
+export type UseFetchLanguages = [
+  FetchLanguagesState,
+  (apiBaseURL?: string) => Promise<void>
+];

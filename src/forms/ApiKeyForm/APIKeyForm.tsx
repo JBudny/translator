@@ -3,9 +3,9 @@ import { ApiKeyFormSchema, apiKeyFormSchema } from "./ApiKeyForm.schema";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
-import { ExtensionStorage } from "../../extensionStorage.types";
 import { FormStep } from "../Form.types";
 import {
+  DisplayMessageError,
   StyledButton,
   StyledDistribute,
   StyledJustify,
@@ -13,22 +13,21 @@ import {
 } from "../../../components";
 import { StyledForm } from "../../components";
 import { useStorage } from "../../../contexts";
+import { ExtensionStorage } from "../../../api";
 
 export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
-  const storage = useStorage();
+  const [storage] = useStorage();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
-
-  const { state: { apiKey } } = storage;
   const { handleSubmit, formState, register, setValue } = useForm<ApiKeyFormSchema>({
     resolver: yupResolver(apiKeyFormSchema),
-    defaultValues: { apiKey },
+    defaultValues: { apiKey: "" },
     mode: "all",
   });
 
   useEffect(() => {
-    if (apiKey) setValue("apiKey", apiKey);
-  }, [apiKey]);
+    if (storage.data?.apiKey) setValue("apiKey", storage.data?.apiKey);
+  }, [storage.data?.apiKey]);
 
   const { errors } = formState;
 
@@ -54,6 +53,12 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
         setError(`Unknown error while setting the API key to the storage. (APIKeyForm)`);
       });
   };
+
+  const onRetry = () => {
+    setError(null)
+  }
+
+  if (error) return <DisplayMessageError message={error} onRetry={onRetry} />;
 
   return (
     <StyledDistribute gap="spacing3">

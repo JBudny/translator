@@ -2,14 +2,14 @@ import { API_ENDPOINTS } from "../api";
 import {
   DetectAction,
   LanguagesAction,
-  ServerSettingsAction,
+  SettingsAction,
   TranslateAction
 } from "./service_worker.types";
 
-export const serverSettingsAction =
-  (apiBaseURL?: string): ServerSettingsAction => ({
+export const settingsAction =
+  (apiBaseURL?: string): SettingsAction => ({
     payload: { apiBaseURL },
-    type: API_ENDPOINTS.GET_SERVER_SETTINGS
+    type: API_ENDPOINTS.SETTINGS
   });
 
 export const languagesAction = (apiBaseURL?: string): LanguagesAction => ({

@@ -1,89 +1,31 @@
-import {
-  createContext,
-  FC,
-  PropsWithChildren,
-  useEffect,
-  useReducer
-} from "react";
-import {
-  StorageContextProps,
-  StorageProviderAction
-} from "./StorageProvider.types";
-import { ExtensionStorage } from "../../src/extensionStorage.types";
-import {
-  StorageProviderReducer,
-  storageProviderReducer
-} from "./StorageProvider.reducer";
-import { DisplayMessageError } from "../../components";
-import {
-  storageErrorReset,
-  storageErrorSet,
-  storageSet
-} from './StorageProvider.actions';
+import { createContext, FC, PropsWithChildren, useEffect } from "react";
+import { UseFetchStorage, useFetchStorage } from "../../api";
 
-export const StorageContext = createContext<StorageContextProps>({
-  storageDispatch: () => { },
-  state: {}
-});
-
-const getStorage = (dispatch: (action: StorageProviderAction) => void) => {
-  chrome.storage.local.get<ExtensionStorage>(
-    null,
-    (storage) => {
-      if (chrome.runtime.lastError) {
-        dispatch(storageErrorSet(
-          chrome.runtime.lastError.message ||
-          `Unknown error while reading the storage. (StorageProvider)`
-        ));
-
-        return;
-      };
-      if (storage) {
-        dispatch(storageSet(storage));
-      };
-    },
-  );
-};
+export const StorageContext = createContext<UseFetchStorage | null>(null);
 
 export const StorageProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [state, storageDispatch] =
-    useReducer<StorageProviderReducer>(storageProviderReducer, {})
+  const [storage, fetchStorage] = useFetchStorage();
 
   // listen for storage changes and sync the StorageProvider
   useEffect(() => {
-    if (!chrome.storage) {
-      storageDispatch(
-        storageErrorSet(`Could not access the storage. (StorageProvider)`)
-      );
-
-      return;
-    };
-
     // Get storage data initially
-    getStorage(storageDispatch);
+    fetchStorage();
 
-    const getStorageListener = () => getStorage(storageDispatch)
     // Set listener for storage data change event
-    chrome.storage.onChanged.addListener(getStorageListener);
+    chrome.storage.onChanged.addListener(fetchStorage);
 
     return () => {
-      chrome.storage.onChanged.removeListener(getStorageListener);
+      chrome.storage.onChanged.removeListener(fetchStorage);
     };
-  }, [state.error]);
+  }, [fetchStorage]);
 
-  const onRetry = () => {
-    storageDispatch(storageErrorReset);
-  };
+  if (storage.error) return <div style={{padding: "30px", backgroundColor: 'red'}}>{storage.error}</div>;
+  if (storage.isLoading) return <div style={{padding: "30px", backgroundColor: 'red'}}><p>{'loading...'}</p></div>;
 
-  if (state.error) return (
-    <DisplayMessageError message={state.error} onRetry={onRetry} />
-  );
-
-  const value = { state, storageDispatch };
+  const value: UseFetchStorage = [storage, fetchStorage];
 
   return (
-    <StorageContext.Provider value={value}>
-      {children}
-    </StorageContext.Provider>
+    <StorageContext.Provider value={value}>{children}</StorageContext.Provider>
   );
 };
+
