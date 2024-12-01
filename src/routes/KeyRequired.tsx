@@ -5,13 +5,13 @@ import { useSettings } from "../../contexts";
 export const KeyRequired: FC<PropsWithChildren> = ({ children }) => {
   const [settings] = useSettings();
 
-  if (!settings) {
-    return <Navigate to="/" replace />
-  };
+  const { data: settingsData } = settings;
 
-  if (settings.data?.keyRequired === false) {
+  if (settingsData === null || settingsData.keyRequired === undefined)
+    throw new Error("O nie nie panie kolego");
+
+  if (settingsData?.keyRequired === false)
     return <Navigate to="/languages" replace />;
-  };
 
-  return (<>{children}</>);
+  return <>{children}</>;
 };

@@ -17,7 +17,7 @@ export interface TranslateActionPayload {
   q: string;
   source: string;
   target: string;
-  apiBaseURL?: string;
+  apiBaseURL: string;
   apiKey?: string;
 };
 
@@ -25,7 +25,11 @@ export interface DetectActionPayload {
   q: string;
 };
 
-export type ActionTypes = DetectActionType | LanguagesActionType | SettingsActionType | TranslateActionType;
+export type ActionTypes =
+  | DetectActionType
+  | LanguagesActionType
+  | SettingsActionType
+  | TranslateActionType;
 
 export interface Action {
   type: ActionTypes;
@@ -37,7 +41,7 @@ export interface PayloadAction<T> extends Action {
 
 export type DetectAction = PayloadAction<DetectActionPayload>;
 export type LanguagesAction = PayloadAction<LanguagesActionPayload>;
-export type SettingsAction = PayloadAction<SettingsActionPayload>;;
+export type SettingsAction = PayloadAction<SettingsActionPayload>;
 export type TranslateAction = PayloadAction<TranslateActionPayload>;
 export type Actions = Action | DetectAction | LanguagesAction | TranslateAction;
 
@@ -47,17 +51,20 @@ export const isLanguagesAction = (action: Actions): action is LanguagesAction =>
 export const isTranslateAction = (action: Actions): action is TranslateAction =>
   action.type === API_ENDPOINTS.TRANSLATE;
 
-export const isServerSettingsAction = (action: Actions): action is SettingsAction =>
-  action.type === API_ENDPOINTS.SETTINGS;
+export const isServerSettingsAction = (
+  action: Actions
+): action is SettingsAction => action.type === API_ENDPOINTS.SETTINGS;
 
 export interface MessageErrorResponse {
   success: false;
-  message: Error['message'];
-}
+  message: Error["message"];
+};
 
 export interface MessageSuccessResponse<T> {
   success: true;
   data: T;
-}
+};
 
-export type MessageResponse<T> = MessageErrorResponse | MessageSuccessResponse<T>;
+export type MessageResponse<T> =
+  | MessageErrorResponse
+  | MessageSuccessResponse<T>;

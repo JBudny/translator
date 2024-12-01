@@ -1,3 +1,2 @@
 export { SettingsProvider } from './SettingsProvider';
-export { useSettings } from './SettingsContext.hooks';
-
+export { useSettings } from './SettingsProvider.hooks';

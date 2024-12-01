@@ -1,13 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FC, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ExtensionStorage, useFetchLanguages } from "../../../api";
 import {
   LanguagesFormSchema,
   languagesFormSchema,
 } from "./LanguagesForm.schema";
 import {
-  DisplayMessageError,
   StyledBox,
   StyledButton,
   StyledDistribute,
@@ -17,6 +15,7 @@ import {
 } from "../../../components";
 import { StyledForm } from "../../components";
 import { useStorage } from "../../../contexts";
+import { useFetchLanguages } from "../../../api";
 
 export const LanguagesForm: FC = () => {
   const { watch, handleSubmit, formState, register, setValue } =
@@ -26,26 +25,32 @@ export const LanguagesForm: FC = () => {
       mode: "all",
     });
   const [languages, fetchLanguages] = useFetchLanguages();
+  const [storage, , setStorage] = useStorage();
   const sourceLanguageWatch = watch("sourceLanguage");
   const targetLanguageWatch = watch("targetLanguage");
-  const [storage] = useStorage();
 
   const {
     data: languagesData,
     error: languagesError,
     isLoading: languagesIsLoading,
   } = languages;
+  const {
+    data: storageData,
+    error: storageError,
+    isLoading: storageIsLoading,
+  } = storage;
 
   useEffect(() => {
-    if (storage.data?.sourceLanguage)
-      setValue("sourceLanguage", storage.data?.sourceLanguage);
-    if (storage.data?.targetLanguage)
-      setValue("targetLanguage", storage.data?.targetLanguage);
-  }, [storage.data?.sourceLanguage, storage.data?.targetLanguage]);
+    fetchLanguages({ apiBaseURL: storageData?.apiBaseURL });
+  }, [storageData?.apiBaseURL, fetchLanguages]);
 
   useEffect(() => {
-    fetchLanguages(storage.data?.apiBaseURL);
-  }, [storage.data?.apiBaseURL, fetchLanguages]);
+    if (!storageData) return;
+    const { sourceLanguage, targetLanguage } = storageData;
+
+    if (sourceLanguage) setValue("sourceLanguage", sourceLanguage);
+    if (targetLanguage) setValue("targetLanguage", targetLanguage);
+  }, [storageData?.sourceLanguage, storageData?.targetLanguage]);
 
   useEffect(() => {
     if (languagesData && sourceLanguageWatch) {
@@ -60,39 +65,32 @@ export const LanguagesForm: FC = () => {
     sourceLanguageWatch,
   ]);
 
-  const handleRetry = () => {
-    fetchLanguages(storage.data?.apiBaseURL);
+  const { errors } = formState;
+
+  const onSubmit: SubmitHandler<LanguagesFormSchema> = async ({
+    sourceLanguage,
+    targetLanguage,
+  }) => {
+    await setStorage({
+      currentStorage: { ...storage.data },
+      items: { sourceLanguage, targetLanguage },
+    });
   };
 
-  if (languagesError)
+  if (storageError) throw new Error(storageError);
+  if (languagesError) throw new Error(languagesError);
+  if (storageIsLoading)
     return (
-      <DisplayMessageError message={languagesError} onRetry={handleRetry} />
+      <StyledBox padding="spacing3" background="gray700">
+        <StyledLoadingIndicator title="Waiting for the storage" />
+      </StyledBox>
     );
-
   if (languagesIsLoading)
     return (
       <StyledBox padding="spacing3" background="gray700">
         <StyledLoadingIndicator title="Fetching available languages" />
       </StyledBox>
     );
-
-  const { errors } = formState;
-
-  const onSubmit: SubmitHandler<LanguagesFormSchema> = ({
-    sourceLanguage,
-    targetLanguage,
-  }) => {
-    chrome.storage.local
-      .set<ExtensionStorage>({ sourceLanguage, targetLanguage })
-      .then(() => {
-        setValue("sourceLanguage", sourceLanguage);
-        setValue("targetLanguage", targetLanguage);
-      })
-      .catch(() => {
-        setValue("sourceLanguage", "");
-        setValue("targetLanguage", "");
-      });
-  };
 
   return (
     <StyledDistribute gap="spacing3">

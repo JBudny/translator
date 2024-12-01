@@ -1,77 +1,88 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect } from "react";
 import { ApiKeyFormSchema, apiKeyFormSchema } from "./ApiKeyForm.schema";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { FormStep } from "../Form.types";
 import {
-  DisplayMessageError,
+  StyledBox,
   StyledButton,
   StyledDistribute,
   StyledJustify,
-  StyledText
+  StyledLoadingIndicator,
+  StyledText,
 } from "../../../components";
 import { StyledForm } from "../../components";
 import { useStorage } from "../../../contexts";
-import { ExtensionStorage } from "../../../api";
 
 export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
-  const [storage] = useStorage();
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
-  const { handleSubmit, formState, register, setValue } = useForm<ApiKeyFormSchema>({
-    resolver: yupResolver(apiKeyFormSchema),
-    defaultValues: { apiKey: "" },
-    mode: "all",
-  });
+  const [storage, , setStorage] = useStorage();
+  const { handleSubmit, formState, register, setValue } =
+    useForm<ApiKeyFormSchema>({
+      resolver: yupResolver(apiKeyFormSchema),
+      defaultValues: { apiKey: "" },
+      mode: "all",
+    });
+
+  const {
+    data: storageData,
+    error: storageError,
+    isLoading: storageIsLoading,
+  } = storage;
 
   useEffect(() => {
-    if (storage.data?.apiKey) setValue("apiKey", storage.data?.apiKey);
-  }, [storage.data?.apiKey]);
+    if (storageData?.apiKey) setValue("apiKey", storageData.apiKey);
+  }, [storageData?.apiKey]);
 
   const { errors } = formState;
 
-  const onSubmit: SubmitHandler<ApiKeyFormSchema> = ({ apiKey }) => {
-    chrome.storage.local.set<ExtensionStorage>({ apiKey })
-      .then(() => navigate(nextRoute))
-      .catch((error) => {
-        if (chrome.runtime.lastError) {
-          setError(
-            chrome.runtime.lastError.message ||
-            `Unknown error while setting the API key to the storage. (APIKeyForm)`
-          );
+  if (storageError) throw new Error(storageError);
+  if (storageIsLoading)
+    return (
+      <StyledBox padding="spacing3" background="gray700">
+        <StyledLoadingIndicator title="Waiting for the storage" />
+      </StyledBox>
+    );
 
-          return;
-        }
-
-        if (error instanceof Error) {
-          setError(error.message);
-
-          return;
-        }
-
-        setError(`Unknown error while setting the API key to the storage. (APIKeyForm)`);
-      });
+  const onSubmit: SubmitHandler<ApiKeyFormSchema> = async ({ apiKey }) => {
+    await setStorage({
+      currentStorage: { ...storage.data },
+      items: { apiKey },
+      onSuccess: () => navigate(nextRoute),
+    });
   };
-
-  const onRetry = () => {
-    setError(null)
-  }
-
-  if (error) return <DisplayMessageError message={error} onRetry={onRetry} />;
 
   return (
     <StyledDistribute gap="spacing3">
-      <StyledText $size="large" $weight="normal" as="h2">Set API key</StyledText>
+      <StyledText $size="large" $weight="normal" as="h2">
+        Set API key
+      </StyledText>
       <StyledForm id="api-key-form" onSubmit={handleSubmit(onSubmit)}>
-        <StyledForm.Field error={errors.apiKey} htmlFor="api-key" label="API key">
-          <StyledForm.Input autoFocus id="api-key" placeholder="" type="text"
-            {...register("apiKey")} />
+        <StyledForm.Field
+          error={errors.apiKey}
+          htmlFor="api-key"
+          label="API key"
+        >
+          <StyledForm.Input
+            autoFocus
+            id="api-key"
+            placeholder=""
+            type="text"
+            {...register("apiKey")}
+          />
         </StyledForm.Field>
-      </StyledForm >
+      </StyledForm>
       <StyledJustify justify="flex-end">
-        <StyledButton $appearance="transparent" form="api-key-form" type="submit" disabled={!formState.isValid}>
-          <StyledText $size="medium" $weight="medium" as="span">Save</StyledText>
+        <StyledButton
+          $appearance="transparent"
+          form="api-key-form"
+          type="submit"
+          disabled={!formState.isValid}
+        >
+          <StyledText $size="medium" $weight="medium" as="span">
+            Save
+          </StyledText>
         </StyledButton>
       </StyledJustify>
     </StyledDistribute>

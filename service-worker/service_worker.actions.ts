@@ -3,35 +3,32 @@ import {
   DetectAction,
   LanguagesAction,
   SettingsAction,
-  TranslateAction
+  TranslateAction,
+  TranslateActionPayload,
 } from "./service_worker.types";
 
-export const settingsAction =
-  (apiBaseURL?: string): SettingsAction => ({
-    payload: { apiBaseURL },
-    type: API_ENDPOINTS.SETTINGS
-  });
+export const settingsAction = (apiBaseURL?: string): SettingsAction => ({
+  payload: { apiBaseURL },
+  type: API_ENDPOINTS.SETTINGS,
+});
 
 export const languagesAction = (apiBaseURL?: string): LanguagesAction => ({
   payload: { apiBaseURL },
-  type: API_ENDPOINTS.LANGUAGES
+  type: API_ENDPOINTS.LANGUAGES,
 });
 
 export const translateAction = (
-  q: string,
-  source: string,
-  target: string,
-  apiBaseURL?: string,
-  apiKey?: string
-): TranslateAction => ({
-  payload: { apiBaseURL, q, source, target, apiKey },
-  type: API_ENDPOINTS.TRANSLATE
-});
+  payload: TranslateActionPayload
+): TranslateAction => {
+  const { q, source, target, apiBaseURL, apiKey } = payload;
 
-export const detectAction = (
-  q: string,
-): DetectAction => ({
+  return {
+    payload: { apiBaseURL, q, source, target, apiKey },
+    type: API_ENDPOINTS.TRANSLATE,
+  };
+};
+
+export const detectAction = (q: string): DetectAction => ({
   payload: { q },
-  type: API_ENDPOINTS.DETECT
+  type: API_ENDPOINTS.DETECT,
 });
-

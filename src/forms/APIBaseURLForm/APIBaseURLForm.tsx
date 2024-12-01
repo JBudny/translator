@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import {
   APIBaseURLFormSchema,
   apiBaseURLFormSchema,
@@ -8,7 +8,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { FormStep } from "../Form.types";
 import {
-  DisplayMessageError,
   StyledBox,
   StyledButton,
   StyledDistribute,
@@ -18,13 +17,11 @@ import {
 } from "../../../components";
 import { StyledForm } from "../../components";
 import { useSettings, useStorage } from "../../../contexts";
-import { ExtensionStorage } from "../../../api";
 
 export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
   const navigate = useNavigate();
-  const [storage, fetchStorage] = useStorage();
+  const [storage, fetchStorage, setStorage] = useStorage();
   const [settings, fetchSettings] = useSettings();
-  const [error, setError] = useState<string | null>(null);
   const { handleSubmit, formState, register, setValue } =
     useForm<APIBaseURLFormSchema>({
       resolver: yupResolver(apiBaseURLFormSchema),
@@ -32,61 +29,54 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
       mode: "all",
     });
 
-  useEffect(() => {
-    if (storage.data?.apiBaseURL) setValue("apiBaseURL", storage.data.apiBaseURL);
-  }, [storage.data?.apiBaseURL]);
-
+  const {
+    data: storageData,
+    error: storageError,
+    isLoading: storageIsLoading,
+  } = storage;
   const { error: settingsError, isLoading: settingsIsLoading } = settings;
 
-  const { errors } = formState;
+  useEffect(() => {
+    fetchStorage();
+  }, []);
 
-  const onSubmit: SubmitHandler<APIBaseURLFormSchema> = ({ apiBaseURL }) => {
-    chrome.storage.local
-      .set<ExtensionStorage>({ apiBaseURL })
-      .then(() => {
-        if (!settingsError) {
-          fetchSettings(apiBaseURL).then(() => {
-            navigate(nextRoute);
-          });
-        }
-      })
-      .catch((error) => {
-        if (chrome.runtime.lastError) {
-          setError(
-            chrome.runtime.lastError.message ||
-            `Unknown error while setting the API URL to the storage. (APIBaseURLForm)`
-          );
+  useEffect(() => {
+    if (storageData?.apiBaseURL) setValue("apiBaseURL", storageData.apiBaseURL);
+  }, [storageData?.apiBaseURL]);
 
-          return;
-        }
+  if (storageError) throw new Error(storageError);
+  if (settingsError) throw new Error(settingsError);
 
-        if (error instanceof Error) {
-          setError(error.message);
-
-          return;
-        }
-
-        setError(
-          `Unknown error while setting the API URL to the storage. (APIBaseURLForm)`
-        );
-      });
-  };
-
-  const onRetry = () => {
-    fetchSettings(storage.data?.apiBaseURL).then(() => {
-      navigate(nextRoute);
-    });
-  };
-
-  if (settingsError)
-    return <DisplayMessageError message={settingsError} onRetry={onRetry} />;
-  if (error) return <DisplayMessageError message={error} onRetry={onRetry} />;
+  if (storageIsLoading)
+    return (
+      <StyledBox padding="spacing3" background="gray700">
+        <StyledLoadingIndicator title="Waiting for the storage" />
+      </StyledBox>
+    );
   if (settingsIsLoading)
     return (
       <StyledBox padding="spacing3" background="gray700">
-        <StyledLoadingIndicator title="Fetching server settings" />
+        <StyledLoadingIndicator title="Waiting for the settings" />
       </StyledBox>
     );
+
+  const { errors } = formState;
+
+  const onSubmit: SubmitHandler<APIBaseURLFormSchema> = async ({
+    apiBaseURL,
+  }) => {
+    await fetchSettings({
+      apiBaseURL,
+      onSuccess: async () => {
+        await setStorage({
+          currentStorage: { ...storage.data },
+          items: { apiBaseURL },
+          // TODO: it should navigate to languages if apikey is not required
+          onSuccess: () => navigate(nextRoute),
+        });
+      },
+    });
+  };
 
   return (
     <StyledDistribute gap="spacing3">
