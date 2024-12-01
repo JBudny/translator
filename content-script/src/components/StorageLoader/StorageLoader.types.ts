@@ -1,5 +1,8 @@
+import { ReactElement } from "react";
+import { FetchTranslateProps } from "../../../../api";
+
 export interface StorageLoaderProps {
-  selectedText?: string;
-  onClose: () => void;
+  q?: string;
   contentUpdateCallback: () => void;
+  render: (props: FetchTranslateProps) => ReactElement;
 };

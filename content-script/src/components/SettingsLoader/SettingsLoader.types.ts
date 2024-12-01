@@ -1,9 +1,11 @@
-export interface SettingsLoaderProps {
-  onClose: () => void;
-  q?: string;
-  source?: string;
-  target?: string;
-  apiBaseURL?: string;
-  apiKey?: string;
+import { ReactElement } from "react";
+import { FetchTranslateProps } from "../../../../api";
+
+interface SettingsLoaderRenderProps extends FetchTranslateProps {
+  keyRequired?: boolean;
+};
+
+export interface SettingsLoaderProps extends FetchTranslateProps {
   contentUpdateCallback: () => void;
+  render: (props: SettingsLoaderRenderProps) => ReactElement;
 };

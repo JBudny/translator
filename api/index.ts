@@ -19,6 +19,7 @@ export {
 } from "./storage";
 export {
   fetchTranslate,
+  type FetchTranslateProps,
   type TranslateResponse,
   type UseFetchTranslate,
   useFetchTranslate,

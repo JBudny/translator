@@ -2,19 +2,20 @@ import { FC, useEffect } from "react";
 import { SettingsLoaderProps } from "./SettingsLoader.types";
 import { useSettings } from "../../../../contexts";
 import { StyledBox, StyledLoadingIndicator } from "../../../../components";
-import { Translation } from "../Translation";
 
 export const SettingsLoader: FC<SettingsLoaderProps> = ({
   apiBaseURL,
-  onClose,
   q,
   source,
   target,
   apiKey,
   contentUpdateCallback,
+  render,
 }) => {
   const [settings, fetchSettings] = useSettings();
   const { data, error, isLoading } = settings;
+  const { keyRequired } = data ?? {};
+
   useEffect(() => {
     if (apiBaseURL) fetchSettings({ apiBaseURL });
   }, [apiBaseURL]);
@@ -31,16 +32,5 @@ export const SettingsLoader: FC<SettingsLoaderProps> = ({
     );
   if (error) throw new Error(error);
 
-  return (
-    <Translation
-      contentUpdateCallback={contentUpdateCallback}
-      onClose={onClose}
-      q={q}
-      source={source}
-      target={target}
-      apiBaseURL={apiBaseURL}
-      keyRequired={data?.keyRequired}
-      apiKey={apiKey}
-    />
-  );
+  return render({ apiBaseURL, apiKey, keyRequired, q, source, target });
 };

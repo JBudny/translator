@@ -2,15 +2,20 @@ import { FC, useEffect } from "react";
 import { StorageLoaderProps } from "./StorageLoader.types";
 import { useStorage } from "../../../../contexts";
 import { StyledBox, StyledLoadingIndicator } from "../../../../components";
-import { SettingsLoader } from "../SettingsLoader";
 
 export const StorageLoader: FC<StorageLoaderProps> = ({
-  onClose,
   contentUpdateCallback,
-  selectedText,
+  q,
+  render,
 }) => {
   const [storage, fetchStorage] = useStorage();
   const { data, error, isLoading } = storage;
+  const {
+    sourceLanguage: source,
+    targetLanguage: target,
+    apiBaseURL,
+    apiKey,
+  } = data ?? {};
 
   useEffect(() => {
     fetchStorage();
@@ -28,15 +33,5 @@ export const StorageLoader: FC<StorageLoaderProps> = ({
     );
   if (error) throw new Error(error);
 
-  return (
-    <SettingsLoader
-      contentUpdateCallback={contentUpdateCallback}
-      onClose={onClose}
-      q={selectedText}
-      source={data?.sourceLanguage}
-      target={data?.targetLanguage}
-      apiBaseURL={data?.apiBaseURL}
-      apiKey={data?.apiKey}
-    />
-  );
+  return render({ q, source, target, apiBaseURL, apiKey });
 };

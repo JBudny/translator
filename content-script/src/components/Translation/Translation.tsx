@@ -22,6 +22,7 @@ export const Translation: FC<TranslationProps> = ({
 }) => {
   const [translation, fetchTranslation] = useFetchTranslate();
   const { data, error, isLoading } = translation;
+
   useEffect(() => {
     if (keyRequired && !apiKey)
       throw new Error("API Key is required, but not set.");

@@ -9,12 +9,14 @@ export interface FetchTranslationState {
   isLoading: boolean;
 };
 
-export type FetchTranslate = (props: {
+export interface FetchTranslateProps {
   q?: string;
   source?: string;
   target?: string;
   apiBaseURL?: string;
   apiKey?: string;
-}) => Promise<void>;
+};
+
+export type FetchTranslate = (props: FetchTranslateProps) => Promise<void>;
 
 export type UseFetchTranslate = [FetchTranslationState, FetchTranslate];

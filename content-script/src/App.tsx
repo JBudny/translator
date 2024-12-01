@@ -2,7 +2,9 @@ import { FC, useState } from "react";
 import {
   ClientRectAware,
   ContentScriptDisplayMessageError,
+  SettingsLoader,
   StorageLoader,
+  Translation,
 } from "./components";
 import { AppProps, RenderErrorFallbackComponentProps } from "./App.types";
 import { StyledButton } from "../../components";
@@ -53,37 +55,44 @@ const App: FC<AppProps> = (props) => {
   const renderTranslation = (recalculateClientRect: () => void) => (
     <StorageProvider>
       <SettingsProvider>
-        {/* TODO: StorageLoader shoulad accept renderprop to render
-        SettingsLoader and then TranslationResult */}
         <StorageLoader
-          onClose={handleCloseTranslation}
           contentUpdateCallback={recalculateClientRect}
-          selectedText={selectedText}
+          q={selectedText}
+          render={(props) => (
+            <SettingsLoader
+              contentUpdateCallback={recalculateClientRect}
+              render={(props) => (
+                <Translation
+                  onClose={handleCloseTranslation}
+                  contentUpdateCallback={recalculateClientRect}
+                  {...props}
+                />
+              )}
+              {...props}
+            />
+          )}
         />
       </SettingsProvider>
     </StorageProvider>
   );
 
+  const renderContent = (recalculateClientRect: () => void) => (
+    <ErrorBoundary
+      FallbackComponent={(props) =>
+        renderErrorFallbackComponent({
+          ...props,
+          contentUpdateCallback: recalculateClientRect,
+        })
+      }
+    >
+      {selectedText && !openTranslation ? renderTranslationButton() : null}
+      {openTranslation ? renderTranslation(recalculateClientRect) : null}
+    </ErrorBoundary>
+  );
+
   return (
-    <ClientRectAware
-      position={position}
-      render={(recalculateClientRect) => (
-        <ErrorBoundary
-          FallbackComponent={(props) =>
-            renderErrorFallbackComponent({
-              ...props,
-              contentUpdateCallback: recalculateClientRect,
-            })
-          }
-        >
-          {selectedText && !openTranslation ? renderTranslationButton() : null}
-          {openTranslation ? renderTranslation(recalculateClientRect) : null}
-        </ErrorBoundary>
-      )}
-      {...props}
-    />
+    <ClientRectAware position={position} render={renderContent} {...props} />
   );
 };
 
 export default App;
-
