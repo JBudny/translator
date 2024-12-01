@@ -24,6 +24,11 @@ export interface FetchSettingsState {
   data: SettingsResponse | null;
   error: string | null;
   isLoading: boolean;
-}
+};
 
-export type UseFetchSettings = [FetchSettingsState, (apiBaseURL?: string) => Promise<void>];
+export type FetchSettings = (props?: {
+  apiBaseURL?: string;
+  onSuccess?: () => void;
+}) => Promise<void>;
+
+export type UseFetchSettings = [FetchSettingsState, FetchSettings];

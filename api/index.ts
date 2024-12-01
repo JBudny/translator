@@ -21,4 +21,5 @@ export {
   fetchTranslate,
   type TranslateResponse,
   type UseFetchTranslate,
+  useFetchTranslate,
 } from "./translate";

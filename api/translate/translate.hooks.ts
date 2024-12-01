@@ -1,5 +1,10 @@
 import { useCallback, useState } from "react";
-import { FetchTranslationState, TranslateResponse, UseFetchTranslate } from "./translate.types";
+import {
+  FetchTranslate,
+  FetchTranslationState,
+  TranslateResponse,
+  UseFetchTranslate,
+} from "./translate.types";
 import {
   sendMessage,
   translateAction,
@@ -15,23 +20,18 @@ const initialState: FetchTranslationState = {
 export const useFetchTranslate = (): UseFetchTranslate => {
   const [state, setState] = useState<FetchTranslationState>(initialState);
 
-  const { isLoading } = state;
-
-  const fetchTranslation = useCallback(
-    async ({ q, source, target, apiBaseURL, apiKey }: TranslateActionPayload) => {
-      if (!apiBaseURL && !isLoading)
-        throw new Error("API base URL is required.");
-      if (!q && !isLoading)
-        throw new Error("Received no text to translate.");
-      if ((!source || !target) && !isLoading)
-        throw new Error("Languages are not set.");
-
-      setState({ ...initialState, isLoading: true });
+  const fetchTranslation: FetchTranslate = useCallback(
+    async ({ q, source, target, apiBaseURL, apiKey }) => {
       try {
+        if (!q) throw new Error("Received no text to translate.");
+        if (!apiBaseURL) throw new Error("API base URL is required.");
+        if (!source || !target) throw new Error("Languages are not set.");
+
+        setState({ ...initialState, isLoading: true });
         const response = await sendMessage<
           TranslateActionPayload,
           TranslateResponse
-        >(translateAction(q, source, target, apiBaseURL, apiKey));
+        >(translateAction({ q, source, target, apiBaseURL, apiKey }));
         if (!response.success) {
           setState({ ...initialState, error: response.message });
 

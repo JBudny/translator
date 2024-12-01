@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import {
+  FetchSettings,
   FetchSettingsState,
   SettingsResponse,
   UseFetchSettings,
@@ -19,17 +20,15 @@ const initialState: FetchSettingsState = {
 export const useFetchSettings = (): UseFetchSettings => {
   const [state, setState] = useState<FetchSettingsState>(initialState);
 
-  const { isLoading } = state;
-
-  const fetchLanguages = useCallback(async (apiBaseURL?: string) => {
-    if (!apiBaseURL && !isLoading) throw new Error("API base URL is required");
-
-    setState({ ...initialState, isLoading: true });
+  const fetchSettings: FetchSettings = useCallback(async (props) => {
     try {
+      if (!props?.apiBaseURL) throw new Error("API base URL is required");
+
+      setState({ ...initialState, isLoading: true });
       const response = await sendMessage<
         SettingsActionPayload,
         SettingsResponse
-      >(settingsAction(apiBaseURL));
+      >(settingsAction(props?.apiBaseURL));
       if (!response.success) {
         setState({ ...initialState, error: response.message });
 
@@ -37,6 +36,7 @@ export const useFetchSettings = (): UseFetchSettings => {
       }
 
       setState({ ...initialState, data: response.data });
+      if (props?.onSuccess) props.onSuccess();
 
       return;
     } catch (error) {
@@ -55,5 +55,5 @@ export const useFetchSettings = (): UseFetchSettings => {
     }
   }, []);
 
-  return [state, fetchLanguages];
+  return [state, fetchSettings];
 };
