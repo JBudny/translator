@@ -71,7 +71,6 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
         await setStorage({
           currentStorage: { ...storage.data },
           items: { apiBaseURL },
-          // TODO: it should navigate to languages if apikey is not required
           onSuccess: () => navigate(nextRoute),
         });
       },
