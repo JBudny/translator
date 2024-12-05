@@ -18,16 +18,15 @@ import { useStorage } from "../../../contexts";
 import { useFetchLanguages } from "../../../api";
 
 export const LanguagesForm: FC = () => {
+  const [languages, fetchLanguages] = useFetchLanguages();
+  const [storage, , setStorage] = useStorage();
   const { watch, handleSubmit, formState, register, setValue } =
     useForm<LanguagesFormSchema>({
       resolver: yupResolver(languagesFormSchema),
-      defaultValues: { sourceLanguage: "", targetLanguage: "" },
+      values: { sourceLanguage: "", targetLanguage: "" },
       mode: "all",
     });
-  const [languages, fetchLanguages] = useFetchLanguages();
-  const [storage, , setStorage] = useStorage();
   const sourceLanguageWatch = watch("sourceLanguage");
-  const targetLanguageWatch = watch("targetLanguage");
 
   const {
     data: languagesData,
@@ -39,31 +38,22 @@ export const LanguagesForm: FC = () => {
     error: storageError,
     isLoading: storageIsLoading,
   } = storage;
+  const { apiBaseURL, sourceLanguage, targetLanguage } = storageData || {};
 
   useEffect(() => {
-    fetchLanguages({ apiBaseURL: storageData?.apiBaseURL });
-  }, [storageData?.apiBaseURL, fetchLanguages]);
+    if (apiBaseURL) fetchLanguages({ apiBaseURL });
+  }, [apiBaseURL, fetchLanguages]);
 
   useEffect(() => {
-    if (!storageData) return;
-    const { sourceLanguage, targetLanguage } = storageData;
+    const prefillForm = () => {
+      if (languagesData?.result.length) {
+        setValue("sourceLanguage", sourceLanguage || "");
+        setValue("targetLanguage", targetLanguage || "");
+      }
+    };
 
-    if (sourceLanguage) setValue("sourceLanguage", sourceLanguage);
-    if (targetLanguage) setValue("targetLanguage", targetLanguage);
-  }, [storageData?.sourceLanguage, storageData?.targetLanguage]);
-
-  useEffect(() => {
-    if (languagesData && sourceLanguageWatch) {
-      const { targets } = languagesData.entities.languages[sourceLanguageWatch];
-
-      if (targets.includes(targetLanguageWatch)) return;
-
-      setValue("targetLanguage", targets[0]);
-    }
-  }, [
-    languagesData?.entities.languages[sourceLanguageWatch],
-    sourceLanguageWatch,
-  ]);
+    prefillForm();
+  }, [languagesData?.result.length, sourceLanguage, targetLanguage]);
 
   const { errors } = formState;
 
@@ -79,6 +69,20 @@ export const LanguagesForm: FC = () => {
 
   if (storageError) throw new Error(storageError);
   if (languagesError) throw new Error(languagesError);
+
+  const renderOptions = (options?: string[]) => {
+    if (!options) return null;
+
+    return (
+      <>
+        {options.map((id) => (
+          <StyledForm.Option key={id} value={id}>
+            {languagesData?.entities.languages[id].name}
+          </StyledForm.Option>
+        ))}
+      </>
+    );
+  };
 
   return (
     <StyledDistribute gap="spacing3">
@@ -97,34 +101,30 @@ export const LanguagesForm: FC = () => {
             {...register("sourceLanguage")}
           >
             <StyledForm.Option value="">Select option</StyledForm.Option>
-            {languagesData?.result.map((id) => {
-              const { name } = languagesData.entities.languages[id];
-              return <StyledForm.Option value={id}>{name}</StyledForm.Option>;
-            })}
+            {renderOptions(languagesData?.result)}
           </StyledForm.Select>
         </StyledForm.Field>
-        {sourceLanguageWatch !== "" ? (
-          <StyledForm.Field
-            error={errors.targetLanguage}
-            htmlFor="target-language"
-            label="Target"
+        <StyledForm.Field
+          error={errors.targetLanguage}
+          htmlFor="target-language"
+          label="Target"
+        >
+          <StyledForm.Select
+            id="target-language"
+            {...register("targetLanguage")}
           >
-            <StyledForm.Select
-              id="target-language"
-              {...register("targetLanguage")}
-            >
-              <StyledForm.Option value="">Select option</StyledForm.Option>
-              {languagesData?.entities.languages[
-                sourceLanguageWatch
-              ].targets.map((target) => {
-                const { name } = languagesData.entities.languages[target];
-                return (
-                  <StyledForm.Option value={target}>{name}</StyledForm.Option>
-                );
-              })}
-            </StyledForm.Select>
-          </StyledForm.Field>
-        ) : null}
+            <StyledForm.Option value="">Select option</StyledForm.Option>
+            {sourceLanguageWatch
+              ? renderOptions(
+                languagesData?.entities.languages[sourceLanguageWatch].targets
+              )
+              : sourceLanguage
+                ? renderOptions(
+                  languagesData?.entities.languages[sourceLanguage].targets
+                )
+                : null}
+          </StyledForm.Select>
+        </StyledForm.Field>
       </StyledForm>
       <StyledJustify justify="flex-end">
         {storageIsLoading || languagesIsLoading ? (
