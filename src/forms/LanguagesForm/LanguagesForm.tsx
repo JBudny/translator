@@ -79,18 +79,6 @@ export const LanguagesForm: FC = () => {
 
   if (storageError) throw new Error(storageError);
   if (languagesError) throw new Error(languagesError);
-  if (storageIsLoading)
-    return (
-      <StyledBox padding="spacing3" background="gray700">
-        <StyledLoadingIndicator title="Waiting for the storage" />
-      </StyledBox>
-    );
-  if (languagesIsLoading)
-    return (
-      <StyledBox padding="spacing3" background="gray700">
-        <StyledLoadingIndicator title="Fetching available languages" />
-      </StyledBox>
-    );
 
   return (
     <StyledDistribute gap="spacing3">
@@ -139,16 +127,28 @@ export const LanguagesForm: FC = () => {
         ) : null}
       </StyledForm>
       <StyledJustify justify="flex-end">
-        <StyledButton
-          $appearance="transparent"
-          form="languages-form"
-          type="submit"
-          disabled={!formState.isValid}
-        >
-          <StyledText $size="medium" $weight="medium" as="span">
-            Save
-          </StyledText>
-        </StyledButton>
+        {storageIsLoading || languagesIsLoading ? (
+          <StyledBox padding="spacing2">
+            <StyledLoadingIndicator
+              title={
+                storageIsLoading
+                  ? "Waiting for the storage"
+                  : "Fetching available languages"
+              }
+            />
+          </StyledBox>
+        ) : (
+          <StyledButton
+            $appearance="transparent"
+            form="languages-form"
+            type="submit"
+            disabled={!formState.isValid}
+          >
+            <StyledText $size="medium" $weight="medium" as="span">
+              Save
+            </StyledText>
+          </StyledButton>
+        )}
       </StyledJustify>
     </StyledDistribute>
   );

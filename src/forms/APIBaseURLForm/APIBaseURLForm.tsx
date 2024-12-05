@@ -47,19 +47,6 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
   if (storageError) throw new Error(storageError);
   if (settingsError) throw new Error(settingsError);
 
-  if (storageIsLoading)
-    return (
-      <StyledBox padding="spacing3" background="gray700">
-        <StyledLoadingIndicator title="Waiting for the storage" />
-      </StyledBox>
-    );
-  if (settingsIsLoading)
-    return (
-      <StyledBox padding="spacing3" background="gray700">
-        <StyledLoadingIndicator title="Waiting for the settings" />
-      </StyledBox>
-    );
-
   const { errors } = formState;
 
   const onSubmit: SubmitHandler<APIBaseURLFormSchema> = async ({
@@ -98,16 +85,28 @@ export const APIBaseURLForm: FC<FormStep> = ({ nextRoute }) => {
         </StyledForm.Field>
       </StyledForm>
       <StyledJustify justify="flex-end">
-        <StyledButton
-          $appearance="transparent"
-          form="api-base-url-form"
-          type="submit"
-          disabled={!formState.isValid}
-        >
-          <StyledText $size="medium" $weight="medium" as="span">
-            Save
-          </StyledText>
-        </StyledButton>
+        {storageIsLoading || settingsIsLoading ? (
+          <StyledBox padding="spacing2">
+            <StyledLoadingIndicator
+              title={
+                storageIsLoading
+                  ? "Waiting for the storage"
+                  : "Waiting for the settings"
+              }
+            />
+          </StyledBox>
+        ) : (
+          <StyledButton
+            $appearance="transparent"
+            form="api-base-url-form"
+            type="submit"
+            disabled={!formState.isValid}
+          >
+            <StyledText $size="medium" $weight="medium" as="span">
+              Save
+            </StyledText>
+          </StyledButton>
+        )}
       </StyledJustify>
     </StyledDistribute>
   );

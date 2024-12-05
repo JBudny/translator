@@ -38,12 +38,6 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
   const { errors } = formState;
 
   if (storageError) throw new Error(storageError);
-  if (storageIsLoading)
-    return (
-      <StyledBox padding="spacing3" background="gray700">
-        <StyledLoadingIndicator title="Waiting for the storage" />
-      </StyledBox>
-    );
 
   const onSubmit: SubmitHandler<ApiKeyFormSchema> = async ({ apiKey }) => {
     await setStorage({
@@ -74,16 +68,22 @@ export const APIKeyForm: FC<FormStep> = ({ nextRoute }) => {
         </StyledForm.Field>
       </StyledForm>
       <StyledJustify justify="flex-end">
-        <StyledButton
-          $appearance="transparent"
-          form="api-key-form"
-          type="submit"
-          disabled={!formState.isValid}
-        >
-          <StyledText $size="medium" $weight="medium" as="span">
-            Save
-          </StyledText>
-        </StyledButton>
+        {storageIsLoading ? (
+          <StyledBox padding="spacing2">
+            <StyledLoadingIndicator title="Waiting for the storage" />
+          </StyledBox>
+        ) : (
+          <StyledButton
+            $appearance="transparent"
+            form="api-key-form"
+            type="submit"
+            disabled={!formState.isValid}
+          >
+            <StyledText $size="medium" $weight="medium" as="span">
+              Save
+            </StyledText>
+          </StyledButton>
+        )}
       </StyledJustify>
     </StyledDistribute>
   );

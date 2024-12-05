@@ -23,7 +23,7 @@ export const StyledLoadingIndicator: FC<StyledLoadingIndicatorProps> = ({ title 
             <FontAwesomeIcon icon={faSpinner} height="1em" color={`rgb(${gray100})`} />
           </StyledAnimation>
         </StyledAlign>
-        <StyledText $size="medium" $weight="normal" as="span">
+        <StyledText $size="medium" $weight="medium" as="span">
           {title}
         </StyledText>
       </StyledDistribute>
