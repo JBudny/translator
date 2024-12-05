@@ -7,9 +7,6 @@ export const KeyRequired: FC<PropsWithChildren> = ({ children }) => {
 
   const { data: settingsData } = settings;
 
-  if (settingsData === null || settingsData.keyRequired === undefined)
-    throw new Error("O nie nie panie kolego");
-
   if (settingsData?.keyRequired === false)
     return <Navigate to="/languages" replace />;
 
