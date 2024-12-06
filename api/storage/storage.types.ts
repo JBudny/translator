@@ -3,25 +3,26 @@ export interface ExtensionStorage {
   apiBaseURL?: string;
   sourceLanguage?: string;
   targetLanguage?: string;
-};
+}
 
 export interface FetchStorageState {
   data: ExtensionStorage | null;
   error: string | null;
   isLoading: boolean;
-};
+}
 
-export type FetchStorage = (props?: {
+interface FetchStorageProps {
   onSuccess?: () => void;
-}) => Promise<void>;
+}
 
-export type SetStorage = ({
-  items,
-  onSuccess,
-}: {
+export type FetchStorage = (props?: FetchStorageProps) => Promise<void>;
+
+interface SetStorageProps {
   currentStorage: ExtensionStorage;
   items: Partial<ExtensionStorage>;
   onSuccess?: () => void;
-}) => Promise<void>;
+}
+
+export type SetStorage = (props: SetStorageProps) => Promise<void>;
 
 export type UseFetchStorage = [FetchStorageState, FetchStorage, SetStorage];

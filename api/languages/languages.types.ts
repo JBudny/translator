@@ -4,7 +4,7 @@ export interface Language {
   code: string;
   name: string;
   targets: string[];
-};
+}
 
 export type LanguagesResponse = NormalizedSchema<
   {
@@ -19,11 +19,13 @@ export interface FetchLanguagesState {
   data: LanguagesResponse | null;
   error: string | null;
   isLoading: boolean;
-};
+}
 
-export type FetchLanguages = (props: {
+interface FetchLanguagesProps {
   apiBaseURL?: string;
   onSuccess?: (response: LanguagesResponse) => void;
-}) => Promise<void>;
+}
+
+export type FetchLanguages = (props: FetchLanguagesProps) => Promise<void>;
 
 export type UseFetchLanguages = [FetchLanguagesState, FetchLanguages];
