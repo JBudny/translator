@@ -1,6 +1,7 @@
 import { API_ENDPOINTS } from "../api";
 import {
   DetectAction,
+  DetectActionPayload,
   LanguagesAction,
   SettingsAction,
   TranslateAction,
@@ -28,7 +29,11 @@ export const translateAction = (
   };
 };
 
-export const detectAction = (q: string): DetectAction => ({
-  payload: { q },
-  type: API_ENDPOINTS.DETECT,
-});
+export const detectAction = (payload: DetectActionPayload): DetectAction => {
+  const { apiBaseURL, q, apiKey } = payload;
+
+  return {
+    payload: { apiBaseURL, q, apiKey },
+    type: API_ENDPOINTS.DETECT,
+  };
+};

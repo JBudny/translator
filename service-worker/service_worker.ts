@@ -4,6 +4,8 @@ import {
   SettingsResponse,
   fetchTranslate,
   TranslateResponse,
+  DetectResponse,
+  fetchDetect,
 } from "../api";
 import {
   Actions,
@@ -15,11 +17,10 @@ import {
   MessageResponse,
   SettingsAction,
   TranslateAction,
+  isDetectAction,
+  DetectAction,
 } from "./service_worker.types";
-import {
-  LanguagesResponse,
-  transformLanguagesResponse,
-} from "../api";
+import { LanguagesResponse, transformLanguagesResponse } from "../api";
 
 const handleError = (
   error: unknown,
@@ -43,6 +44,33 @@ const handleError = (
   return;
 };
 
+const handleDetect = async (
+  { payload: { apiBaseURL, q, apiKey } }: DetectAction,
+  sendResponse: (response: MessageResponse<DetectResponse>) => void
+) => {
+  try {
+    const response = await fetchDetect(q, apiBaseURL, apiKey);
+
+    sendResponse({ success: true, data: response });
+  } catch (error) {
+    handleError(error, sendResponse, "handleDetect");
+  }
+};
+
+const handleLanguages = async (
+  { payload: { apiBaseURL } }: LanguagesAction,
+  sendResponse: (response: MessageResponse<LanguagesResponse>) => void
+) => {
+  try {
+    const response = await fetchLanguages(apiBaseURL);
+    const transformedResponse = transformLanguagesResponse(response);
+
+    sendResponse({ success: true, data: transformedResponse });
+  } catch (error) {
+    handleError(error, sendResponse, "handleLanguages");
+  }
+};
+
 const handleTranslate = async (
   { payload: { q, source, target, apiBaseURL, apiKey } }: TranslateAction,
   sendResponse: (response: MessageResponse<TranslateResponse>) => void
@@ -59,20 +87,6 @@ const handleTranslate = async (
     sendResponse({ success: true, data: translation });
   } catch (error) {
     handleError(error, sendResponse, "handleTranslate");
-  }
-};
-
-const handleLanguages = async (
-  { payload: { apiBaseURL } }: LanguagesAction,
-  sendResponse: (response: MessageResponse<LanguagesResponse>) => void
-) => {
-  try {
-    const response = await fetchLanguages(apiBaseURL);
-    const transformedResponse = transformLanguagesResponse(response);
-
-    sendResponse({ success: true, data: transformedResponse });
-  } catch (error) {
-    handleError(error, sendResponse, "handleLanguages");
   }
 };
 
@@ -95,7 +109,10 @@ chrome.runtime.onMessage.addListener(
     _sender,
     sendResponse: (
       response?: MessageResponse<
-        LanguagesResponse | TranslateResponse | SettingsResponse
+        | DetectResponse
+        | LanguagesResponse
+        | TranslateResponse
+        | SettingsResponse
       >
     ) => void
   ) => {
@@ -115,6 +132,11 @@ chrome.runtime.onMessage.addListener(
 
         return;
       }
+      if (isDetectAction(action)) {
+        handleDetect(action, sendResponse);
+
+        return;
+      }
 
       handleError(
         new Error("Unknown message type in service worker"),
@@ -127,4 +149,3 @@ chrome.runtime.onMessage.addListener(
     return true;
   }
 );
-

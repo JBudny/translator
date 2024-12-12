@@ -22,7 +22,9 @@ export interface TranslateActionPayload {
 };
 
 export interface DetectActionPayload {
+  apiBaseURL: string;
   q: string;
+  apiKey?: string;
 };
 
 export type ActionTypes =
@@ -45,15 +47,18 @@ export type SettingsAction = PayloadAction<SettingsActionPayload>;
 export type TranslateAction = PayloadAction<TranslateActionPayload>;
 export type Actions = Action | DetectAction | LanguagesAction | TranslateAction;
 
+export const isDetectAction = (action: Actions): action is DetectAction =>
+  action.type === API_ENDPOINTS.DETECT;
+
 export const isLanguagesAction = (action: Actions): action is LanguagesAction =>
   action.type === API_ENDPOINTS.LANGUAGES;
-
-export const isTranslateAction = (action: Actions): action is TranslateAction =>
-  action.type === API_ENDPOINTS.TRANSLATE;
 
 export const isServerSettingsAction = (
   action: Actions
 ): action is SettingsAction => action.type === API_ENDPOINTS.SETTINGS;
+
+export const isTranslateAction = (action: Actions): action is TranslateAction =>
+  action.type === API_ENDPOINTS.TRANSLATE;
 
 export interface MessageErrorResponse {
   success: false;
