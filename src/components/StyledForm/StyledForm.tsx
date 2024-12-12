@@ -110,5 +110,5 @@ const FormInput = forwardRef<
 
 StyledForm.Field = StyledFormField;
 StyledForm.Input = FormInput;
-StyledForm.Select = StyledSelect;
 StyledForm.Option = StyledOption;
+StyledForm.Select = StyledSelect;

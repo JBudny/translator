@@ -20,8 +20,8 @@ export interface StyledFormProps
     }
   >;
   Input: FC<InputHTMLAttributes<HTMLInputElement>>;
-  Select: FC<SelectHTMLAttributes<HTMLSelectElement>>;
   Option: FC<OptionHTMLAttributes<HTMLOptionElement>>;
+  Select: FC<SelectHTMLAttributes<HTMLSelectElement>>;
 };
 
 export interface StyledFormInputBaseProps extends StyledTextBaseProps { }

@@ -15,6 +15,7 @@ export const StorageLoader: FC<StorageLoaderProps> = ({
     targetLanguage: target,
     apiBaseURL,
     apiKey,
+    detect
   } = data ?? {};
 
   useEffect(() => {
@@ -33,5 +34,5 @@ export const StorageLoader: FC<StorageLoaderProps> = ({
     );
   if (error) throw new Error(error);
 
-  return render({ q, source, target, apiBaseURL, apiKey });
+  return render({ apiBaseURL, apiKey, q, source, target });
 };

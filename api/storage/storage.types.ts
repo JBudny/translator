@@ -1,6 +1,7 @@
 export interface ExtensionStorage {
   apiKey?: string;
   apiBaseURL?: string;
+  detect?: boolean;
   sourceLanguage?: string;
   targetLanguage?: string;
 }
