@@ -2,12 +2,14 @@ export { API_ENDPOINTS } from "./constants";
 export {
   fetchDetect,
   type DetectResponse,
+  type FetchDetectProps,
   type UseFetchDetect,
   useFetchDetect,
 } from "./detect";
 export {
   fetchLanguages,
   transformLanguagesResponse,
+  type Language,
   type LanguagesResponse,
   type UseFetchLanguages,
   useFetchLanguages,

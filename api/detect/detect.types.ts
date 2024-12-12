@@ -1,6 +1,6 @@
 interface Detect {
-  confidence: 100;
-  language: "en";
+  confidence: number;
+  language: string;
 }
 
 export type DetectResponse = Detect[];
@@ -11,9 +11,11 @@ export interface FetchDetectState {
   isLoading: boolean;
 }
 
-interface FetchDetectProps {
+export interface FetchDetectProps {
   apiBaseURL?: string;
+  apiKey?: string;
   onSuccess?: (response: DetectResponse) => void;
+  q?: string;
 }
 
 export type FetchDetect = (props: FetchDetectProps) => Promise<void>;

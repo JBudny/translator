@@ -21,13 +21,14 @@ export const useFetchDetect = (): UseFetchDetect => {
   const [state, setState] = useState<FetchDetectState>(initialState);
 
   const fetchDetect: FetchDetect = useCallback(
-    async ({ apiBaseURL, onSuccess }) => {
+    async ({ apiBaseURL, apiKey, onSuccess, q }) => {
       try {
+        if (!q) throw new Error("Received no text to translate.");
         if (!apiBaseURL) throw new Error("API base URL is required");
 
         setState({ ...initialState, isLoading: true });
         const response = await sendMessage<DetectActionPayload, DetectResponse>(
-          detectAction(apiBaseURL)
+          detectAction({ apiBaseURL, q, apiKey })
         );
         if (!response.success) {
           setState({ ...initialState, error: response.message });
