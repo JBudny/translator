@@ -4,7 +4,7 @@ import { Language, LanguagesResponse } from "./languages.types";
 export const transformLanguagesResponse = (
   response: Language[]
 ): LanguagesResponse => {
-  const removeSourceLanguageFromTargets = (language: Language) => ({
+  const removeSourceFromTargets = (language: Language) => ({
     ...language,
     targets: language.targets.filter(
       (target: string) => target !== language.code
@@ -16,7 +16,7 @@ export const transformLanguagesResponse = (
     {},
     {
       idAttribute: "code",
-      processStrategy: removeSourceLanguageFromTargets,
+      processStrategy: removeSourceFromTargets,
     }
   );
 

@@ -1,14 +1,14 @@
-import { array, bool, InferType, lazy, object, string } from "yup";
+import { array, boolean, InferType, lazy, object, string } from "yup";
 
 const baseSchema = {
-  detect: bool(),
+  detect: boolean(),
 };
 
 const detectSchema = object({
   ...baseSchema,
   detectForm: array().of(
     object({
-      targetLanguage: string().required("Terget is a required field"),
+      target: string().required("Terget is a required field"),
     })
   ),
 });
@@ -17,8 +17,8 @@ const manualSchema = object({
   ...baseSchema,
   manualForm: array().of(
     object({
-      sourceLanguage: string().required("Source is a required field"),
-      targetLanguage: string().required("Terget is a required field"),
+      source: string().required("Source is a required field"),
+      target: string().required("Terget is a required field"),
     })
   ),
 });

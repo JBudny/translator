@@ -2,8 +2,8 @@ export interface ExtensionStorage {
   apiKey?: string;
   apiBaseURL?: string;
   detect?: boolean;
-  sourceLanguage?: string;
-  targetLanguage?: string;
+  source?: string;
+  target?: string;
 }
 
 export interface FetchStorageState {

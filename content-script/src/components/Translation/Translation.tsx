@@ -34,6 +34,13 @@ export const Translation: FC<TranslationProps> = ({
     contentUpdateCallback();
   }, [isLoading]);
 
+  if (error) throw new Error(error);
+  if (data === null)
+    return (
+      <StyledBox padding="spacing3" background="gray700">
+        <StyledLoadingIndicator title="Initialization Translation." />
+      </StyledBox>
+    );
   if (isLoading)
     return (
       <StyledBox padding="spacing3" background="gray700">
@@ -41,14 +48,14 @@ export const Translation: FC<TranslationProps> = ({
       </StyledBox>
     );
 
-  if (error) throw new Error(error);
+  const { translatedText, alternatives } = data;
 
   return (
     <ContentScriptLayout onClose={onClose}>
       <StyledText $size="medium" $weight="normal" as="p">
-        {data ? data.translatedText : "Initialization."}
+        {data.translatedText}
       </StyledText>
-      {data?.alternatives?.length ? (
+      {alternatives?.length ? (
         <StyledBox
           padding="spacing2"
           background="gray500"
@@ -59,7 +66,7 @@ export const Translation: FC<TranslationProps> = ({
               Alternative translations
             </StyledText>
             <StyledList as="ol">
-              {data.alternatives.map((alternative, index) => (
+              {alternatives.map((alternative, index) => (
                 <StyledList.ListItem key={index}>
                   <StyledText $size="small" $weight="normal" as="span">
                     {alternative}

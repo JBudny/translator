@@ -11,18 +11,26 @@ export const SettingsLoader: FC<SettingsLoaderProps> = ({
   apiKey,
   contentUpdateCallback,
   render,
+  detect,
 }) => {
   const [settings, fetchSettings] = useSettings();
   const { data, error, isLoading } = settings;
-  const { keyRequired } = data ?? {};
 
   useEffect(() => {
-    if (apiBaseURL) fetchSettings({ apiBaseURL });
-  }, [apiBaseURL]);
+    fetchSettings({ apiBaseURL });
+  }, []);
 
   useEffect(() => {
     if (isLoading) contentUpdateCallback();
   }, [isLoading]);
+
+  if (error) throw new Error(error);
+  if (data === null)
+    return (
+      <StyledBox padding="spacing3" background="gray700">
+        <StyledLoadingIndicator title="Initializing SettingsLoader." />
+      </StyledBox>
+    );
 
   if (isLoading)
     return (
@@ -30,7 +38,9 @@ export const SettingsLoader: FC<SettingsLoaderProps> = ({
         <StyledLoadingIndicator title="Waiting for the settings." />
       </StyledBox>
     );
-  if (error) throw new Error(error);
 
-  return render({ apiBaseURL, apiKey, keyRequired, q, source, target });
+  const { keyRequired } = data;
+
+  return render({ apiBaseURL, apiKey, keyRequired, q, source, target, detect });
 };
+

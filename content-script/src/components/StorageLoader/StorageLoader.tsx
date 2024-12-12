@@ -10,13 +10,6 @@ export const StorageLoader: FC<StorageLoaderProps> = ({
 }) => {
   const [storage, fetchStorage] = useStorage();
   const { data, error, isLoading } = storage;
-  const {
-    sourceLanguage: source,
-    targetLanguage: target,
-    apiBaseURL,
-    apiKey,
-    detect
-  } = data ?? {};
 
   useEffect(() => {
     fetchStorage();
@@ -26,13 +19,21 @@ export const StorageLoader: FC<StorageLoaderProps> = ({
     if (isLoading) contentUpdateCallback();
   }, [isLoading]);
 
+  if (error) throw new Error(error);
+  if (data === null)
+    return (
+      <StyledBox padding="spacing3" background="gray700">
+        <StyledLoadingIndicator title="Initializing StorageLoader." />
+      </StyledBox>
+    );
   if (isLoading)
     return (
       <StyledBox padding="spacing3" background="gray700">
         <StyledLoadingIndicator title="Waiting for the storage." />
       </StyledBox>
     );
-  if (error) throw new Error(error);
 
-  return render({ apiBaseURL, apiKey, q, source, target });
+  const { apiBaseURL, apiKey, detect, source, target } = data;
+
+  return render({ apiBaseURL, apiKey, detect, q, source, target });
 };

@@ -3,6 +3,7 @@ import {
   ClientRectAware,
   ContentScriptDisplayMessageError,
   SettingsLoader,
+  SourceLoader,
   StorageLoader,
   Translation,
 } from "./components";
@@ -62,9 +63,15 @@ const App: FC<AppProps> = (props) => {
             <SettingsLoader
               contentUpdateCallback={recalculateClientRect}
               render={(props) => (
-                <Translation
-                  onClose={handleCloseTranslation}
+                <SourceLoader
                   contentUpdateCallback={recalculateClientRect}
+                  render={(props) => (
+                    <Translation
+                      onClose={handleCloseTranslation}
+                      contentUpdateCallback={recalculateClientRect}
+                      {...props}
+                    />
+                  )}
                   {...props}
                 />
               )}
@@ -96,3 +103,4 @@ const App: FC<AppProps> = (props) => {
 };
 
 export default App;
+

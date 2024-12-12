@@ -1,10 +1,6 @@
-export interface TranslationProps {
+import { SourceLoaderRenderProps } from "../SourceLoader";
+
+export interface TranslationProps extends SourceLoaderRenderProps {
   onClose: () => void;
-  q?: string;
-  source?: string;
-  target?: string;
-  apiBaseURL?: string;
-  keyRequired?: boolean;
-  apiKey?: string;
   contentUpdateCallback: () => void;
 };

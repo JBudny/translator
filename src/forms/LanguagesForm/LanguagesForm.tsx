@@ -30,8 +30,7 @@ export const LanguagesForm: FC = () => {
 
   const {
     control,
-    formState,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
     register,
     setValue,
@@ -40,8 +39,8 @@ export const LanguagesForm: FC = () => {
     resolver: yupResolver(languagesFormSchema),
     values: {
       detect: false,
-      detectForm: [{ targetLanguage: "" }],
-      manualForm: [{ sourceLanguage: "", targetLanguage: "" }],
+      detectForm: [{ target: "" }],
+      manualForm: [{ source: "", target: "" }],
     },
     mode: "all",
   });
@@ -59,8 +58,7 @@ export const LanguagesForm: FC = () => {
     error: storageError,
     isLoading: storageIsLoading,
   } = storage;
-  const { apiBaseURL, sourceLanguage, targetLanguage, detect } =
-    storageData || {};
+  const { apiBaseURL, source, target, detect } = storageData || {};
 
   useEffect(() => {
     if (apiBaseURL) fetchLanguages({ apiBaseURL });
@@ -69,19 +67,16 @@ export const LanguagesForm: FC = () => {
   useEffect(() => {
     const prefillForm = () => {
       if (languagesData?.result.length) {
-        setValue("detectForm", [{ targetLanguage: targetLanguage || "" }]);
+        setValue("detectForm", [{ target: String(target) }]);
         setValue("manualForm", [
-          {
-            sourceLanguage: sourceLanguage || "",
-            targetLanguage: targetLanguage || "",
-          },
+          { source: String(source), target: String(target) },
         ]);
-        setValue("detect", detect);
+        setValue("detect", Boolean(detect));
       }
     };
 
     prefillForm();
-  }, [languagesData?.result.length, sourceLanguage, targetLanguage, detect]);
+  }, [languagesData?.result.length, source, target, detect]);
 
   const onSubmit: SubmitHandler<LanguagesFormSchema> = async (data) => {
     if (isDetectForm(data)) {
@@ -90,7 +85,7 @@ export const LanguagesForm: FC = () => {
       if (detectForm) {
         await setStorage({
           currentStorage: { ...storage.data },
-          items: { detect, targetLanguage: detectForm[0].targetLanguage },
+          items: { detect, target: detectForm[0].target },
         });
       }
     }
@@ -103,8 +98,8 @@ export const LanguagesForm: FC = () => {
           currentStorage: { ...storage.data },
           items: {
             detect,
-            sourceLanguage: manualForm[0].sourceLanguage,
-            targetLanguage: manualForm[0].targetLanguage,
+            source: manualForm[0].source,
+            target: manualForm[0].target,
           },
         });
       }
@@ -146,18 +141,14 @@ export const LanguagesForm: FC = () => {
           ? detectFields.fields.map((field, index) => (
             <Fragment key={field.id}>
               <Controller
-                name={`detectForm.${index}.targetLanguage`}
+                name={`detectForm.${index}.target`}
                 render={(field) => (
                   <StyledForm.Field
                     error={field.fieldState.error}
-                    htmlFor="target-language"
+                    htmlFor="target"
                     label="Target"
                   >
-                    <StyledForm.Select
-                      {...field.field}
-                      autoFocus
-                      id="target-language"
-                    >
+                    <StyledForm.Select {...field.field} autoFocus id="target">
                       <StyledForm.Option value="">
                         Select option
                       </StyledForm.Option>
@@ -172,18 +163,14 @@ export const LanguagesForm: FC = () => {
           : manualFields.fields.map((field, index) => (
             <Fragment key={field.id}>
               <Controller
-                name={`manualForm.${index}.sourceLanguage`}
+                name={`manualForm.${index}.source`}
                 render={(field) => (
                   <StyledForm.Field
                     error={field.fieldState.error}
-                    htmlFor="source-language"
+                    htmlFor="source"
                     label="Source"
                   >
-                    <StyledForm.Select
-                      {...field.field}
-                      autoFocus
-                      id="source-language"
-                    >
+                    <StyledForm.Select {...field.field} autoFocus id="source">
                       <StyledForm.Option value="">
                         Select option
                       </StyledForm.Option>
@@ -194,18 +181,14 @@ export const LanguagesForm: FC = () => {
                 control={control}
               />
               <Controller
-                name={`manualForm.${index}.targetLanguage`}
+                name={`manualForm.${index}.target`}
                 render={(field) => (
                   <StyledForm.Field
                     error={field.fieldState.error}
-                    htmlFor="target-language"
+                    htmlFor="target"
                     label="Target"
                   >
-                    <StyledForm.Select
-                      {...field.field}
-                      autoFocus
-                      id="target-language"
-                    >
+                    <StyledForm.Select {...field.field} autoFocus id="target">
                       <StyledForm.Option value="">
                         Select option
                       </StyledForm.Option>
@@ -234,7 +217,7 @@ export const LanguagesForm: FC = () => {
             $appearance="transparent"
             form="languages-form"
             type="submit"
-            disabled={!formState.isValid}
+            disabled={!isValid}
           >
             <StyledText $size="medium" $weight="medium" as="span">
               Save

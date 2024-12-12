@@ -1,11 +1,13 @@
 import { ReactElement } from "react";
-import { FetchTranslateProps } from "../../../../api";
+import { SettingsResponse } from "../../../../api";
+import { StorageLoaderRenderProps } from "../StorageLoader";
 
-interface SettingsLoaderRenderProps extends FetchTranslateProps {
-  keyRequired?: boolean;
+export interface SettingsLoaderRenderProps
+  extends StorageLoaderRenderProps,
+  Pick<SettingsResponse, "keyRequired"> {
 };
 
-export interface SettingsLoaderProps extends FetchTranslateProps {
+export interface SettingsLoaderProps extends StorageLoaderRenderProps {
   contentUpdateCallback: () => void;
   render: (props: SettingsLoaderRenderProps) => ReactElement;
 };
