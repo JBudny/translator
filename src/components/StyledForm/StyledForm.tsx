@@ -107,11 +107,18 @@ const StyledFormField: StyledFormProps["Field"] = ({
   >
     <StyledDistribute gap="spacing2">
       <label htmlFor={htmlFor}>
-        <StyledText $size="medium" $weight="normal" as="span" $color="gray100">
-          {label}
-        </StyledText>
+        <StyledDistribute gap="spacing2">
+          <StyledText
+            $size="medium"
+            $weight="normal"
+            as="span"
+            $color="gray100"
+          >
+            {label}
+          </StyledText>
+          {children}
+        </StyledDistribute>
       </label>
-      {children}
       {error?.message && (
         <StyledText $size="medium" $weight="normal" as="span" $color="red500">
           {error.message}
