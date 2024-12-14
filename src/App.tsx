@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router";
 import { APIBaseURLForm, APIKeyForm, LanguagesForm } from "./forms";
 import {
   DisplayMessageError,

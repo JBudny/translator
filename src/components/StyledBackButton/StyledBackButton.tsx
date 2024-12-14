@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import { StyledAlign, StyledButton, StyledDistribute, StyledJustify, StyledText } from "../../../components";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

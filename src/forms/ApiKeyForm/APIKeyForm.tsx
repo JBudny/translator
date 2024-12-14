@@ -2,7 +2,7 @@ import { FC, useEffect } from "react";
 import { ApiKeyFormSchema, apiKeyFormSchema } from "./ApiKeyForm.schema";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { FormStep } from "../Form.types";
 import {
   StyledBox,

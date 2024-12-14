@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 import { useSettings } from "../../contexts";
 
 export const KeyRequired: FC<PropsWithChildren> = ({ children }) => {
