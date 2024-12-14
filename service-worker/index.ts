@@ -1,3 +1,10 @@
+export { setupBackground } from './service_worker';
+export {
+  detectAction,
+  languagesAction,
+  settingsAction,
+  translateAction
+} from './service_worker.actions';
 export {
   type Action,
   type ActionTypes,
@@ -21,9 +28,3 @@ export {
   isTranslateAction,
 } from './service_worker.types';
 export { sendMessage } from './service_worker.utils';
-export {
-  detectAction,
-  languagesAction,
-  settingsAction,
-  translateAction
-} from './service_worker.actions';

@@ -5,9 +5,9 @@ export const fetchStorage = async (): Promise<ExtensionStorage> =>
     const unknownError = "Unknown error while reading the storage.";
 
     try {
-      const storage = await chrome.storage.local.get<ExtensionStorage>(null);
-      if (chrome.runtime.lastError) {
-        const message = chrome.runtime.lastError.message || unknownError;
+      const storage = await browser.storage.local.get<ExtensionStorage>(null);
+      if (browser.runtime.lastError) {
+        const message = browser.runtime.lastError.message || unknownError;
         reject(new Error(message));
 
         return;
@@ -32,9 +32,9 @@ export const setStorage = async (
     const unknownError = "Unknown error while setting the storage.";
 
     try {
-      await chrome.storage.local.set<ExtensionStorage>(props);
-      if (chrome.runtime.lastError) {
-        const message = chrome.runtime.lastError.message || unknownError;
+      await browser.storage.local.set<ExtensionStorage>(props);
+      if (browser.runtime.lastError) {
+        const message = browser.runtime.lastError.message || unknownError;
         reject(new Error(message));
 
         return;

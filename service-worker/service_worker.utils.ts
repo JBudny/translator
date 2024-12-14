@@ -4,7 +4,7 @@ export const sendMessage = <PayloadType, ResponseType>(
   action: PayloadAction<PayloadType> | Action
 ) =>
   new Promise<MessageResponse<ResponseType>>((resolve, reject) =>
-    chrome.runtime.sendMessage<
+    browser.runtime.sendMessage<
       PayloadAction<PayloadType> | Action,
       MessageResponse<ResponseType>
     >(action, (response) => {

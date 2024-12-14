@@ -1,22 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
-    "types": ["chrome"]
   },
-  "include": ["src", "content-script/src", "service-worker/", "api/", "styled.d.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "extends": "./.wxt/tsconfig.json",
 }

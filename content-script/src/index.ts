@@ -1,0 +1,1 @@
+export { setupContentScript } from './main';

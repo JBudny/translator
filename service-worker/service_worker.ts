@@ -103,49 +103,51 @@ const handleServerSettings = async (
   }
 };
 
-chrome.runtime.onMessage.addListener(
-  (
-    action: Actions,
-    _sender,
-    sendResponse: (
-      response?: MessageResponse<
-        | DetectResponse
-        | LanguagesResponse
-        | TranslateResponse
-        | SettingsResponse
-      >
-    ) => void
-  ) => {
-    const handleMessage = async () => {
-      if (isTranslateAction(action)) {
-        handleTranslate(action, sendResponse);
+export const setupBackground = () => {
+  chrome.runtime.onMessage.addListener(
+    (
+      action: Actions,
+      _sender,
+      sendResponse: (
+        response?: MessageResponse<
+          | DetectResponse
+          | LanguagesResponse
+          | TranslateResponse
+          | SettingsResponse
+        >
+      ) => void
+    ) => {
+      const handleMessage = async () => {
+        if (isTranslateAction(action)) {
+          handleTranslate(action, sendResponse);
 
-        return;
-      }
-      if (isLanguagesAction(action)) {
-        handleLanguages(action, sendResponse);
+          return;
+        }
+        if (isLanguagesAction(action)) {
+          handleLanguages(action, sendResponse);
 
-        return;
-      }
-      if (isServerSettingsAction(action)) {
-        handleServerSettings(action, sendResponse);
+          return;
+        }
+        if (isServerSettingsAction(action)) {
+          handleServerSettings(action, sendResponse);
 
-        return;
-      }
-      if (isDetectAction(action)) {
-        handleDetect(action, sendResponse);
+          return;
+        }
+        if (isDetectAction(action)) {
+          handleDetect(action, sendResponse);
 
-        return;
-      }
+          return;
+        }
 
-      handleError(
-        new Error("Unknown message type in service worker"),
-        sendResponse,
-        "handleMessage"
-      );
-    };
+        handleError(
+          new Error("Unknown message type in service worker"),
+          sendResponse,
+          "handleMessage"
+        );
+      };
 
-    handleMessage();
-    return true;
-  }
-);
+      handleMessage();
+      return true;
+    }
+  );
+};

@@ -10,7 +10,7 @@ import ShadowRoot from "react-shadow/styled-components";
 const app = document.createElement("div");
 document.body.prepend(app);
 
-createRoot(app).render(
+export const setupContentScript = () => createRoot(app).render(
   <React.StrictMode>
     <ThemeProvider theme={schema.dark}>
       <ShadowRoot.div>
