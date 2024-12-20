@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 import { SettingsLoaderProps } from "./SettingsLoader.types";
-import { useSettings } from "../../../../contexts";
 import { StyledBox, StyledLoadingIndicator } from "../../../../components";
+import { useFetchSettings } from "@/api";
 
 export const SettingsLoader: FC<SettingsLoaderProps> = ({
   apiBaseURL,
@@ -13,7 +13,7 @@ export const SettingsLoader: FC<SettingsLoaderProps> = ({
   render,
   detect,
 }) => {
-  const [settings, fetchSettings] = useSettings();
+  const [settings, fetchSettings] = useFetchSettings();
   const { data, error, isLoading } = settings;
 
   useEffect(() => {

@@ -11,7 +11,6 @@ import { AppProps, RenderErrorFallbackComponentProps } from "./App.types";
 import { StyledButton } from "../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
-import { SettingsProvider, StorageProvider } from "../../contexts";
 import { ErrorBoundary } from "react-error-boundary";
 import { useTheme } from "styled-components";
 import { useSelectedText } from "./hooks";
@@ -54,33 +53,29 @@ const App: FC<AppProps> = (props) => {
   );
 
   const renderTranslation = (recalculateClientRect: () => void) => (
-    <StorageProvider>
-      <SettingsProvider>
-        <StorageLoader
+    <StorageLoader
+      contentUpdateCallback={recalculateClientRect}
+      q={selectedText}
+      render={(props) => (
+        <SettingsLoader
           contentUpdateCallback={recalculateClientRect}
-          q={selectedText}
           render={(props) => (
-            <SettingsLoader
+            <SourceLoader
               contentUpdateCallback={recalculateClientRect}
               render={(props) => (
-                <SourceLoader
+                <Translation
+                  onClose={handleCloseTranslation}
                   contentUpdateCallback={recalculateClientRect}
-                  render={(props) => (
-                    <Translation
-                      onClose={handleCloseTranslation}
-                      contentUpdateCallback={recalculateClientRect}
-                      {...props}
-                    />
-                  )}
                   {...props}
                 />
               )}
               {...props}
             />
           )}
+          {...props}
         />
-      </SettingsProvider>
-    </StorageProvider>
+      )}
+    />
   );
 
   const renderContent = (recalculateClientRect: () => void) => (

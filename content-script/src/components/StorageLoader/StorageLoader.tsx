@@ -1,14 +1,14 @@
 import { FC, useEffect } from "react";
 import { StorageLoaderProps } from "./StorageLoader.types";
-import { useStorage } from "../../../../contexts";
 import { StyledBox, StyledLoadingIndicator } from "../../../../components";
+import { useFetchStorage } from "@/api";
 
 export const StorageLoader: FC<StorageLoaderProps> = ({
   contentUpdateCallback,
   q,
   render,
 }) => {
-  const [storage, fetchStorage] = useStorage();
+  const [storage, fetchStorage] = useFetchStorage();
   const { data, error, isLoading } = storage;
 
   useEffect(() => {
