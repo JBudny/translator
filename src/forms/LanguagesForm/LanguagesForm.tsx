@@ -129,7 +129,7 @@ export const LanguagesForm: FC = () => {
         Choose languages
       </StyledText>
       <StyledForm id="languages-form" onSubmit={handleSubmit(onSubmit)}>
-        <StyledForm.Field error={errors.detect} htmlFor="detect" label="Detect">
+        <StyledForm.Field error={errors.detect} htmlFor="detect" label="Detect source">
           <StyledForm.Input
             type="checkbox"
             autoFocus
