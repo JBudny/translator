@@ -1,5 +1,5 @@
 {
-  "name": "react-content-script",
+  "name": "translator",
   "description": "Ttranslate selected text using LibreTranslate, a self-hosted translation service.",
   "private": true,
   "version": "1.0.0",
